@@ -1,13 +1,14 @@
 package Model.Cards;
 
+import Model.Cards.Effects_Races.ARace;
 import lombok.Data;
 
 @Data
 public class MonsterCard extends ACard {
-    Specialty specialty;
+    ARace race;
 
     @Override
-    public void searchBattle() {
-
+    public int calcDamage(ACard oppenentCard) {
+        return 0;
     }
 }
