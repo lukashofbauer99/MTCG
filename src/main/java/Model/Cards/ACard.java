@@ -1,10 +1,14 @@
 package Model.Cards;
 
 import Model.Cards.Effects_Races.AEffect;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+
+@AllArgsConstructor
+@Getter
 public abstract class ACard {
+
     String name;
     int damage;
 

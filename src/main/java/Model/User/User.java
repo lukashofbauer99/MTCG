@@ -3,34 +3,52 @@ package Model.User;
 import Model.Battle.Battle;
 import Model.Cards.ACard;
 import jdk.jshell.spi.ExecutionControl;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+
 public class User {
+    @Setter
+    @Getter
     int coins=20;
+    @Setter
+    @Getter
     int mmr=0;
 
-    Credentials credentials = new Credentials();
+    @Getter
     Stack stack = new Stack();
+    @Getter
     Deck deck = new Deck();
+    @Getter
     List<Battle> battleHistory= new ArrayList<>();
 
-    public void buyCardPackage() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+    //@Autowired
+    PlayerHub playerHub;
+
+
+    public User() {
     }
 
-    public void defineDeck() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+    public User(PlayerHub playerHub) {
+        this.playerHub = playerHub;
     }
 
-    public void tradeCard(User user, ACard cardGiven, ACard cardRecieved) throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+
+    Credentials credentials = new Credentials();
+
+    public void buyCardPackage() {
+
     }
 
-    public void searchBattle() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+    public void defineDeck(){
+    }
+
+    public void tradeCard(User user, ACard cardGiven, ACard cardRecieved) {
+    }
+
+    public void searchBattle(){
     }
 }

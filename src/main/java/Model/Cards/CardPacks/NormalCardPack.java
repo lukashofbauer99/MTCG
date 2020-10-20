@@ -1,14 +1,21 @@
 package Model.Cards.CardPacks;
 
 import Model.Cards.ACard;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NormalCardPack implements ICardPack {
+@Getter
+public class NormalCardPack extends ACardPack {
 
-    int cardAmount=5;
+    //ENUM CARDPACKS
     List<ACard> Cards = new ArrayList<>();
+
+    public NormalCardPack() {
+        super(5, 5);
+        genereateCards();
+    }
 
     @Override
     public void genereateCards() {

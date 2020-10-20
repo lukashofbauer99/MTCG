@@ -3,10 +3,10 @@ package Model.Battle;
 import Model.Cards.ACard;
 import jdk.jshell.spi.ExecutionControl;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class Round {
-
     ACard card1;
     ACard card2;
 
