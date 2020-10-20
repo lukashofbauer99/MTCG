@@ -1,17 +1,19 @@
 package Model.Cards;
 
-import Model.Cards.ACard;
-import Model.Cards.Effects_Races.AEffect;
-import lombok.Data;
+import Model.Battle.State;
+import Model.Cards.Effects_Races.Effects.AEffect;
 
 public class SpellCard extends ACard {
 
     public SpellCard(String name, int damage, AEffect effect) {
-        super(name, damage, effect);
+        super(name, damage, effect,effect);
+    }
+    public SpellCard(String name, int damage, AEffect attackEffect,AEffect defendEffect) {
+        super(name, damage, attackEffect,defendEffect);
     }
 
     @Override
-    public int calcDamage(ACard oppenentCard) {
+    public int calcDamage(State state, ACard oppenentCard) {
         return 0;
     }
 }

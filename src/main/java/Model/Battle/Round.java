@@ -7,10 +7,14 @@ import lombok.Getter;
 
 @Getter
 public class Round {
-    ACard card1;
-    ACard card2;
 
-    public void fight() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+    int WinnerDmg;
+    int LooserDmg;
+
+    ACard Winner;
+    ACard Looser;
+
+    public void fight(ACard attackingCard,ACard defendingCard)
+    {
     }
 }

@@ -27,8 +27,8 @@ public class Battle {
         battleDeckUser2.setCards( user2.getDeck().getCards());
     }
 
-    public void Start() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
+    public User Start(){
+        return null;
     }
 
 }

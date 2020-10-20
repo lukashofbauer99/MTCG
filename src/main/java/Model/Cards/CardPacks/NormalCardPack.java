@@ -10,7 +10,6 @@ import java.util.List;
 public class NormalCardPack extends ACardPack {
 
     //ENUM CARDPACKS
-    List<ACard> Cards = new ArrayList<>();
 
     public NormalCardPack() {
         super(5, 5);

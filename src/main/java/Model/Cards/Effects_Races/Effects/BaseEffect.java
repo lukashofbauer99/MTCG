@@ -1,4 +1,4 @@
-package Model.Cards.Effects_Races;
+package Model.Cards.Effects_Races.Effects;
 
 import Model.Cards.ACard;
 
@@ -9,7 +9,7 @@ public class BaseEffect extends AEffect {
     }
 
     @Override
-    public int affect(ACard thisCard,ACard opponentCard) {
+    public int affect(ACard thisCard, ACard opponentCard) {
         return thisCard.getDamage();
     }
 }

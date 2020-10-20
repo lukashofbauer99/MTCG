@@ -1,10 +1,13 @@
-package Model.Cards.Effects_Races;
+package Model.Cards.Effects_Races.Races;
 
 import Model.Cards.ACard;
 
-public class OrkRace extends ARace {
-    public OrkRace() {
+public class DragonRace extends ARace {
+    public DragonRace(ARace race) {
+
+        super.base = race;
         super.name = "OrkRace";
+
     }
 
     @Override

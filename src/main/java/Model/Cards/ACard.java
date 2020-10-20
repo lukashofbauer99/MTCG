@@ -1,6 +1,7 @@
 package Model.Cards;
 
-import Model.Cards.Effects_Races.AEffect;
+import Model.Battle.State;
+import Model.Cards.Effects_Races.Effects.AEffect;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ public abstract class ACard {
     String name;
     int damage;
 
-    AEffect effect;
-    public abstract int calcDamage(ACard oppenentCard);
+    AEffect attackEffect;
+    AEffect defendEffect;
+    public abstract int calcDamage(State state, ACard oppenentCard);
 }
