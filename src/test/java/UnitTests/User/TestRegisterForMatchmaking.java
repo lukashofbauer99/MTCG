@@ -27,11 +27,7 @@ public class TestRegisterForMatchmaking {
     @DisplayName("Match Register 1 Player")
     void testRegisterOnePlayer() {
         // arrange
-        /*
-        userA = mock(User.class);
-        playerhubA = mock(PlayerHub.class);
-        */
-
+        userA= new User(playerhubA);
 
         // act
         userA.searchBattle();
@@ -44,12 +40,11 @@ public class TestRegisterForMatchmaking {
     @DisplayName("Match Register Multiple Players")
     void testRegisterMultiplePlayer() {
         // arrange
-        /*
-        userA = mock(User.class) ;
-        userB = mock(User.class);
-        userC = mock(User.class);
-        playerhubA = mock(PlayerHub.class);
-        */
+
+        userA= new User(playerhubA);
+        userB= new User(playerhubA);
+        userC= new User(playerhubA);
+
 
 
         // act

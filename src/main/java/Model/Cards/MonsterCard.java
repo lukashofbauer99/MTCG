@@ -39,6 +39,37 @@ public class MonsterCard extends ACard {
 
     @Override
     public int calcDamage(State state, ACard oppenentCard) {
-        return 0;
+
+        MonsterCard shallowCopy =new MonsterCard(this.name,this.damage,this.attackEffect,this.defendEffect,this.attackRace,this.defendRace);
+
+        if (state==State.ATTACK) {
+            if(oppenentCard.getClass()==MonsterCard.class)
+                return shallowCopy.attackRace.affect(shallowCopy,oppenentCard);
+            else {
+                if (oppenentCard.getClass() == SpellCard.class) {
+                    shallowCopy.damage = shallowCopy.attackRace.affect(shallowCopy, oppenentCard);
+                    return shallowCopy.attackEffect.affect(shallowCopy, oppenentCard);
+                }
+                else
+                    throw new IllegalArgumentException() ; //unkown card type
+            }
+        }
+        else
+        {
+            if (state==State.DEFEND) {
+                if(oppenentCard.getClass()==MonsterCard.class)
+                    return shallowCopy.defendRace.affect(shallowCopy,oppenentCard);
+                else {
+                    if (oppenentCard.getClass() == SpellCard.class) {
+                        shallowCopy.damage = shallowCopy.defendRace.affect(shallowCopy, oppenentCard);
+                        return shallowCopy.defendEffect.affect(shallowCopy, oppenentCard);
+                    }
+                    else
+                        throw new IllegalArgumentException() ; //unkown card type
+                }
+            }
+            else
+                throw new IllegalArgumentException() ; //no allowed State
+        }
     }
 }

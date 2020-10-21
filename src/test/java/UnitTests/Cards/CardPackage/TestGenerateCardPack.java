@@ -30,9 +30,9 @@ public class TestGenerateCardPack {
 
         // act
 
-        cardPackA.genereateCards();
+        //cardPackA.genereateCards(); //gets called in constructor
 
         // assert
-        assertEquals(cardPackA.getCards().size(),4);
+        assertEquals(4,cardPackA.getCards().size());
     }
 }

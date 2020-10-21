@@ -43,7 +43,7 @@ public class TestDefineDeck {
 
 
         // act
-        userA.defineDeck();
+        userA.defineDeck(0,1,2,3);
 
         // assert
         verify(cards).add(cardA);

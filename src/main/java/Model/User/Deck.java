@@ -1,10 +1,8 @@
 package Model.User;
 
 import Model.Cards.ACard;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.Data;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +10,4 @@ import java.util.List;
 public class Deck {
 
     List<ACard> cards = new ArrayList<>();
-
-    public void drawCard() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("TODO");
-    }
 }

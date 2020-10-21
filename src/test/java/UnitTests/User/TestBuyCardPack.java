@@ -1,5 +1,6 @@
 package UnitTests.User;
 
+import Model.Cards.CardPacks.PackType;
 import Model.User.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
@@ -14,22 +15,24 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TestBuyCardPack {
+    PlayerHub playerHub= new PlayerHub();
+
     @Mock
-    PlayerHub playerHub;
-    @Mock
-    User userA= new User(playerHub);
+    User userA;
 
     @Test
     @DisplayName("Buy CardPack")
     void testBuyCardPack() {
         // arrange
+        userA= new User(playerHub);
 
         // act
-        userA.buyCardPackage();
+        userA.buyCardPackage(PackType.Normal);
 
         // assert
-        verify(playerHub).buyCards(userA);
-        verify(userA).setCoins(userA.getCoins()-5);
+        //verify(playerHub).buyCards(userA,PackType.Normal);
+        assertEquals(15,userA.getCoins());
+        assertEquals(4,userA.getStack().getCards().size());
     }
 
     @Test
@@ -37,15 +40,16 @@ public class TestBuyCardPack {
     void testBuyCardPackFail() {
         // arrange
 
+        userA=new User(playerHub);
         userA.setCoins(3);
 
         // act
-        userA.buyCardPackage();
+        userA.buyCardPackage(PackType.Normal);
 
 
         // assert
-        verify(playerHub).buyCards(userA);
-        verify(userA,never()).setCoins(userA.getCoins()-5);
+        assertEquals(3,userA.getCoins());
+        assertEquals(0,userA.getStack().getCards().size());
     }
 
 }

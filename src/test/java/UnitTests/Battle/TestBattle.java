@@ -32,6 +32,8 @@ public class TestBattle {
     ACard cardB;
     ACard cardC;
     ACard cardD;
+    ACard cardE;
+
 
     AEffect baseEffect= new BaseEffect();
     ARace baseRace= new BaseRace();
@@ -46,6 +48,8 @@ public class TestBattle {
         cardC=new SpellCard("Fire Spell",10,new FireEffect(baseEffect));
         cardD=new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace);
 
+        cardE=new MonsterCard("OP Dragon",1000,new FireEffect(baseEffect),new DragonRace(baseRace));
+
         userA.getDeck().getCards().add(cardA);
         userA.getDeck().getCards().add(cardB);
         userA.getDeck().getCards().add(cardC);
@@ -54,7 +58,7 @@ public class TestBattle {
         userB.getDeck().getCards().add(cardD);
         userB.getDeck().getCards().add(cardC);
         userB.getDeck().getCards().add(cardB);
-        userB.getDeck().getCards().add(cardA);
+        userB.getDeck().getCards().add(cardE);
 
         battle= new Battle(userA,userB);
         // act
