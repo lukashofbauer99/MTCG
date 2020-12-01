@@ -3,8 +3,8 @@ package Model.Cards.Effects_Races.Races;
 import Model.Cards.ACard;
 import Model.Cards.MonsterCard;
 
-public class GoblinRace extends ARace {
-    public GoblinRace(ARace race) {
+public class GoblinRace extends ABaseRace {
+    public GoblinRace(IRace race) {
         super.base=race;
         super.name = "GoblinRace";
     }

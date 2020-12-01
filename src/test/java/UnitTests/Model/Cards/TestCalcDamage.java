@@ -1,4 +1,4 @@
-package UnitTests.Cards;
+package UnitTests.Model.Cards;
 
 import Model.Battle.State;
 import Model.Cards.ACard;

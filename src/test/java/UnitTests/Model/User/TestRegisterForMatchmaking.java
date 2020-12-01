@@ -1,4 +1,4 @@
-package UnitTests.User;
+package UnitTests.Model.User;
 
 import Model.User.PlayerHub;
 import Model.User.User;

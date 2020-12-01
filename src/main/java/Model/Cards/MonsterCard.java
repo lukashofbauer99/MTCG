@@ -1,35 +1,35 @@
 package Model.Cards;
 
 import Model.Battle.State;
-import Model.Cards.Effects_Races.Effects.AEffect;
-import Model.Cards.Effects_Races.Races.ARace;
+import Model.Cards.Effects_Races.Effects.IEffect;
+import Model.Cards.Effects_Races.Races.IRace;
 import lombok.Getter;
 
 @Getter
 public class MonsterCard extends ACard {
-    ARace attackRace; //As example Goblin attack -> cant damage dragon -> dmg*0
-    ARace defendRace; //Goblin defend -> dragon -> dmg (* 1)
+    IRace attackRace; //As example Goblin attack -> cant damage dragon -> dmg*0
+    IRace defendRace; //Goblin defend -> dragon -> dmg (* 1)
 
 
-    public MonsterCard(String name, int damage, AEffect effect, ARace race) {
+    public MonsterCard(String name, int damage, IEffect effect, IRace race) {
         super(name, damage, effect,effect);
         this.attackRace = race;
         this.defendRace = race;
     }
 
-    public MonsterCard(String name, int damage, AEffect attackEffect,AEffect defendEffect, ARace race) {
+    public MonsterCard(String name, int damage, IEffect attackEffect,IEffect defendEffect, IRace race) {
         super(name, damage, attackEffect,defendEffect);
         this.attackRace = race;
         this.defendRace = race;
     }
 
-    public MonsterCard(String name, int damage, AEffect effect, ARace attackRace, ARace defendRace) {
+    public MonsterCard(String name, int damage, IEffect effect, IRace attackRace, IRace defendRace) {
         super(name, damage, effect,effect);
         this.attackRace = attackRace;
         this.defendRace = defendRace;
     }
 
-    public MonsterCard(String name, int damage, AEffect attackEffect,AEffect defendEffect, ARace attackRace, ARace defendRace) {
+    public MonsterCard(String name, int damage, IEffect attackEffect, IEffect defendEffect, IRace attackRace, IRace defendRace) {
         super(name, damage, attackEffect,defendEffect);
         this.attackRace = attackRace;
         this.defendRace = defendRace;

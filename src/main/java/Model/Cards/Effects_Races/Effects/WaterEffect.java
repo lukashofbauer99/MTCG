@@ -4,7 +4,7 @@ import Model.Cards.ACard;
 
 public class WaterEffect extends AEffect {
 
-    public WaterEffect(AEffect effect) {
+    public WaterEffect(IEffect effect) {
         super.base= effect;
         super.name = "WaterEffect";
     }

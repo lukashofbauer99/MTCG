@@ -1,8 +1,6 @@
-package UnitTests.User;
+package UnitTests.Model.User;
 
 import Model.Cards.ACard;
-import Model.User.Deck;
-import Model.User.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

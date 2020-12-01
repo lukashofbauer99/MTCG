@@ -1,12 +1,10 @@
 package Model.User;
 
 import Model.Battle.Battle;
-import Model.Cards.CardPacks.ACardPack;
+import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.NormalCardPack;
 import Model.Cards.CardPacks.PackType;
 import org.javatuples.Pair;
-import org.javatuples.Triplet;
-import org.javatuples.Tuple;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,17 +15,22 @@ import static java.lang.StrictMath.abs;
 //@Component
 public class PlayerHub {
 
+    List<ICardPack> availibleCardPacks = new ArrayList<>();
+
+    public PlayerHub() {
+        availibleCardPacks.add(new NormalCardPack());
+    }
+
     List<User> battleSearchingUsers = new ArrayList<>();
 
-    public ACardPack buyCards(User user, PackType packType)
+    public ICardPack buyCards(User user, PackType packType)
     {
-        ACardPack cardPack=null;
-        if(packType.equals(PackType.Normal)) {
-            cardPack = new NormalCardPack();
-        }
-        if(user.getCoins()>=cardPack.getCosts()) {
-            user.setCoins(user.getCoins() - cardPack.getCosts());
-            return cardPack;
+        ICardPack cardPack=availibleCardPacks.stream().filter(x->x.getPackType()==packType).findFirst().orElse(null);
+        if(cardPack!=null) {
+            if (user.getCoins() >= cardPack.getCosts()) {
+                user.setCoins(user.getCoins() - cardPack.getCosts());
+                return cardPack;
+            }
         }
         return null;
     }
@@ -42,9 +45,7 @@ public class PlayerHub {
         if (battleSearchingUsers.size()<2) {
             List<Pair<User,Integer>> mmrCalclist= new ArrayList<>();
             User matchedUser = battleSearchingUsers.get(0);
-            battleSearchingUsers.forEach(x->{
-                mmrCalclist.add(new Pair<>(x, abs(matchedUser.mmr-x.mmr)));
-            });
+            battleSearchingUsers.forEach(x-> mmrCalclist.add(new Pair<>(x, abs(matchedUser.mmr-x.mmr))));
 
             User matchedUser2 = mmrCalclist.stream().min(Comparator.comparing(Pair::getValue1)).orElse(null).getValue0();
 

@@ -4,7 +4,7 @@ import Model.Cards.ACard;
 
 public class FireEffect extends AEffect {
 
-    public FireEffect(AEffect effect) {
+    public FireEffect(IEffect effect) {
         super.base=effect;
         super.name = "FireEffect";
     }

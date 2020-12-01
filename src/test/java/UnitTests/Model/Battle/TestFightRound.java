@@ -1,7 +1,6 @@
-package UnitTests.Battle;
+package UnitTests.Model.Battle;
 
 import Model.Battle.Round;
-import Model.Battle.State;
 import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;

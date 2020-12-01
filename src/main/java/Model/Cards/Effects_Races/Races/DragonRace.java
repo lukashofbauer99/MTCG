@@ -2,8 +2,8 @@ package Model.Cards.Effects_Races.Races;
 
 import Model.Cards.ACard;
 
-public class DragonRace extends ARace {
-    public DragonRace(ARace race) {
+public class DragonRace extends ABaseRace {
+    public DragonRace(IRace race) {
 
         super.base = race;
         super.name = "OrkRace";

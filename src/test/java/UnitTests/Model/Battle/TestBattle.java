@@ -1,4 +1,4 @@
-package UnitTests.Battle;
+package UnitTests.Model.Battle;
 
 import Model.Battle.Battle;
 import Model.Cards.ACard;
@@ -6,7 +6,7 @@ import Model.Cards.Effects_Races.Effects.AEffect;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
 import Model.Cards.Effects_Races.Effects.WaterEffect;
-import Model.Cards.Effects_Races.Races.ARace;
+import Model.Cards.Effects_Races.Races.ABaseRace;
 import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.DragonRace;
 import Model.Cards.Effects_Races.Races.GoblinRace;
@@ -36,7 +36,7 @@ public class TestBattle {
 
 
     AEffect baseEffect= new BaseEffect();
-    ARace baseRace= new BaseRace();
+    ABaseRace baseRace= new BaseRace();
 
 
     @Test

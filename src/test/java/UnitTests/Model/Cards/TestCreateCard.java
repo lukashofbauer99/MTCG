@@ -1,12 +1,13 @@
-package UnitTests.Cards;
+package UnitTests.Model.Cards;
 
 import Model.Cards.ACard;
-import Model.Cards.Effects_Races.Effects.AEffect;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
-import Model.Cards.Effects_Races.Races.ARace;
+import Model.Cards.Effects_Races.Effects.IEffect;
+import Model.Cards.Effects_Races.Races.ABaseRace;
 import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.DragonRace;
+import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @ExtendWith(MockitoExtension.class)
 public class TestCreateCard {
 
-    AEffect baseEffect=new BaseEffect();
-    ARace baseRace= new BaseRace();
+    IEffect baseEffect=new BaseEffect();
+    IRace baseRace= new BaseRace();
 
     ACard createdCard;
 

@@ -2,10 +2,11 @@ package Model.Cards;
 
 import Model.Battle.State;
 import Model.Cards.Effects_Races.Effects.AEffect;
+import Model.Cards.Effects_Races.Effects.IEffect;
 
 public class SpellCard extends ACard {
 
-    public SpellCard(String name, int damage, AEffect effect) {
+    public SpellCard(String name, int damage, IEffect effect) {
         super(name, damage, effect,effect);
     }
     public SpellCard(String name, int damage, AEffect attackEffect,AEffect defendEffect) {

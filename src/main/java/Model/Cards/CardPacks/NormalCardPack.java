@@ -1,6 +1,5 @@
 package Model.Cards.CardPacks;
 
-import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
 import Model.Cards.Effects_Races.Effects.WaterEffect;
@@ -11,14 +10,13 @@ import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 @Getter
-public class NormalCardPack extends ACardPack {
+public class NormalCardPack extends ACardPackFixedSizeAndCost {
 
-    //ENUM CARDPACKS
+    PackType packType= PackType.Normal;
+
     Random rand = new Random();
 
     public NormalCardPack() {
@@ -28,6 +26,7 @@ public class NormalCardPack extends ACardPack {
 
     BaseEffect baseEffect= new BaseEffect();
     BaseRace baseRace = new BaseRace();
+
     @Override
     public void genereateCards() {
         int roll=rand.nextInt(50);

@@ -6,9 +6,9 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ACardPack {
+public abstract class ACardPackFixedSizeAndCost implements ICardPack {
 
-    public ACardPack(int costs, int cardAmount) {
+    public ACardPackFixedSizeAndCost(int costs, int cardAmount) {
         this.costs = costs;
         this.cardAmount = cardAmount;
     }

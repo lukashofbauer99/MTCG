@@ -1,4 +1,4 @@
-package UnitTests.User;
+package UnitTests.Model.User;
 
 import Model.Cards.CardPacks.PackType;
 import Model.User.PlayerHub;
@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)

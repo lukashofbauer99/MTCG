@@ -2,9 +2,9 @@ package Model.User;
 
 import Model.Battle.Battle;
 import Model.Cards.ACard;
-import Model.Cards.CardPacks.ACardPack;
+import Model.Cards.CardPacks.ACardPackFixedSizeAndCost;
+import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.PackType;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +42,7 @@ public class User {
     Credentials credentials = new Credentials();
 
     public void buyCardPackage(PackType packType) {
-        ACardPack pack =playerHub.buyCards(this,packType);
+        ICardPack pack =playerHub.buyCards(this,packType);
         if(pack!=null) {
         pack.getCards().forEach(x -> stack.getCards().add(x));
         }
