@@ -13,6 +13,7 @@ import java.util.List;
 
 
 public class User {
+
     @Setter
     @Getter
     int coins=20;
@@ -32,6 +33,10 @@ public class User {
 
 
     public User() {
+    }
+
+    public User(Credentials credentials) {
+        this.credentials=credentials;
     }
 
     public User(PlayerHub playerHub) {

@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 public abstract class ACard {
 
+    String id;
     String name;
     int damage;
 
