@@ -16,6 +16,16 @@ public abstract class ACard {
     int damage;
 
     IEffect attackEffect;
+
+    public ACard(String name, int damage, IEffect attackEffect, IEffect defendEffect) {
+        this.name = name;
+        this.damage = damage;
+        this.attackEffect = attackEffect;
+        this.defendEffect = defendEffect;
+    }
+
     IEffect defendEffect;
+
+
     public abstract int calcDamage(State state, ACard oppenentCard);
 }

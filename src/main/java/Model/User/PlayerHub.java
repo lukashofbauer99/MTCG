@@ -1,9 +1,7 @@
 package Model.User;
 
 import Model.Battle.Battle;
-import Model.Cards.CardPacks.ICardPack;
-import Model.Cards.CardPacks.NormalCardPack;
-import Model.Cards.CardPacks.PackType;
+import lombok.Getter;
 import org.javatuples.Pair;
 
 import java.util.ArrayList;
@@ -13,27 +11,10 @@ import java.util.List;
 import static java.lang.StrictMath.abs;
 
 //@Component
+@Getter
 public class PlayerHub {
 
-    List<ICardPack> availibleCardPacks = new ArrayList<>();
-
-    public PlayerHub() {
-        availibleCardPacks.add(new NormalCardPack());
-    }
-
-    List<User> battleSearchingUsers = new ArrayList<>();
-
-    public ICardPack buyCards(User user, PackType packType)
-    {
-        ICardPack cardPack=availibleCardPacks.stream().filter(x->x.getPackType()==packType).findFirst().orElse(null);
-        if(cardPack!=null) {
-            if (user.getCoins() >= cardPack.getCosts()) {
-                user.setCoins(user.getCoins() - cardPack.getCosts());
-                return cardPack;
-            }
-        }
-        return null;
-    }
+    private List<User> battleSearchingUsers = new ArrayList<>();
 
     public void registerForMatchmaking(User user){
         battleSearchingUsers.add(user);

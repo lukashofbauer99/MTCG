@@ -14,7 +14,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestTradeCard {
+public class TestTrade1To1Card {
     User userA;
     @Mock
     List<ACard> cardsA;

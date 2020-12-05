@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import static java.lang.Integer.parseInt;
 
 @AllArgsConstructor
-@NoArgsConstructor
 public class PUT_deck implements IHTTPMethod {
 
     @Override

@@ -1,7 +1,6 @@
 package UnitTests.Model.Cards.CardPackage;
 
-import Model.Cards.CardPacks.ACardPackFixedSizeAndCost;
-import Model.Cards.CardPacks.NormalCardPack;
+import Model.Cards.CardPacks.AutoGenCardPack;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,18 +13,17 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class TestGenerateCardPack {
 
-    ACardPackFixedSizeAndCost cardPackA;
+    AutoGenCardPack cardPackA;
 
     @Test
-    @DisplayName("Generate Normal CardPack")
+    @DisplayName("Generate AutoGen CardPack")
     void TestGenerateNormalCardPack() {
         // arrange
 
-        cardPackA= new NormalCardPack();
+        cardPackA= new AutoGenCardPack();
 
         // act
 
-        //cardPackA.genereateCards(); //gets called in constructor
 
         // assert
         assertEquals(4,cardPackA.getCards().size());

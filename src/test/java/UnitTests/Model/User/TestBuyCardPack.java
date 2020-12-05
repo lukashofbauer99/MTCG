@@ -1,12 +1,14 @@
 package UnitTests.Model.User;
 
+import Model.Cards.CardPacks.AutoGenCardPack;
+import Model.Cards.Vendor.IVendor;
+import Model.Cards.Vendor.NormalVendor;
 import Model.Cards.CardPacks.PackType;
 import Model.User.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,17 +18,19 @@ import static org.mockito.Mockito.verify;
 public class TestBuyCardPack {
     PlayerHub playerHub= new PlayerHub();
 
-    @Mock
-    User userA;
+    IVendor vendor= new NormalVendor();
+
+    User userA= new User();
 
     @Test
     @DisplayName("Buy CardPack")
     void testBuyCardPack() {
         // arrange
-        userA= new User(playerHub);
+        vendor.getAvailibleCardPacks().add(new AutoGenCardPack());
+        userA.setCoins(20);
 
         // act
-        userA.buyCardPackage(PackType.Normal);
+        userA.buyCardPackage(PackType.AutoGen,vendor);
 
         // assert
         //verify(playerHub).buyCards(userA,PackType.Normal);
@@ -39,11 +43,11 @@ public class TestBuyCardPack {
     void testBuyCardPackFail() {
         // arrange
 
-        userA=new User(playerHub);
+        vendor.getAvailibleCardPacks().add(new AutoGenCardPack());
         userA.setCoins(3);
 
         // act
-        userA.buyCardPackage(PackType.Normal);
+        userA.buyCardPackage(PackType.AutoGen,vendor);
 
 
         // assert

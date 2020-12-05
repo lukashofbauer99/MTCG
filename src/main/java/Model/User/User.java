@@ -2,9 +2,12 @@ package Model.User;
 
 import Model.Battle.Battle;
 import Model.Cards.ACard;
-import Model.Cards.CardPacks.ACardPackFixedSizeAndCost;
 import Model.Cards.CardPacks.ICardPack;
+import Model.Cards.Vendor.IVendor;
 import Model.Cards.CardPacks.PackType;
+import Model.User.Trade.ITrade;
+import Model.User.Trade.ITradeCardRequirements;
+import Model.User.Trade.Trade1To1;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -46,11 +49,24 @@ public class User {
 
     Credentials credentials = new Credentials();
 
-    public void buyCardPackage(PackType packType) {
-        ICardPack pack =playerHub.buyCards(this,packType);
+    public boolean buyCardPackage(PackType packType, IVendor vendor) {
+        ICardPack pack =vendor.buyCards(this,packType);
+
         if(pack!=null) {
         pack.getCards().forEach(x -> stack.getCards().add(x));
+        return true;
         }
+        return false;
+    }
+
+    public boolean buyCardPackage(IVendor vendor) {
+        ICardPack pack =vendor.buyCards(this);
+
+        if(pack!=null) {
+            pack.getCards().forEach(x -> stack.getCards().add(x));
+            return true;
+        }
+        return false;
     }
 
 
@@ -78,6 +94,15 @@ public class User {
     }
 
     //@Transaction
+
+    public ITrade createTrade(User user, ACard cardToTrade, ITradeCardRequirements requirements) {
+        if(stack.getCards().contains(cardToTrade)) {
+            ITrade trade = new Trade1To1(user,cardToTrade,requirements);
+            return trade;
+        }
+        else return null;
+    }
+
     public void tradeCard(User user, ACard cardGiven, ACard cardRecieved) {
         this.getStack().getCards().remove(cardGiven);
         this.getStack().getCards().add(cardRecieved);

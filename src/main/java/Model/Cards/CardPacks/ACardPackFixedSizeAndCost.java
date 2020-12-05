@@ -17,8 +17,5 @@ public abstract class ACardPackFixedSizeAndCost implements ICardPack {
     @Getter
     protected int costs;
     @Getter
-    protected List<ACard> Cards = new ArrayList<>();
-
-
-    public abstract void genereateCards();
+    protected List<ACard> cards = new ArrayList<>();
 }
