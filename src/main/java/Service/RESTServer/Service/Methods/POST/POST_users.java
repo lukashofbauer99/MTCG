@@ -1,18 +1,25 @@
 package Service.RESTServer.Service.Methods.POST;
 
-import Service.RESTServer.Domain.IRepository;
-import Service.RESTServer.Domain.MessageRepository;
-import Service.RESTServer.Model.Message;
+import Domain.User.Interfaces.IUserRepository;
+import Model.User.Credentials;
+import Model.User.User;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@AllArgsConstructor
 public class POST_users implements IHTTPMethod {
 
+    IUserRepository userRepository;
+    ObjectMapper mapper = new ObjectMapper();
+
+    public POST_users(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+    }
 
     @Override
     public Boolean analyse(IRequestContext data) {
@@ -20,9 +27,16 @@ public class POST_users implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) {
+    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
+        Credentials cred = mapper.readValue(data.getPayload(), Credentials.class);
+        Long id =userRepository.persistEntity(new User(cred));
+        responseContext.setPayload(String.valueOf(id));
 
+        responseContext.setHttpStatusCode("HTTP/1.1 201");
+        responseContext.getHeaders().put("Connection", "close");
+        responseContext.getHeaders().put("Content-Length", String.valueOf(String.valueOf(id).length()));
+        responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }
 }

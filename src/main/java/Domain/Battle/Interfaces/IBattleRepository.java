@@ -1,4 +1,4 @@
-package Domain.Battle;
+package Domain.Battle.Interfaces;
 
 import Domain.IRepository;
 import Model.Battle.Battle;

@@ -17,6 +17,13 @@ import java.util.List;
 
 public class User {
 
+    @Getter
+    Credentials credentials = new Credentials();
+
+    @Setter
+    @Getter
+    Long userID;
+
     @Setter
     @Getter
     int coins=20;
@@ -30,6 +37,8 @@ public class User {
     Deck deck = new Deck();
     @Getter
     List<Battle> battleHistory= new ArrayList<>();
+
+
 
     //@Autowired
     PlayerHub playerHub;
@@ -45,9 +54,6 @@ public class User {
     public User(PlayerHub playerHub) {
         this.playerHub = playerHub;
     }
-
-
-    Credentials credentials = new Credentials();
 
     public boolean buyCardPackage(PackType packType, IVendor vendor) {
         ICardPack pack =vendor.buyCards(this,packType);

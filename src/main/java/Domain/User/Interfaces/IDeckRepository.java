@@ -1,4 +1,4 @@
-package Domain.User;
+package Domain.User.Interfaces;
 
 import Domain.IRepository;
 import Model.User.Deck;

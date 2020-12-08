@@ -1,11 +1,15 @@
 package Service.RESTServer.Service;
 
+import Domain.User.InMemoryUserRepository;
+import Domain.User.Interfaces.IUserRepository;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.GET_messages;
 import Service.RESTServer.Service.Methods.GET.GET_messages_Id;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.POST_messages;
+import Service.RESTServer.Service.Methods.POST.POST_sessions;
+import Service.RESTServer.Service.Methods.POST.POST_users;
 import Service.RESTServer.Service.Methods.PUT.PUT_messages_Id;
 import Service.RESTServer.Service.Socket.IMySocket;
 import Service.RESTServer.Service.Socket.MySocket;
@@ -25,18 +29,23 @@ public class MainServer implements Runnable {
 
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
+        //repositories
+        IUserRepository userRepo=new InMemoryUserRepository();
+
         //register Methods
         registeredMethods.add(new GET_messages());
         registeredMethods.add(new DELETE_messages_Id());
         registeredMethods.add(new PUT_messages_Id());
         registeredMethods.add(new GET_messages_Id());
         registeredMethods.add(new POST_messages());
+        registeredMethods.add(new POST_users(userRepo));
+        registeredMethods.add(new POST_sessions(userRepo));
         registeredMethods.add(new NotFound());
 
 
         //Create Socket that listens on port 8000
         try {
-            _listener = new ServerSocket(8000, 5);
+            _listener = new ServerSocket(10001, 5);
         } catch (IOException e) {
             e.printStackTrace();
             return;

@@ -1,4 +1,4 @@
-package Domain.Cards;
+package Domain.Cards.Interfaces;
 
 import Domain.IRepository;
 import Model.Cards.ACard;
