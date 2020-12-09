@@ -32,12 +32,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //Start whole test class otherwise the Tests will fail
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestHTTPMethods_MTCG {
+public class TestHTTPMethods_User {
 
     String command = "";
     String command2= "";
     ObjectMapper mapper = new ObjectMapper();
-    static User testUser= new User(new Credentials("name","pw"));
 
     private static ServerSocket _listener = null;
 
@@ -94,9 +93,10 @@ public class TestHTTPMethods_MTCG {
     @Test
     @Order(1)
     @DisplayName("Test Create User")
-    void testCreateUser() throws IOException { //TODO: LOOK Content-Type gets not set right
+    void testCreateUser() throws IOException {
 
-        command = "curl -X POST -d '{\"Username\":\"kienboec\", \"Password\":\"daniel\"}' -H \"Content-Type: application/json\" http://localhost:10001/users";
+        //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
+        command = "curl -X POST http://localhost:10001/users -H \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
         while (!ready);
 
         Process process = Runtime.getRuntime().exec(command);
@@ -114,10 +114,7 @@ public class TestHTTPMethods_MTCG {
 
         String response = textBuilder.toString();
 
-        assertEquals(0l,response);
-
-
-
+        assertEquals("0",response);
     }
 
 
@@ -126,7 +123,7 @@ public class TestHTTPMethods_MTCG {
     @DisplayName("Test Login User")
     void testLoginUser() throws IOException{
 
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d \"{\"Username\":\"kienboec\", \"Password\":\"daniel\"}\"";
+        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
 
 
         while (!ready);
@@ -145,6 +142,6 @@ public class TestHTTPMethods_MTCG {
         }
 
         String response = textBuilder.toString();
-        assertEquals("Basic name-mtcgToken",response);
+        assertEquals("Basic kienboec-mtcgToken",response);
     }
 }
