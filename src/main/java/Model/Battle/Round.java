@@ -8,16 +8,16 @@ public class Round {
 
     RoundOutcome roundOutcome;
 
-    int winnerDmg;
-    int looserDmg;
+    double winnerDmg;
+    double looserDmg;
 
     ACard winner;
     ACard looser;
 
     public void fight(ACard attackingCard,ACard defendingCard)
     {
-        int attackingCardDmg=0;
-        int defendingCardDmg=0;
+        double attackingCardDmg=0;
+        double defendingCardDmg=0;
 
         attackingCardDmg = attackingCard.calcDamage(State.ATTACK,defendingCard);
         defendingCardDmg = defendingCard.calcDamage(State.DEFEND,attackingCard);

@@ -33,7 +33,7 @@ public class TestCalcDamage {
         // arrange
         cardA=new SpellCard("Spear Throw",10,baseEffect);
         cardB=new MonsterCard("Human Warrior",7,baseEffect,baseRace);
-        int damageCalculated;
+        double damageCalculated;
         // act
         damageCalculated=cardA.calcDamage(State.ATTACK,cardB);
         // assert
@@ -46,7 +46,7 @@ public class TestCalcDamage {
         // arrange
         cardA=new SpellCard("Spear Throw",10,baseEffect);
         cardB=new MonsterCard("Human Warrior",7,baseEffect,baseRace);
-        int damageCalculated;
+        double damageCalculated;
         // act
         damageCalculated=cardB.calcDamage(State.DEFEND,cardA);
         // assert
@@ -59,7 +59,7 @@ public class TestCalcDamage {
         // arrange
         cardA=new MonsterCard("Fire Monster",10,new FireEffect(baseEffect),baseRace);
         cardB=new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace);
-        int damageCalculated;
+        double damageCalculated;
         // act
         damageCalculated=cardB.calcDamage(State.ATTACK,cardA);
         // assert
@@ -72,7 +72,7 @@ public class TestCalcDamage {
         // arrange
         cardA=new SpellCard("Fire Spell",10,new FireEffect(baseEffect));
         cardB=new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace);
-        int damageCalculated;
+        double damageCalculated;
         // act
         damageCalculated=cardB.calcDamage(State.ATTACK,cardA);
         // assert
@@ -81,16 +81,29 @@ public class TestCalcDamage {
 
 
     @Test
-    @DisplayName("Fire Dragon vs Water Goblin")
-    void test_FireDVsWaterG_CalcDamage() {
+    @DisplayName("Fire Dragon vs Water Goblin Attack")
+    void test_FireDVsWaterG_CalcDamageAttack() {
         // arrange
         cardA=new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace));
         cardB=new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace));
-        int damageCalculated;
+        double damageCalculated;
         // act
         damageCalculated=cardB.calcDamage(State.ATTACK,cardA);
         // assert
         assertEquals(0,damageCalculated);
+    }
+
+    @Test
+    @DisplayName("Fire Dragon vs Water Goblin Defend")
+    void test_FireDVsWaterG_CalcDamageDefend() {
+        // arrange
+        cardA=new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace));
+        cardB=new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace));
+        double damageCalculated;
+        // act
+        damageCalculated=cardB.calcDamage(State.DEFEND,cardA);
+        // assert
+        assertEquals(100,damageCalculated);
     }
 
 

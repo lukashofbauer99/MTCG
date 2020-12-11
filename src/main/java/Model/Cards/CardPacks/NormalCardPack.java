@@ -1,8 +1,6 @@
 package Model.Cards.CardPacks;
 
 import Model.Cards.ACard;
-import Model.Cards.Effects_Races.Effects.BaseEffect;
-import Model.Cards.Effects_Races.Races.BaseRace;
 import lombok.Getter;
 
 import java.util.List;
@@ -20,8 +18,5 @@ public class NormalCardPack extends ACardPackFixedSizeAndCost {
         super.cards = cards;
 
     }
-
-    BaseEffect baseEffect= new BaseEffect();
-    BaseRace baseRace = new BaseRace();
 
 }

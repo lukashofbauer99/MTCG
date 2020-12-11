@@ -5,11 +5,11 @@ import Model.Cards.Effects_Races.Races.KrakenRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
 
-public class FireEffect extends AEffect {
+public class NormalEffect extends AEffect {
 
-    public FireEffect(IEffect effect) {
-        super.base=effect;
-        super.name = "fire";
+    public NormalEffect(IEffect effect) {
+        super.base= effect;
+        super.name = "normal";
     }
 
     @Override
@@ -21,10 +21,9 @@ public class FireEffect extends AEffect {
                 return 0;
             }
         }
-
-        if(opponentCard.getAttackEffect().getClass()== NormalEffect.class)
-            return super.base.affect(thisCard,opponentCard)*2;
         if(opponentCard.getAttackEffect().getClass()== WaterEffect.class)
+            return super.base.affect(thisCard,opponentCard)*2;
+        if(opponentCard.getAttackEffect().getClass()== FireEffect.class)
             return super.base.affect(thisCard,opponentCard)/2;
 
         return thisCard.getDamage();

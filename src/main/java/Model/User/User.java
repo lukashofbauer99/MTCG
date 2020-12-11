@@ -15,29 +15,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
 public class User {
+    @Setter
+    Long id;
 
-    @Getter
     Credentials credentials = new Credentials();
 
     @Setter
-    @Getter
-    Long userID;
-
+    int coins = 20;
     @Setter
-    @Getter
-    int coins=20;
-    @Setter
-    @Getter
-    int mmr=0;
+    int mmr = 0;
 
-    @Getter
     Stack stack = new Stack();
-    @Getter
     Deck deck = new Deck();
-    @Getter
-    List<Battle> battleHistory= new ArrayList<>();
-
+    List<Battle> battleHistory = new ArrayList<>();
 
 
     //@Autowired
@@ -48,7 +40,7 @@ public class User {
     }
 
     public User(Credentials credentials) {
-        this.credentials=credentials;
+        this.credentials = credentials;
     }
 
     public User(PlayerHub playerHub) {
@@ -56,19 +48,19 @@ public class User {
     }
 
     public boolean buyCardPackage(PackType packType, IVendor vendor) {
-        ICardPack pack =vendor.buyCards(this,packType);
+        ICardPack pack = vendor.buyCards(this, packType);
 
-        if(pack!=null) {
-        pack.getCards().forEach(x -> stack.getCards().add(x));
-        return true;
+        if (pack != null) {
+            pack.getCards().forEach(x -> stack.getCards().add(x));
+            return true;
         }
         return false;
     }
 
     public boolean buyCardPackage(IVendor vendor) {
-        ICardPack pack =vendor.buyCards(this);
+        ICardPack pack = vendor.buyCards(this);
 
-        if(pack!=null) {
+        if (pack != null) {
             pack.getCards().forEach(x -> stack.getCards().add(x));
             return true;
         }
@@ -76,25 +68,25 @@ public class User {
     }
 
 
-    private volatile Integer prevIndex= null;
-    private volatile Integer counter= 0;
-    public void defineDeck(int card1Index,int card2Index,int card3Index,int card4Index){
-        List<Integer> indexList= new ArrayList<>();
+    private volatile Integer prevIndex = null;
+    private volatile Integer counter = 0;
+
+    public void defineDeck(int card1Index, int card2Index, int card3Index, int card4Index) {
+        List<Integer> indexList = new ArrayList<>();
         indexList.add(card1Index);
         indexList.add(card2Index);
         indexList.add(card3Index);
         indexList.add(card4Index);
 
-        if(indexList.stream().allMatch(x->(x>=0&&x<getStack().getCards().size())))
-        {
-            indexList.forEach(x-> {
-                if(prevIndex!=null)
-                    if (prevIndex<x)
-                       counter++;
-                x=x-counter;
+        if (indexList.stream().allMatch(x -> (x >= 0 && x < getStack().getCards().size()))) {
+            indexList.forEach(x -> {
+                if (prevIndex != null)
+                    if (prevIndex < x)
+                        counter++;
+                x = x - counter;
                 getDeck().getCards().add(getStack().getCards().get(x));
                 getStack().getCards().remove(getStack().getCards().get(x));
-                prevIndex=x;
+                prevIndex = x;
             });
         }
     }
@@ -102,11 +94,10 @@ public class User {
     //@Transaction
 
     public ITrade createTrade(User user, ACard cardToTrade, ITradeCardRequirements requirements) {
-        if(stack.getCards().contains(cardToTrade)) {
-            ITrade trade = new Trade1To1(user,cardToTrade,requirements);
+        if (stack.getCards().contains(cardToTrade)) {
+            ITrade trade = new Trade1To1(user, cardToTrade, requirements);
             return trade;
-        }
-        else return null;
+        } else return null;
     }
 
     public void tradeCard(User user, ACard cardGiven, ACard cardRecieved) {
@@ -117,7 +108,7 @@ public class User {
         user.getStack().getCards().add(cardGiven);
     }
 
-    public void searchBattle(){
+    public void searchBattle() {
         playerHub.registerForMatchmaking(this);
     }
 }

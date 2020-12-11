@@ -1,11 +1,14 @@
-package Domain.User;
+package Domain.User.InMemory;
 
 import Domain.User.Interfaces.IUserRepository;
+import Model.Cards.ACard;
 import Model.User.Credentials;
 import Model.User.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,16 +17,18 @@ import static java.util.stream.Collectors.toList;
 public class InMemoryUserRepository implements IUserRepository {
 
     ConcurrentMap<Long,User> users= new ConcurrentHashMap<>();
-    List<String> credInSession = new ArrayList<>();
-    Long currentID=-1l;
+    Map<String,User> usersInSession = new HashMap<>();
+    Long currentID=1l;
 
 
     @Override
     public synchronized Long persistEntity(User entity) {
         if(!users.values().stream().map(x->x.getCredentials().getUsername()).collect(toList()).contains(entity.getCredentials().getUsername())) {
-            currentID++;
+            while (users.containsKey(currentID.toString())) {
+                currentID++;
+            }
             users.put(currentID, entity);
-            entity.setUserID(currentID);
+            entity.setId(currentID);
             return currentID;
         }
         else return null;
@@ -31,9 +36,9 @@ public class InMemoryUserRepository implements IUserRepository {
 
     @Override
     public synchronized boolean updateEntity(User entity) {
-        if(entity.getUserID()!=null) {
-            if (users.containsKey(entity.getUserID())) {
-                users.put(entity.getUserID(), users.get(entity.getUserID()));
+        if(entity.getId()!=null) {
+            if (users.containsKey(entity.getId())) {
+                users.put(entity.getId(), entity);
                 return true;
             }
         }
@@ -63,11 +68,23 @@ public class InMemoryUserRepository implements IUserRepository {
     public String loginUser(Credentials cred) {
         if(users.values().stream().map(x->x.getCredentials()).collect(toList()).contains(cred)) {
             String sessionToken="Basic " + cred.getUsername() + "-mtcgToken";
-            if (!credInSession.contains(sessionToken))
+            if (!usersInSession.keySet().contains(sessionToken))
             {
-                credInSession.add(sessionToken);
+                User us=users.values().stream().filter(x->x.getCredentials().equals(cred)).findAny().orElse(null);
+                usersInSession.put(sessionToken,us);
             }
             return sessionToken;
+        }
+        return null;
+    }
+
+    @Override
+    public List<ACard> showCardsOfUser(String token) {
+        if(usersInSession.keySet().contains(token))
+        {
+            List<ACard> cardsOfUser= usersInSession.get(token).getStack().getCards();
+            cardsOfUser.addAll(usersInSession.get(token).getDeck().getCards());
+            return cardsOfUser;
         }
         return null;
     }

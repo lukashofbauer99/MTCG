@@ -4,7 +4,6 @@ import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
-import Model.Cards.Effects_Races.Races.ABaseRace;
 import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.DragonRace;
 import Model.Cards.Effects_Races.Races.IRace;
@@ -84,7 +83,7 @@ public class TestCreateCard {
         // assert
 
         assertEquals(createdCard.getAttackEffect(),baseEffect);
-        assertEquals(((MonsterCard)createdCard).getAttackRace(),baseRace);
+        assertEquals(((MonsterCard)createdCard).getRace(),baseRace);
         assertEquals(createdCard.getDamage(),7);
         assertEquals(createdCard.getName(),"Human Warrior");
     }
@@ -102,7 +101,7 @@ public class TestCreateCard {
         // assert
 
         assertEquals(createdCard.getAttackEffect().getBase(),baseEffect);
-        assertEquals(((MonsterCard)createdCard).getAttackRace().getBase(),baseRace);
+        assertEquals(((MonsterCard)createdCard).getRace().getBase(),baseRace);
         assertEquals(createdCard.getDamage(),15);
         assertEquals(createdCard.getName(),"Orc Fire Mage");
     }

@@ -4,7 +4,10 @@ import Model.Cards.ACard;
 
 public interface IEffect  {
 
-    int affect(ACard thisCard, ACard opponentCard);
+    Long getId();
+    void setId(Long id);
+    String getName();
+    double affect(ACard thisCard, ACard opponentCard);
 
     IEffect getBase();
 }

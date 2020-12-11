@@ -1,9 +1,7 @@
 package IntegrationTests;
 
-import Domain.User.InMemoryUserRepository;
+import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
-import Model.User.Credentials;
-import Model.User.User;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.GET_messages;
@@ -143,5 +141,33 @@ public class TestHTTPMethods_User {
 
         String response = textBuilder.toString();
         assertEquals("Basic kienboec-mtcgToken",response);
+    }
+
+
+    @Test
+    @Order(2)
+    @DisplayName("Test Login User Fail")
+    void testLoginUserFail() throws IOException{
+
+        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"different\"}";
+
+
+        while (!ready);
+
+        Process process = Runtime.getRuntime().exec(command);
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String response = textBuilder.toString();
+        assertEquals("",response);
     }
 }

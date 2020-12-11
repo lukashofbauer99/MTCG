@@ -1,13 +1,8 @@
 package UnitTests.Domain.User;
 
-import Domain.User.InMemoryUserRepository;
+import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
-import Model.Cards.CardPacks.AutoGenCardPack;
-import Model.Cards.CardPacks.PackType;
-import Model.Cards.Vendor.IVendor;
-import Model.Cards.Vendor.NormalVendor;
 import Model.User.Credentials;
-import Model.User.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

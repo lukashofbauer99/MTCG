@@ -32,8 +32,7 @@ public class NormalTradeCardRequirements implements ITradeCardRequirements {
             getAllEffects(card.getAttackEffect());
             getAllEffects(card.getDefendEffect());
 
-            getAllRaces(((MonsterCard)card).getAttackRace());
-            getAllRaces(((MonsterCard)card).getDefendRace());
+            getAllRaces(((MonsterCard)card).getRace());
             if(!effectsOnCard.contains(effect)||!raceOnCard.contains(race))
             {
                 return false;
