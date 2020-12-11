@@ -1,5 +1,13 @@
 package IntegrationTests;
 
+import Domain.Cards.InMemory.InMemoryACardRepository;
+import Domain.Cards.InMemory.InMemoryCardPackRepository;
+import Domain.Cards.InMemory.InMemoryIEffectRepository;
+import Domain.Cards.InMemory.InMemoryIRaceRepository;
+import Domain.Cards.Interfaces.IACardRepository;
+import Domain.Cards.Interfaces.ICardPackRepository;
+import Domain.Cards.Interfaces.IEffectRepository;
+import Domain.Cards.Interfaces.IRaceRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
@@ -7,6 +15,7 @@ import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.GET_messages;
 import Service.RESTServer.Service.Methods.GET.GET_messages_Id;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
+import Service.RESTServer.Service.Methods.POST.POST_NormalPackages;
 import Service.RESTServer.Service.Methods.POST.POST_messages;
 import Service.RESTServer.Service.Methods.POST.POST_sessions;
 import Service.RESTServer.Service.Methods.POST.POST_users;
@@ -30,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //Start whole test class otherwise the Tests will fail
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class TestHTTPMethods_User {
+public class TestHTTPMethods_ACardPack {
 
     String command = "";
     String command2= "";
@@ -48,9 +57,12 @@ public class TestHTTPMethods_User {
 
     @BeforeAll
     static void setUp() {
-        methods.add(new POST_users(userRepo));
-        methods.add(new POST_sessions(userRepo));
+        ICardPackRepository cardPackRepo=new InMemoryCardPackRepository();
+        IACardRepository cardRepo=new InMemoryACardRepository();
+        IEffectRepository effectRepository= new InMemoryIEffectRepository();
+        IRaceRepository raceRepository= new InMemoryIRaceRepository();
 
+        methods.add(new POST_NormalPackages(cardPackRepo,cardRepo,effectRepository,raceRepository));
 
         workerThread = new Thread(()-> {
             try {
@@ -84,15 +96,15 @@ public class TestHTTPMethods_User {
 
     @Test
     @Order(1)
-    @DisplayName("Test Create User")
-    void testCreateUser() throws IOException {
+    @DisplayName("Test Create NormalPackage")
+    void testCreateNormalPackage() throws IOException {
 
         //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
-        command = "curl -X POST http://localhost:10001/users -H \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
+        command= "curl -X POST http://localhost:10001/packages --header \"Content-Type: application/json\" -d [{\"@type\":\"Monster\",\"Id\":\"845f0dc7-37d0-426e-994e-43fc3ac83c08\",\"Name\":\"WaterGoblin\",\"Damage\":10.0},{\"@type\":\"Monster\",\"Id\":\"99f8f8dc-e25e-4a95-aa2c-782823f36e2a\",\"Name\":\"Dragon\",\"Damage\":50.0},{\"@type\":\"Spell\",\"Id\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\",\"Name\":\"WaterSpell\",\"Damage\":20.0},{\"@type\":\"Monster\",\"Id\":\"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\",\"Name\":\"Ork\",\"Damage\":45.0},{\"@type\":\"Spell\",\"Id\":\"dfdd758f-649c-40f9-ba3a-8657f4b3439f\",\"Name\":\"FireSpell\",\"Damage\":25.0}]E";
+
         while (!ready) {
             Thread.onSpinWait();
         }
-
         Process process = Runtime.getRuntime().exec(command);
 
         StringBuilder textBuilder = new StringBuilder();
@@ -109,65 +121,5 @@ public class TestHTTPMethods_User {
         String response = textBuilder.toString();
 
         assertEquals("1",response);
-    }
-
-
-    @Test
-    @Order(2)
-    @DisplayName("Test Login User")
-    void testLoginUser() throws IOException{
-
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
-
-
-        while (!ready) {
-            Thread.onSpinWait();
-        }
-
-        Process process = Runtime.getRuntime().exec(command);
-
-        StringBuilder textBuilder = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader
-                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
-            int c;
-            while ((c = reader.read()) != -1) {
-                textBuilder.append((char) c);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String response = textBuilder.toString();
-        assertEquals("Basic kienboec-mtcgToken",response);
-    }
-
-
-    @Test
-    @Order(2)
-    @DisplayName("Test Login User Fail")
-    void testLoginUserFail() throws IOException{
-
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"different\"}";
-
-
-        while (!ready) {
-            Thread.onSpinWait();
-        }
-
-        Process process = Runtime.getRuntime().exec(command);
-
-        StringBuilder textBuilder = new StringBuilder();
-        try (Reader reader = new BufferedReader(new InputStreamReader
-                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
-            int c;
-            while ((c = reader.read()) != -1) {
-                textBuilder.append((char) c);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String response = textBuilder.toString();
-        assertEquals("",response);
     }
 }

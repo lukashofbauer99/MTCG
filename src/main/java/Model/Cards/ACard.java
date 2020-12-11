@@ -1,7 +1,6 @@
 package Model.Cards;
 
 import Model.Battle.State;
-import Model.Cards.Effects_Races.Effects.AEffect;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,9 +14,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 //region JsonConfig
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MonsterCard.class, name = "Monster"),
 
@@ -26,23 +26,16 @@ import lombok.Setter;
 //endregion
 public abstract class ACard {
 
-    @Setter
     String id;
     String name;
     double damage;
-
-    //Example water shield and fire sword
-    @Setter
-    IEffect attackEffect= new BaseEffect();
-    @Setter
-    IEffect defendEffect= new BaseEffect(); //TODO: ENTWEDER State bei affect hinzufügen oder defenseEffect entfernen
+    IEffect effect;
 
 
-    public ACard(String name, double damage, IEffect attackEffect, IEffect defendEffect) {
+    public ACard(String name, double damage, IEffect effect) {
         this.name = name;
         this.damage = damage;
-        this.attackEffect = attackEffect;
-        this.defendEffect = defendEffect;
+        this.effect = effect;
     }
 
     public abstract double calcDamage(State state, ACard oppenentCard);

@@ -13,10 +13,6 @@ public class WizardRace extends ABaseRace {
     @Override
     public double affect(ACard thisCard, ACard opponentCard, State state) {
 
-        if(opponentCard.getClass()== MonsterCard.class)
-            if(((MonsterCard) opponentCard).getRace().getClass()== DragonRace.class)
-                return 0;
-
         return thisCard.getDamage();
     }
 }

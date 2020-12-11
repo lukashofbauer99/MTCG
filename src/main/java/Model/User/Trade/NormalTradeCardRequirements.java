@@ -29,26 +29,17 @@ public class NormalTradeCardRequirements implements ITradeCardRequirements {
             return false;
         if(card.getClass()== MonsterCard.class)
         {
-            getAllEffects(card.getAttackEffect());
-            getAllEffects(card.getDefendEffect());
+            getAllEffects(card.getEffect());
 
             getAllRaces(((MonsterCard)card).getRace());
-            if(!effectsOnCard.contains(effect)||!raceOnCard.contains(race))
-            {
-                return false;
-            }
+            return effectsOnCard.contains(effect) && raceOnCard.contains(race);
         }
         else if(card.getClass()== SpellCard.class) {
-            getAllEffects(card.getAttackEffect());
-            getAllEffects(card.getDefendEffect());
-            if(!effectsOnCard.contains(effect))
-            {
-                return false;
-            }
+            getAllEffects(card.getEffect());
+            return effectsOnCard.contains(effect);
         }
         else
             return false;
-        return true;
     }
 
     void getAllEffects(IEffect curEffect)

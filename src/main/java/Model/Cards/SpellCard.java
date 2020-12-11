@@ -10,24 +10,16 @@ import lombok.NoArgsConstructor;
 public class SpellCard extends ACard {
 
     public SpellCard(String name, double damage, IEffect effect) {
-        super(name, damage, effect, effect);
+        super(name, damage, effect);
     }
 
     public SpellCard(String name, double damage, AEffect attackEffect, AEffect defendEffect) {
-        super(name, damage, attackEffect, defendEffect);
+        super(name, damage, attackEffect);
     }
 
     @Override
     public double calcDamage(State state, ACard oppenentCard) {
-
-        if (state == State.ATTACK) {
-            return this.attackEffect.affect(this, oppenentCard);
-        } else {
-            if (state == State.DEFEND) {
-                return this.defendEffect.affect(this, oppenentCard);
-            } else
-                throw new IllegalArgumentException(); //no allowed State
+            return this.effect.affect(this, oppenentCard);
         }
 
-    }
 }

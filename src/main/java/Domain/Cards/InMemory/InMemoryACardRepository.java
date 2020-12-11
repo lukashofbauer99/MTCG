@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryACardRepository implements IACardRepository {
 
     ConcurrentMap<String,ACard> cards = new ConcurrentHashMap<>();
-    Long currentID=1l;
+    Long currentID= 1L;
 
 
     @Override
@@ -29,7 +29,7 @@ public class InMemoryACardRepository implements IACardRepository {
     public synchronized String persistEntityGenNoId(ACard entity) {
         if (!cards.containsKey(entity.getId())) {
             cards.put(entity.getId(), entity);
-            return entity.getId().toString();
+            return entity.getId();
         }
         return null;
     }
@@ -61,7 +61,7 @@ public class InMemoryACardRepository implements IACardRepository {
 
     @Override
     public List<ACard> getAllEntities() {
-        return new ArrayList<ACard>(cards.values());
+        return new ArrayList<>(cards.values());
     }
 
 }

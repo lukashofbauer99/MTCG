@@ -21,9 +21,9 @@ public class NormalEffect extends AEffect {
                 return 0;
             }
         }
-        if(opponentCard.getAttackEffect().getClass()== WaterEffect.class)
+        if(opponentCard.getEffect().getClass()== WaterEffect.class)
             return super.base.affect(thisCard,opponentCard)*2;
-        if(opponentCard.getAttackEffect().getClass()== FireEffect.class)
+        if(opponentCard.getEffect().getClass()== FireEffect.class)
             return super.base.affect(thisCard,opponentCard)/2;
 
         return thisCard.getDamage();

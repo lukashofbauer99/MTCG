@@ -94,16 +94,16 @@ public class TestFightRound {
     @DisplayName("Fire Dragon vs Water Goblin Fight Round")
     void test_FireDVsWaterG_FightRound() {
         // arrange
-        attackingCard =new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace));
-        defendingCard =new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace));
+        attackingCard =new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace));
+        defendingCard =new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace));
         int damageCalculated;
 
         // act
         round.fight(attackingCard, defendingCard);
 
         // assert
-        assertEquals(round.getWinner(), attackingCard);
-        assertEquals(round.getLooser(), defendingCard);
+        assertEquals(round.getWinner(), defendingCard);
+        assertEquals(round.getLooser(), attackingCard);
     }
 
 }

@@ -54,17 +54,10 @@ public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
     // Just to make the given curls work, better way is to have the effect/race objects in the card object in the curl
     void addEffectsAndRaceDependingOnName(ACard card)
     {
-        effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).forEach(
-                x->{
-                    card.setAttackEffect(x);
-                    card.setDefendEffect(x);
-                });
+        card.setEffect(effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(effectRepository.getIEffectWithName("normal")));
         if(card.getClass()== MonsterCard.class)
         {
-            raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).forEach(
-                    x->{
-                        ((MonsterCard) card).setRace(x);
-                    });
+            ((MonsterCard)card).setRace( raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));
         }
     }
 

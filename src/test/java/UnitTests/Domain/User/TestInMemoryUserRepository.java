@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TestInMemoryUserRepository {
@@ -34,7 +33,7 @@ public class TestInMemoryUserRepository {
         Long id = userRepository.persistEntity(userA);
 
         // assert
-        assertEquals(0,id);
+        assertEquals(1,id);
     }
 
     @Test
@@ -43,7 +42,7 @@ public class TestInMemoryUserRepository {
         // arrange
         userRepository.persistEntity(userA);
         // act
-        User foundUser = userRepository.findEntity(0l);
+        User foundUser = userRepository.findEntity(1L);
 
         // assert
         assertEquals(userA, foundUser);
@@ -57,10 +56,10 @@ public class TestInMemoryUserRepository {
         userA.getCredentials().setUsername("newName");
         // act
         boolean works = userRepository.updateEntity(userA);
-        User foundUser = userRepository.findEntity(0l);
+        User foundUser = userRepository.findEntity(1L);
 
         // assert
-        assertEquals(true, works);
+        assertTrue(works);
         assertEquals(userA.getCredentials().getUsername(), foundUser.getCredentials().getUsername());
 
     }
@@ -74,7 +73,7 @@ public class TestInMemoryUserRepository {
         boolean works = userRepository.updateEntity(userA);
 
         // assert
-        assertEquals(false, works);
+        assertFalse(works);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class TestInMemoryUserRepository {
 
 
         // assert
-        assertEquals(true, works);
+        assertTrue(works);
         assertNull(foundUser);
     }
 
@@ -99,10 +98,10 @@ public class TestInMemoryUserRepository {
         // arrange
 
         // act
-        boolean works= userRepository.deleteEntity(0l);
+        boolean works= userRepository.deleteEntity(0L);
 
         // assert
-        assertEquals(false, works);
+        assertFalse(works);
     }
 
     @Test
@@ -125,7 +124,7 @@ public class TestInMemoryUserRepository {
         String token= userRepository.loginUser(userA.getCredentials());
 
         // assert
-        assertEquals(null, token);
+        assertNull(token);
     }
 
 }

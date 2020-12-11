@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryIEffectRepository implements IEffectRepository {
 
     ConcurrentMap<Long,IEffect> effects = new ConcurrentHashMap<>();
-    Long currentID=1l;
+    Long currentID= 1L;
 
     public InMemoryIEffectRepository() {
         IEffect base=new BaseEffect();
@@ -19,8 +19,6 @@ public class InMemoryIEffectRepository implements IEffectRepository {
         persistEntity(new FireEffect(base));
         persistEntity(new WaterEffect(base));
         persistEntity(new NormalEffect(base));
-        //TODO: TEST NormalEffect, look todo ACard
-
     }
 
     @Override
@@ -60,7 +58,11 @@ public class InMemoryIEffectRepository implements IEffectRepository {
 
     @Override
     public List<IEffect> getAllEntities() {
-        return new ArrayList<IEffect>(effects.values());
+        return new ArrayList<>(effects.values());
     }
 
+    @Override
+    public IEffect getIEffectWithName(String Name) {
+        return effects.values().stream().filter(x->x.getName().equals(Name.toLowerCase())).findFirst().orElse(null);
+    }
 }

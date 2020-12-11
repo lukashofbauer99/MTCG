@@ -43,9 +43,10 @@ public class POST_NormalPackages implements IHTTPMethod {
     @Override
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
-        List<ACard> cards = mapper.readValue(data.getPayload(), new TypeReference<List<ACard>>() {});
+        List<ACard> cards = mapper.readValue(data.getPayload(), new TypeReference<>() {
+        });
 
-        cards.forEach(x->addEffectsAndRaceDependingOnName(x));
+        cards.forEach(this::addEffectsAndRaceDependingOnName);
 
         Long id =cardPackRepository.persistEntity(new NormalCardPack(cards));
         responseContext.setPayload(String.valueOf(id));
@@ -60,17 +61,10 @@ public class POST_NormalPackages implements IHTTPMethod {
     // Just to make the given curls work, better way is to have the effect/race objects in the card object in the curl
     void addEffectsAndRaceDependingOnName(ACard card)
     {
-        effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).forEach(
-                x->{
-                    card.setAttackEffect(x);
-                    card.setDefendEffect(x);
-                });
+        card.setEffect(effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(effectRepository.getIEffectWithName("normal")));
         if(card.getClass()== MonsterCard.class)
         {
-            raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).forEach(
-                    x->{
-                        ((MonsterCard) card).setRace(x);
-                    });
+            ((MonsterCard)card).setRace( raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));
         }
     }
 }

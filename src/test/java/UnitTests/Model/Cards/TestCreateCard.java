@@ -34,7 +34,7 @@ public class TestCreateCard {
 
         // assert
 
-        assertEquals(createdCard.getAttackEffect(),baseEffect);
+        assertEquals(createdCard.getEffect(),baseEffect);
         assertEquals(createdCard.getDamage(),10);
         assertEquals(createdCard.getName(),"Spear Throw");
     }
@@ -49,7 +49,7 @@ public class TestCreateCard {
 
         // assert
 
-        assertEquals(createdCard.getAttackEffect().getBase(),baseEffect);
+        assertEquals(createdCard.getEffect().getBase(),baseEffect);
         assertEquals(createdCard.getDamage(),5);
         assertEquals(createdCard.getName(),"Ignite");
     }
@@ -65,7 +65,7 @@ public class TestCreateCard {
 
         // assert
 
-        assertEquals(createdCard.getAttackEffect().getBase().getBase().getBase().getBase(),baseEffect);
+        assertEquals(createdCard.getEffect().getBase().getBase().getBase().getBase(),baseEffect);
         assertEquals(createdCard.getDamage(),30);
         assertEquals(createdCard.getName(),"Meteor");
     }
@@ -82,7 +82,7 @@ public class TestCreateCard {
 
         // assert
 
-        assertEquals(createdCard.getAttackEffect(),baseEffect);
+        assertEquals(createdCard.getEffect(),baseEffect);
         assertEquals(((MonsterCard)createdCard).getRace(),baseRace);
         assertEquals(createdCard.getDamage(),7);
         assertEquals(createdCard.getName(),"Human Warrior");
@@ -100,7 +100,7 @@ public class TestCreateCard {
 
         // assert
 
-        assertEquals(createdCard.getAttackEffect().getBase(),baseEffect);
+        assertEquals(createdCard.getEffect().getBase(),baseEffect);
         assertEquals(((MonsterCard)createdCard).getRace().getBase(),baseRace);
         assertEquals(createdCard.getDamage(),15);
         assertEquals(createdCard.getName(),"Orc Fire Mage");

@@ -5,10 +5,7 @@ import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import Model.Cards.Effects_Races.Effects.WaterEffect;
-import Model.Cards.Effects_Races.Races.BaseRace;
-import Model.Cards.Effects_Races.Races.DragonRace;
-import Model.Cards.Effects_Races.Races.GoblinRace;
-import Model.Cards.Effects_Races.Races.IRace;
+import Model.Cards.Effects_Races.Races.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +15,18 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryIRaceRepository implements IRaceRepository {
 
     ConcurrentMap<Long, IRace> races = new ConcurrentHashMap<>();
-    Long currentID=1l;
+    Long currentID= 1L;
 
     public InMemoryIRaceRepository() {
         IRace base=new BaseRace();
         persistEntity(base);
         persistEntity(new GoblinRace(base));
         persistEntity(new DragonRace(base));
-        //TODO:add new Races here test them
+        persistEntity(new WizardRace(base));
+        persistEntity(new OrkRace(base));
+        persistEntity(new KrakenRace(base));
+        persistEntity(new FireElfRace(base));
+        persistEntity(new KnightRace(base));
     }
 
     @Override
@@ -65,7 +66,12 @@ public class InMemoryIRaceRepository implements IRaceRepository {
 
     @Override
     public List<IRace> getAllEntities() {
-        return new ArrayList<IRace>(races.values());
+        return new ArrayList<>(races.values());
+    }
+
+    @Override
+    public IRace getIRaceWithName(String Name) {
+        return races.values().stream().filter(x->x.getName().equals(Name.toLowerCase())).findFirst().orElse(null);
     }
 
 }
