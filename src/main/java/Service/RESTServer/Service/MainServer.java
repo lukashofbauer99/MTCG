@@ -1,15 +1,10 @@
 package Service.RESTServer.Service;
 
-import Domain.Cards.InMemory.InMemoryACardRepository;
-import Domain.Cards.InMemory.InMemoryCardPackRepository;
-import Domain.Cards.InMemory.InMemoryIEffectRepository;
-import Domain.Cards.InMemory.InMemoryIRaceRepository;
-import Domain.Cards.Interfaces.IACardRepository;
-import Domain.Cards.Interfaces.ICardPackRepository;
-import Domain.Cards.Interfaces.IEffectRepository;
-import Domain.Cards.Interfaces.IRaceRepository;
+import Domain.Cards.InMemory.*;
+import Domain.Cards.Interfaces.*;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
+import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.GET_messages;
@@ -36,11 +31,12 @@ public class MainServer implements Runnable {
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
         //repositories
-        IUserRepository userRepo=new InMemoryUserRepository();
-        ICardPackRepository cardPackRepo=new InMemoryCardPackRepository();
-        IACardRepository cardRepo=new InMemoryACardRepository();
+        IUserRepository userRepository=new InMemoryUserRepository();
+        ICardPackRepository cardPackRepository=new InMemoryCardPackRepository();
+        IACardRepository cardRepository=new InMemoryACardRepository();
         IEffectRepository effectRepository= new InMemoryIEffectRepository();
         IRaceRepository raceRepository= new InMemoryIRaceRepository();
+        IVendorRepository vendorRepository= new InMemoryIVendorRepository();
 
         //register Methods
         registeredMethods.add(new GET_messages());
@@ -49,10 +45,11 @@ public class MainServer implements Runnable {
         registeredMethods.add(new GET_messages_Id());
         registeredMethods.add(new POST_messages());
 
-        registeredMethods.add(new POST_NormalPackages(cardPackRepo,cardRepo,effectRepository,raceRepository));
-        registeredMethods.add(new POST_cards_Effects_RaceFromName(cardRepo,effectRepository,raceRepository));
-        registeredMethods.add(new POST_users(userRepo));
-        registeredMethods.add(new POST_sessions(userRepo));
+        registeredMethods.add(new POST_NormalPackages(cardPackRepository,cardRepository,effectRepository,raceRepository,vendorRepository));
+        registeredMethods.add(new POST_cards_Effects_RaceFromName(cardRepository,effectRepository,raceRepository));
+        registeredMethods.add(new POST_users(userRepository));
+        registeredMethods.add(new POST_sessions(userRepository));
+        registeredMethods.add(new POST_transaction_packages(userRepository,vendorRepository));
         registeredMethods.add(new NotFound());
 
 

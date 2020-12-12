@@ -57,7 +57,7 @@ public class TestInMemoryIRaceRepository {
     void testUpdateIRace() {
         // arrange
         Long id =effectRepository.persistEntity(iRaceA);
-
+        iRaceA = new FireElfRace(new BaseRace());
         iRaceA.setId(id);
         // act
         boolean works = effectRepository.updateEntity(iRaceA);

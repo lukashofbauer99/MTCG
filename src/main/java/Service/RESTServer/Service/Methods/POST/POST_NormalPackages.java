@@ -1,12 +1,11 @@
 package Service.RESTServer.Service.Methods.POST;
 
-import Domain.Cards.Interfaces.IACardRepository;
-import Domain.Cards.Interfaces.ICardPackRepository;
-import Domain.Cards.Interfaces.IEffectRepository;
-import Domain.Cards.Interfaces.IRaceRepository;
+import Domain.Cards.Interfaces.*;
 import Model.Cards.ACard;
+import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.NormalCardPack;
 import Model.Cards.MonsterCard;
+import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
@@ -24,10 +23,12 @@ public class POST_NormalPackages implements IHTTPMethod {
     IACardRepository cardRepository;
     IEffectRepository effectRepository;
     IRaceRepository raceRepository;
+    IVendorRepository vendorRepository;
     ObjectMapper mapper = new ObjectMapper();
 
 
-    public POST_NormalPackages(ICardPackRepository cardPackRepository, IACardRepository cardRepository,IEffectRepository effectRepository, IRaceRepository raceRepository) {
+    public POST_NormalPackages(ICardPackRepository cardPackRepository, IACardRepository cardRepository,IEffectRepository effectRepository, IRaceRepository raceRepository,IVendorRepository vendorRepository) {
+        this.vendorRepository=vendorRepository;
         this.raceRepository=raceRepository;
         this.effectRepository=effectRepository;
         this.cardPackRepository = cardPackRepository;
@@ -47,8 +48,12 @@ public class POST_NormalPackages implements IHTTPMethod {
         });
 
         cards.forEach(this::addEffectsAndRaceDependingOnName);
+        cards.forEach(x->cardRepository.persistEntityGenNoId(x));
+        ICardPack cardPack= new NormalCardPack(cards);
+        Long id =cardPackRepository.persistEntity(cardPack);
 
-        Long id =cardPackRepository.persistEntity(new NormalCardPack(cards));
+        vendorRepository.getAllEntities().stream().findFirst().ifPresent(vendor -> vendor.addICardPack(cardPack));
+
         responseContext.setPayload(String.valueOf(id));
 
         responseContext.setHttpStatusCode("HTTP/1.1 201");

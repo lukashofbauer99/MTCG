@@ -4,6 +4,8 @@ import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.PackType;
 import Model.User.User;
 import lombok.Getter;
+import lombok.Setter;
+import net.bytebuddy.implementation.auxiliary.AuxiliaryType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.Random;
 @Getter
 public class NormalVendor implements IVendor {
 
+    @Setter
+    Long id;
     private List<ICardPack> availibleCardPacks = new ArrayList<>();
 
 
@@ -42,4 +46,10 @@ public class NormalVendor implements IVendor {
         }
         return null;
     }
+
+    @Override
+    public void addICardPack(ICardPack cardPack) {
+        availibleCardPacks.add(cardPack);
+    }
+
 }

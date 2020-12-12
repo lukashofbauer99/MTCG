@@ -127,4 +127,17 @@ public class TestInMemoryUserRepository {
         assertNull(token);
     }
 
+
+    @Test
+    @DisplayName("get User With Token")
+    void testGetUserWithToken() {
+        userRepository.persistEntity(userA);
+        // act
+        String token= userRepository.loginUser(userA.getCredentials());
+        User user= userRepository.getUserWithToken("Basic " + userA.getCredentials().getUsername() + "-mtcgToken");
+
+        // assert
+        assertEquals(userA,user);
+    }
+
 }

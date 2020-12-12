@@ -18,7 +18,7 @@ public class InMemoryUserRepository implements IUserRepository {
 
     ConcurrentMap<Long,User> users= new ConcurrentHashMap<>();
     Map<String,User> usersInSession = new HashMap<>();
-    Long currentID=1l;
+    Long currentID= 1L;
 
 
     @Override
@@ -61,14 +61,14 @@ public class InMemoryUserRepository implements IUserRepository {
 
     @Override
     public List<User> getAllEntities() {
-        return new ArrayList<User>(users.values());
+        return new ArrayList<>(users.values());
     }
 
     @Override
     public String loginUser(Credentials cred) {
-        if(users.values().stream().map(x->x.getCredentials()).collect(toList()).contains(cred)) {
+        if(users.values().stream().map(User::getCredentials).collect(toList()).contains(cred)) {
             String sessionToken="Basic " + cred.getUsername() + "-mtcgToken";
-            if (!usersInSession.keySet().contains(sessionToken))
+            if (!usersInSession.containsKey(sessionToken))
             {
                 User us=users.values().stream().filter(x->x.getCredentials().equals(cred)).findAny().orElse(null);
                 usersInSession.put(sessionToken,us);
@@ -80,11 +80,20 @@ public class InMemoryUserRepository implements IUserRepository {
 
     @Override
     public List<ACard> showCardsOfUser(String token) {
-        if(usersInSession.keySet().contains(token))
+        if(usersInSession.containsKey(token))
         {
             List<ACard> cardsOfUser= usersInSession.get(token).getStack().getCards();
             cardsOfUser.addAll(usersInSession.get(token).getDeck().getCards());
             return cardsOfUser;
+        }
+        return null;
+    }
+
+    @Override
+    public User getUserWithToken(String token) {
+        if(usersInSession.containsKey(token))
+        {
+            return usersInSession.get(token);
         }
         return null;
     }

@@ -12,5 +12,6 @@ public interface IUserRepository extends IRepository<User, Long> {
     String loginUser(Credentials cred);
 
     List<ACard> showCardsOfUser(String token);
+    User getUserWithToken(String token);
 
 }

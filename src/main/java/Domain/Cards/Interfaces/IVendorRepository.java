@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface IVendorRepository extends IRepository<IVendor, Long> {
 
-    List<ACard> findCardsOfUser(String Username);
 }
