@@ -36,13 +36,13 @@ public class NormalVendor implements IVendor {
     @Override
     public ICardPack buyCards(User user) {
         Random rand = new Random();
-        ICardPack cardPack = availibleCardPacks.get(rand.nextInt(availibleCardPacks.size()));
-        if(cardPack!=null) {
-            if (user.getCoins() >= cardPack.getCosts()) {
-                user.setCoins(user.getCoins() - cardPack.getCosts());
-                availibleCardPacks.remove(cardPack);
-                return cardPack;
-            }
+        if(availibleCardPacks.size()!=0) {
+            ICardPack cardPack = availibleCardPacks.stream().findFirst().orElse(null);
+                if (user.getCoins() >= cardPack.getCosts()) {
+                    user.setCoins(user.getCoins() - cardPack.getCosts());
+                    availibleCardPacks.remove(cardPack);
+                    return cardPack;
+                }
         }
         return null;
     }

@@ -1,7 +1,6 @@
 package Model.Cards;
 
 import Model.Battle.State;
-import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -20,7 +19,6 @@ import lombok.Setter;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MonsterCard.class, name = "Monster"),
-
         @JsonSubTypes.Type(value = SpellCard.class, name = "Spell") }
 )
 //endregion

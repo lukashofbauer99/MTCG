@@ -3,7 +3,9 @@ package Model.Cards.Effects_Races.Races;
 import Model.Battle.State;
 import Model.Cards.ACard;
 import Model.Cards.MonsterCard;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class OrkRace extends ABaseRace {
     public OrkRace(IRace race) {
         super.base=race;

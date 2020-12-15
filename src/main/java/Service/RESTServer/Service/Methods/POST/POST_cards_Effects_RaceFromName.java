@@ -13,6 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+
 public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
 
     IACardRepository cardRepository;
@@ -36,9 +38,15 @@ public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
+    public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
-        ACard card = mapper.readValue(data.getPayload(), ACard.class);
+        ACard card = null;
+        try {
+            card = mapper.readValue(data.getPayload(), ACard.class);
+        } catch (JsonProcessingException e) {
+            responseContext.setPayload("Invalid form of data");
+        }
+
         addEffectsAndRaceDependingOnName(card);
 
         String id =cardRepository.persistEntity(card);
@@ -46,7 +54,7 @@ public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
 
         responseContext.setHttpStatusCode("HTTP/1.1 201");
         responseContext.getHeaders().put("Connection", "close");
-        responseContext.getHeaders().put("Content-Length", String.valueOf(id.length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(responseContext.getPayload().length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }
@@ -54,7 +62,12 @@ public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
     // Just to make the given curls work, better way is to have the effect/race objects in the card object in the curl
     void addEffectsAndRaceDependingOnName(ACard card)
     {
-        card.setEffect(effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(effectRepository.getIEffectWithName("normal")));
+        card.setEffect(effectRepository.getAllEntities()
+                .stream()
+                .filter(x->card.getName().toLowerCase().contains(x.getName()))
+                .findFirst()
+                .orElse(effectRepository.getIEffectWithName("normal")));
+
         if(card.getClass()== MonsterCard.class)
         {
             ((MonsterCard)card).setRace( raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));

@@ -4,7 +4,9 @@ import Model.Battle.State;
 import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.WaterEffect;
 import Model.Cards.SpellCard;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class KnightRace extends ABaseRace {
     public KnightRace(IRace race) {
         super.base=race;

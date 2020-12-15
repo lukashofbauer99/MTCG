@@ -2,10 +2,6 @@ package Service.RESTServer.Service.Methods.GET;
 
 import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
-import Model.User.Deck;
-import Service.RESTServer.Domain.IRepository;
-import Service.RESTServer.Domain.MessageRepository;
-import Service.RESTServer.Model.Message;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
@@ -19,25 +15,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
-public class GET_deck implements IHTTPMethod {
+public class GET_cards implements IHTTPMethod {
 
-    ObjectMapper mapper = new ObjectMapper();
     IUserRepository userRepository;
 
-    public GET_deck(IUserRepository userRepository) {
+    public GET_cards(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+
+    ObjectMapper mapper = new ObjectMapper();
+
     @Override
     public Boolean analyse(IRequestContext data) {
-        return data.getHttpVerb_Res().startsWith("GET /deck ");
+        return data.getHttpVerb_Res().startsWith("GET /cards ");
     }
 
     @Override
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
-        responseContext.setPayload(mapper.writerFor(new TypeReference<Deck>() { })
-                .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization"))));
+
+        responseContext.setPayload(mapper.writerFor(new TypeReference<List<ACard>>() { })
+                .writeValueAsString(userRepository.getCardsOfUserWithToken(data.getHeaders().get("Authorization"))));
 
         responseContext.setHttpStatusCode("HTTP/1.1 200");
         responseContext.getHeaders().put("Connection", "close");

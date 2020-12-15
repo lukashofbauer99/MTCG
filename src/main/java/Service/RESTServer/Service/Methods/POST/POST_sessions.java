@@ -10,6 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+
 public class POST_sessions implements IHTTPMethod {
 
     public POST_sessions(IUserRepository userRepository) {
@@ -26,19 +28,27 @@ public class POST_sessions implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
+    public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
-        Credentials cred = mapper.readValue(data.getPayload(), Credentials.class);
+        Credentials cred = null;
+        try {
+            cred = mapper.readValue(data.getPayload(), Credentials.class);
+        } catch (JsonProcessingException e) {
+            responseContext.setPayload("Invalid form of Data");
+        }
+
         String sessionToken =userRepository.loginUser(cred);
         if(sessionToken!=null) {
             responseContext.setPayload(sessionToken);
             responseContext.setHttpStatusCode("HTTP/1.1 200");
         }
-        else
+        else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
+            responseContext.setPayload("Invalid Credentials or already logged in");
+        }
 
         responseContext.getHeaders().put("Connection", "close");
-        responseContext.getHeaders().put("Content-Length", String.valueOf(String.valueOf(sessionToken).length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(responseContext.getPayload().length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }

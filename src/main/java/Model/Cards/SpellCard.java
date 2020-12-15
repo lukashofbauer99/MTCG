@@ -3,10 +3,15 @@ package Model.Cards;
 import Model.Battle.State;
 import Model.Cards.Effects_Races.Effects.AEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @NoArgsConstructor
+@Getter
+@Setter
 public class SpellCard extends ACard {
 
     public SpellCard(String name, double damage, IEffect effect) {

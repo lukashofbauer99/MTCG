@@ -11,6 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
+
 public class POST_users implements IHTTPMethod {
 
     IUserRepository userRepository;
@@ -27,15 +29,24 @@ public class POST_users implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
+    public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
-        Credentials cred = mapper.readValue(data.getPayload(), Credentials.class);
+        Credentials cred = null;
+        try {
+            cred = mapper.readValue(data.getPayload(), Credentials.class);
+        } catch (JsonProcessingException e) {
+            responseContext.setPayload("Invalid form of Data");
+        }
         Long id =userRepository.persistEntity(new User(cred));
-        responseContext.setPayload(String.valueOf(id));
+        if (id!=null) {
+            responseContext.setPayload(String.valueOf(id));
+        }
+        else
+            responseContext.setPayload("User already Exists");
 
         responseContext.setHttpStatusCode("HTTP/1.1 201");
         responseContext.getHeaders().put("Connection", "close");
-        responseContext.getHeaders().put("Content-Length", String.valueOf(String.valueOf(id).length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(responseContext.getPayload().length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }

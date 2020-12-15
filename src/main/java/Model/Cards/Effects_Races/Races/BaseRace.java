@@ -2,6 +2,7 @@ package Model.Cards.Effects_Races.Races;
 
 import Model.Battle.State;
 import Model.Cards.ACard;
+import lombok.NoArgsConstructor;
 
 public class BaseRace extends ABaseRace {
     public BaseRace() {

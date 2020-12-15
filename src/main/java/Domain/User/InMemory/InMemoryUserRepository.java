@@ -3,6 +3,7 @@ package Domain.User.InMemory;
 import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
 import Model.User.Credentials;
+import Model.User.Deck;
 import Model.User.User;
 
 import java.util.ArrayList;
@@ -79,12 +80,23 @@ public class InMemoryUserRepository implements IUserRepository {
     }
 
     @Override
-    public List<ACard> showCardsOfUser(String token) {
-        if(usersInSession.containsKey(token))
+    public List<ACard> getCardsOfUserWithToken(String token) {
+        User user = getUserWithToken(token);
+        if(user!=null)
         {
-            List<ACard> cardsOfUser= usersInSession.get(token).getStack().getCards();
-            cardsOfUser.addAll(usersInSession.get(token).getDeck().getCards());
+            List<ACard> cardsOfUser= user.getStack().getCards();
+            cardsOfUser.addAll(user.getDeck().getCards());
             return cardsOfUser;
+        }
+        return null;
+    }
+
+    @Override
+    public Deck getDeckOfUserWithToken(String token) {
+        User user = getUserWithToken(token);
+        if(user!=null)
+        {
+            return user.getDeck();
         }
         return null;
     }

@@ -4,16 +4,17 @@ import Model.Battle.State;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.IRace;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public class MonsterCard extends ACard {
 
-    @Setter
-    IRace race; //Goblin defend -> dragon -> dmg (* 1)
+    IRace race;
 
 
     public MonsterCard(String name, double damage, IEffect effect, IRace race) {

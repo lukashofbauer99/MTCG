@@ -4,7 +4,9 @@ import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Races.KrakenRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class FireEffect extends AEffect {
 
     public FireEffect(IEffect effect) {

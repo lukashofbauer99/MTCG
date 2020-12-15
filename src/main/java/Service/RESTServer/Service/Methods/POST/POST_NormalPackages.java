@@ -5,7 +5,6 @@ import Model.Cards.ACard;
 import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.NormalCardPack;
 import Model.Cards.MonsterCard;
-import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
+//TODO: create POST_NormalPackages_new with Authorisation
 public class POST_NormalPackages implements IHTTPMethod {
 
     ICardPackRepository cardPackRepository;
@@ -42,10 +42,14 @@ public class POST_NormalPackages implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
+    public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
-        List<ACard> cards = mapper.readValue(data.getPayload(), new TypeReference<>() {
-        });
+        List<ACard> cards = null;
+        try {
+            cards = mapper.readValue(data.getPayload(), new TypeReference<>() {});
+        } catch (JsonProcessingException e) {
+            responseContext.setPayload("Invalid form of Data");
+        }
 
         cards.forEach(this::addEffectsAndRaceDependingOnName);
         cards.forEach(x->cardRepository.persistEntityGenNoId(x));
@@ -58,7 +62,7 @@ public class POST_NormalPackages implements IHTTPMethod {
 
         responseContext.setHttpStatusCode("HTTP/1.1 201");
         responseContext.getHeaders().put("Connection", "close");
-        responseContext.getHeaders().put("Content-Length", String.valueOf(String.valueOf(id).length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(responseContext.getPayload().length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }
@@ -66,7 +70,12 @@ public class POST_NormalPackages implements IHTTPMethod {
     // Just to make the given curls work, better way is to have the effect/race objects in the card object in the curl
     void addEffectsAndRaceDependingOnName(ACard card)
     {
-        card.setEffect(effectRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(effectRepository.getIEffectWithName("normal")));
+        card.setEffect(effectRepository.getAllEntities()
+                .stream()
+                .filter(x->card.getName().toLowerCase().contains(x.getName()))
+                .findFirst()
+                .orElse(effectRepository.getIEffectWithName("normal")));
+
         if(card.getClass()== MonsterCard.class)
         {
             ((MonsterCard)card).setRace( raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));

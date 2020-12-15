@@ -35,6 +35,7 @@ public class POST_transaction_packages implements IHTTPMethod {
             IVendor vendor = vendorRepository.getAllEntities().stream().findFirst().orElse(null);
             if (vendor != null) {
                 if (user.buyCardPackage(vendor))
+                    userRepository.updateEntity(user);
                     responseContext.setHttpStatusCode("HTTP/1.1 201");
             }
         }

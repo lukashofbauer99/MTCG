@@ -11,6 +11,7 @@ public interface IResponseContext {
     Map<String,String> getHeaders();
 
     void setPayload(String payload);
+    String getPayload();
 
     void sendResponse(BufferedWriter writer) throws IOException;
 

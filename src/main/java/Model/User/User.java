@@ -13,6 +13,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Getter
@@ -68,35 +69,28 @@ public class User {
     }
 
 
-    private volatile Integer prevIndex = null;
-    private volatile Integer counter = 0;
 
-    public void defineDeck(int card1Index, int card2Index, int card3Index, int card4Index) {
-        List<Integer> indexList = new ArrayList<>();
-        indexList.add(card1Index);
-        indexList.add(card2Index);
-        indexList.add(card3Index);
-        indexList.add(card4Index);
-
-        if (indexList.stream().allMatch(x -> (x >= 0 && x < getStack().getCards().size()))) {
-            indexList.forEach(x -> {
-                if (prevIndex != null)
-                    if (prevIndex < x)
-                        counter++;
-                x = x - counter;
-                getDeck().getCards().add(getStack().getCards().get(x));
-                getStack().getCards().remove(getStack().getCards().get(x));
-                prevIndex = x;
-            });
-        }
+    public boolean defineDeck(List<ACard> cards) {
+       if (cards.size()==4)
+       {
+           AtomicBoolean cardsOwned= new AtomicBoolean(true);
+           cards.forEach(x-> {
+               if(!stack.cards.contains(x))
+                   cardsOwned.set(false);
+           });
+           if(cardsOwned.get()) {
+               deck.cards = cards;
+               return true;
+           }
+       }
+       return false;
     }
 
     //@Transaction
 
     public ITrade createTrade(User user, ACard cardToTrade, ITradeCardRequirements requirements) {
         if (stack.getCards().contains(cardToTrade)) {
-            ITrade trade = new Trade1To1(user, cardToTrade, requirements);
-            return trade;
+            return new Trade1To1(user, cardToTrade, requirements);
         } else return null;
     }
 
