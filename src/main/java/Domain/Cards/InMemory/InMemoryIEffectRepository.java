@@ -10,11 +10,11 @@ import java.util.concurrent.ConcurrentMap;
 
 public class InMemoryIEffectRepository implements IEffectRepository {
 
-    ConcurrentMap<Long,IEffect> effects = new ConcurrentHashMap<>();
-    Long currentID= 1L;
+    ConcurrentMap<Long, IEffect> effects = new ConcurrentHashMap<>();
+    Long currentID = 1L;
 
     public InMemoryIEffectRepository() {
-        IEffect base=new BaseEffect();
+        IEffect base = new BaseEffect();
         persistEntity(base);
         persistEntity(new FireEffect(base));
         persistEntity(new WaterEffect(base));
@@ -33,7 +33,7 @@ public class InMemoryIEffectRepository implements IEffectRepository {
 
     @Override
     public synchronized boolean updateEntity(IEffect entity) {
-        if(entity.getId()!=null) {
+        if (entity.getId() != null) {
             if (effects.containsKey(entity.getId())) {
                 effects.put(entity.getId(), entity);
                 return true;
@@ -49,7 +49,7 @@ public class InMemoryIEffectRepository implements IEffectRepository {
 
     @Override
     public synchronized boolean deleteEntity(Long id) {
-        if(effects.containsKey(id)) {
+        if (effects.containsKey(id)) {
             effects.remove(id);
             return true;
         }
@@ -63,6 +63,6 @@ public class InMemoryIEffectRepository implements IEffectRepository {
 
     @Override
     public IEffect getIEffectWithName(String Name) {
-        return effects.values().stream().filter(x->x.getName().equals(Name.toLowerCase())).findFirst().orElse(null);
+        return effects.values().stream().filter(x -> x.getName().equals(Name.toLowerCase())).findFirst().orElse(null);
     }
 }

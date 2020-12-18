@@ -1,6 +1,5 @@
 package Domain.Cards.InMemory;
 
-import Domain.Cards.Interfaces.IRaceRepository;
 import Domain.Cards.Interfaces.IVendorRepository;
 import Model.Cards.Vendor.IVendor;
 import Model.Cards.Vendor.NormalVendor;
@@ -13,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryIVendorRepository implements IVendorRepository {
 
     ConcurrentMap<Long, IVendor> vendors = new ConcurrentHashMap<>();
-    Long currentID= 1L;
+    Long currentID = 1L;
 
     public InMemoryIVendorRepository() {
         persistEntity(new NormalVendor());
@@ -31,7 +30,7 @@ public class InMemoryIVendorRepository implements IVendorRepository {
 
     @Override
     public synchronized boolean updateEntity(IVendor entity) {
-        if(entity.getId()!=null) {
+        if (entity.getId() != null) {
             if (vendors.containsKey(entity.getId())) {
                 vendors.put(entity.getId(), entity);
                 return true;
@@ -47,7 +46,7 @@ public class InMemoryIVendorRepository implements IVendorRepository {
 
     @Override
     public synchronized boolean deleteEntity(Long id) {
-        if(vendors.containsKey(id)) {
+        if (vendors.containsKey(id)) {
             vendors.remove(id);
             return true;
         }

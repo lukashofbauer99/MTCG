@@ -9,15 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class KnightRace extends ABaseRace {
     public KnightRace(IRace race) {
-        super.base=race;
+        super.base = race;
         super.name = "knight";
     }
 
     @Override
     public double affect(ACard thisCard, ACard opponentCard, State state) {
 
-        if(opponentCard.getClass()== SpellCard.class)
-            if(opponentCard.getEffect().getClass()== WaterEffect.class)
+        if (opponentCard.getClass() == SpellCard.class)
+            if (opponentCard.getEffect().getClass() == WaterEffect.class)
                 return 0;
 
         return thisCard.getDamage();

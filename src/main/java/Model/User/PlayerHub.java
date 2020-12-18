@@ -16,24 +16,23 @@ public class PlayerHub {
 
     private List<User> battleSearchingUsers = new ArrayList<>();
 
-    public void registerForMatchmaking(User user){
+    public void registerForMatchmaking(User user) {
         battleSearchingUsers.add(user);
     }
 
     public void matchPlayers() {
 
 
-        if (battleSearchingUsers.size()<2) {
-            List<Pair<User,Integer>> mmrCalclist= new ArrayList<>();
+        if (battleSearchingUsers.size() < 2) {
+            List<Pair<User, Integer>> mmrCalclist = new ArrayList<>();
             User matchedUser = battleSearchingUsers.get(0);
-            battleSearchingUsers.forEach(x-> mmrCalclist.add(new Pair<>(x, abs(matchedUser.mmr-x.mmr))));
+            battleSearchingUsers.forEach(x -> mmrCalclist.add(new Pair<>(x, abs(matchedUser.mmr - x.mmr))));
 
             User matchedUser2 = mmrCalclist.stream().min(Comparator.comparing(Pair::getValue1)).orElse(null).getValue0();
 
-            Battle battle = new Battle(matchedUser,matchedUser2);
+            Battle battle = new Battle(matchedUser, matchedUser2);
             battle.Start();
-        }
-        else
+        } else
             ;//not enough users;
 
     }

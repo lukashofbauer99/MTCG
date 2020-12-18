@@ -8,6 +8,7 @@ import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 
@@ -29,18 +30,17 @@ public class GET_deck_plain implements IHTTPMethod {
     @Override
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
-        if(userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
+        if (userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
             responseContext.setPayload(
-                    mapper.writerFor(new TypeReference<Deck>() {
-                    })
+                    mapper.writerFor(new TypeReference<Deck>() {})
+                            .with(new DefaultPrettyPrinter())
                             .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization")))
                             .replace("{", "")
                             .replace("}", "")
                             .replace(":", "=")
                             .replace("\"", "")
             );
-        }
-        else {
+        } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Not logged In");
         }

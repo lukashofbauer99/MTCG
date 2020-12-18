@@ -2,9 +2,6 @@ package Model.Cards.Effects_Races.Races;
 
 import Model.Battle.State;
 import Model.Cards.ACard;
-import Model.Cards.Effects_Races.Effects.BaseEffect;
-import Model.Cards.Effects_Races.Effects.FireEffect;
-import Model.Cards.Effects_Races.Effects.WaterEffect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -27,8 +24,12 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public interface IRace {
 
     Long getId();
+
     void setId(Long id);
+
     String getName();
+
     double affect(ACard thisCard, ACard opponentCard, State state);
+
     IRace getBase();
 }

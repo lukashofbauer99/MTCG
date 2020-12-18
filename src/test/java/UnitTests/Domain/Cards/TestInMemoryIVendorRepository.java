@@ -4,8 +4,6 @@ import Domain.Cards.InMemory.InMemoryIVendorRepository;
 import Domain.Cards.Interfaces.IVendorRepository;
 import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.NormalCardPack;
-import Model.Cards.Effects_Races.Races.BaseRace;
-import Model.Cards.Effects_Races.Races.FireElfRace;
 import Model.Cards.Vendor.IVendor;
 import Model.Cards.Vendor.NormalVendor;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,13 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestInMemoryIVendorRepository {
 
 
-    IVendor iVendorA =new NormalVendor();
+    IVendor iVendorA = new NormalVendor();
 
     IVendorRepository vendorRepository = new InMemoryIVendorRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
+    void cleanUpRepo() {
         vendorRepository = new InMemoryIVendorRepository();
     }
 
@@ -59,7 +56,7 @@ public class TestInMemoryIVendorRepository {
         // arrange
         Long id = vendorRepository.persistEntity(iVendorA);
 
-        ICardPack cardPack= new NormalCardPack(null);
+        ICardPack cardPack = new NormalCardPack(null);
         iVendorA.addICardPack(cardPack);
 
         iVendorA.setId(id);
@@ -77,7 +74,7 @@ public class TestInMemoryIVendorRepository {
     @DisplayName("Update IVendor Wrong ID")
     void testUpdateUserWrongId() {
         // arrange
-        ICardPack cardPack= new NormalCardPack(null);
+        ICardPack cardPack = new NormalCardPack(null);
         iVendorA.addICardPack(cardPack);
         // act
         boolean works = vendorRepository.updateEntity(iVendorA);
@@ -93,7 +90,7 @@ public class TestInMemoryIVendorRepository {
         Long id = vendorRepository.persistEntity(iVendorA);
 
         // act
-        boolean works= vendorRepository.deleteEntity(id);
+        boolean works = vendorRepository.deleteEntity(id);
         IVendor foundIVendor = vendorRepository.findEntity(id);
 
 
@@ -108,7 +105,7 @@ public class TestInMemoryIVendorRepository {
         // arrange
 
         // act
-        boolean works= vendorRepository.deleteEntity(50000L);
+        boolean works = vendorRepository.deleteEntity(50000L);
 
         // assert
         assertFalse(works);

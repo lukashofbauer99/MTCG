@@ -4,7 +4,6 @@ import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
-import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.*;
@@ -16,7 +15,7 @@ import Service.RESTServer.Service.Methods.PUT.PUT_users_name;
 import Service.RESTServer.Service.Socket.IMySocket;
 import Service.RESTServer.Service.Socket.MySocket;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +31,12 @@ public class MainServer implements Runnable {
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
         //repositories
-        IUserRepository userRepository=new InMemoryUserRepository();
-        ICardPackRepository cardPackRepository=new InMemoryCardPackRepository();
-        IACardRepository cardRepository=new InMemoryACardRepository();
-        IEffectRepository effectRepository= new InMemoryIEffectRepository();
-        IRaceRepository raceRepository= new InMemoryIRaceRepository();
-        IVendorRepository vendorRepository= new InMemoryIVendorRepository();
+        IUserRepository userRepository = new InMemoryUserRepository();
+        ICardPackRepository cardPackRepository = new InMemoryCardPackRepository();
+        IACardRepository cardRepository = new InMemoryACardRepository();
+        IEffectRepository effectRepository = new InMemoryIEffectRepository();
+        IRaceRepository raceRepository = new InMemoryIRaceRepository();
+        IVendorRepository vendorRepository = new InMemoryIVendorRepository();
 
         //register Methods
         registeredMethods.add(new GET_messages());
@@ -47,17 +46,19 @@ public class MainServer implements Runnable {
         registeredMethods.add(new POST_messages());
 
 
+        registeredMethods.add(new GET_score(userRepository));
+        registeredMethods.add(new GET_stats(userRepository));
         registeredMethods.add(new PUT_users_name(userRepository));
         registeredMethods.add(new GET_user_name(userRepository));
         registeredMethods.add(new GET_deck_plain(userRepository));
-        registeredMethods.add(new PUT_deck(userRepository,cardRepository));
+        registeredMethods.add(new PUT_deck(userRepository, cardRepository));
         registeredMethods.add(new GET_deck(userRepository));
         registeredMethods.add(new GET_cards(userRepository));
-        registeredMethods.add(new POST_NormalPackages(cardPackRepository,cardRepository,effectRepository,raceRepository,vendorRepository));
-        registeredMethods.add(new POST_cards_Effects_RaceFromName(cardRepository,effectRepository,raceRepository));
+        registeredMethods.add(new POST_NormalPackages(cardPackRepository, cardRepository, effectRepository, raceRepository, vendorRepository));
+        registeredMethods.add(new POST_cards_Effects_RaceFromName(cardRepository, effectRepository, raceRepository));
         registeredMethods.add(new POST_users(userRepository));
         registeredMethods.add(new POST_sessions(userRepository));
-        registeredMethods.add(new POST_transaction_packages(userRepository,vendorRepository));
+        registeredMethods.add(new POST_transaction_packages(userRepository, vendorRepository));
         registeredMethods.add(new NotFound());
 
 
@@ -75,7 +76,7 @@ public class MainServer implements Runnable {
             try {
                 IMySocket s = new MySocket(_listener.accept());
                 //Start Thread for Connection
-                new Thread(new WorkerThread(s,registeredMethods)).start();
+                new Thread(new WorkerThread(s, registeredMethods)).start();
 
 
             } catch (IOException e) {

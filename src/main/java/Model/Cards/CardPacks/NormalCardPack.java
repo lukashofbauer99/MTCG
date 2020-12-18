@@ -9,7 +9,7 @@ import java.util.Random;
 @Getter
 public class NormalCardPack extends ACardPackFixedSizeAndCost {
 
-    PackType packType= PackType.Normal;
+    PackType packType = PackType.Normal;
 
     Random rand = new Random();
 

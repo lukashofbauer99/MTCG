@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TestDefineDeck {
-    User userA= new User();
+    User userA = new User();
 
     @Mock
     List<ACard> cards;
@@ -42,7 +42,7 @@ public class TestDefineDeck {
         userA.getStack().getCards().add(cardC);
         userA.getStack().getCards().add(cardD);
 
-        List<ACard> cardstoAdd= new ArrayList<>();
+        List<ACard> cardstoAdd = new ArrayList<>();
         cards.add(cardA);
         cards.add(cardB);
         cards.add(cardC);
@@ -68,7 +68,7 @@ public class TestDefineDeck {
         userA.getStack().getCards().add(cardC);
         userA.getStack().getCards().add(cardD);
 
-        List<ACard> cardstoAdd= new ArrayList<>();
+        List<ACard> cardstoAdd = new ArrayList<>();
         cardstoAdd.add(cardA);
         cardstoAdd.add(cardB);
         cardstoAdd.add(cardC);

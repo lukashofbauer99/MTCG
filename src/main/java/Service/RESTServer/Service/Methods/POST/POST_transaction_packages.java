@@ -8,7 +8,6 @@ import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
-import lombok.AllArgsConstructor;
 
 public class POST_transaction_packages implements IHTTPMethod {
 
@@ -31,15 +30,14 @@ public class POST_transaction_packages implements IHTTPMethod {
         responseContext.setHttpStatusCode("HTTP/1.1 402");
 
         User user = userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
-        if(user!=null) {
+        if (user != null) {
             IVendor vendor = vendorRepository.getAllEntities().stream().findFirst().orElse(null);
             if (vendor != null) {
                 if (user.buyCardPackage(vendor))
                     userRepository.updateEntity(user);
-                    responseContext.setHttpStatusCode("HTTP/1.1 201");
+                responseContext.setHttpStatusCode("HTTP/1.1 201");
             }
-        }
-        else
+        } else
             responseContext.setHttpStatusCode("HTTP/1.1 403");
 
 

@@ -25,8 +25,8 @@ public class TestRequest {
         responseContext = new ResponseContext();
         responseContext.setHttpStatusCode("GET /messages HTTP/1.1");
 
-        responseContext.getHeaders().put("Content-Type","text/plain");
-        responseContext.getHeaders().put("Content-Length","7");
+        responseContext.getHeaders().put("Content-Type", "text/plain");
+        responseContext.getHeaders().put("Content-Length", "7");
 
 
         responseContext.setPayload("message");

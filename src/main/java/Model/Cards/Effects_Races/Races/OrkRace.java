@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrkRace extends ABaseRace {
     public OrkRace(IRace race) {
-        super.base=race;
+        super.base = race;
         super.name = "ork";
     }
 
     @Override
     public double affect(ACard thisCard, ACard opponentCard, State state) {
 
-        if(state == State.ATTACK) {
+        if (state == State.ATTACK) {
             if (opponentCard.getClass() == MonsterCard.class)
                 if (((MonsterCard) opponentCard).getRace().getClass() == WizardRace.class)
                     return 0;

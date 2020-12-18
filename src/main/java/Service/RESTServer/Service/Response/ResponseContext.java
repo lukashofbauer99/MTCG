@@ -14,7 +14,7 @@ public class ResponseContext implements IResponseContext {
 
     String httpStatusCode;
 
-    Map<String,String> headers= new HashMap<>();
+    Map<String, String> headers = new HashMap<>();
 
     String payload = "";
 
@@ -26,8 +26,8 @@ public class ResponseContext implements IResponseContext {
 
         //add Headers line for line
         for (Map.Entry<String, String> entry : headers.entrySet()) {
-            System.out.println(entry.getKey()+": "+entry.getValue());
-            writer.write(entry.getKey()+": "+entry.getValue());
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            writer.write(entry.getKey() + ": " + entry.getValue());
             writer.newLine();
         }
         writer.write("\r\n");

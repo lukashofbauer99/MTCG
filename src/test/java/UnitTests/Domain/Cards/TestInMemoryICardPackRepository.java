@@ -1,6 +1,5 @@
 package UnitTests.Domain.Cards;
 
-import Domain.Cards.InMemory.InMemoryACardRepository;
 import Domain.Cards.InMemory.InMemoryCardPackRepository;
 import Domain.Cards.Interfaces.ICardPackRepository;
 import Model.Cards.ACard;
@@ -28,13 +27,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestInMemoryICardPackRepository {
 
 
-    ICardPack cardPackA =new NormalCardPack(null);
+    ICardPack cardPackA = new NormalCardPack(null);
 
     ICardPackRepository cardPackRepository = new InMemoryCardPackRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
+    void cleanUpRepo() {
         cardPackRepository = new InMemoryCardPackRepository();
     }
 
@@ -46,7 +44,7 @@ public class TestInMemoryICardPackRepository {
         Long id = cardPackRepository.persistEntity(cardPackA);
 
         // assert
-        assertEquals(1L,id);
+        assertEquals(1L, id);
     }
 
     @Test
@@ -65,15 +63,15 @@ public class TestInMemoryICardPackRepository {
     @DisplayName("Update ICardPack")
     void testUpdateICardPack() {
         // arrange
-        Long id =cardPackRepository.persistEntity(cardPackA);
+        Long id = cardPackRepository.persistEntity(cardPackA);
 
 
-        IEffect baseEffect= new BaseEffect();
-        IRace baseRace= new BaseRace();
-        ACard cardA=new MonsterCard("Fireelf",20,new FireEffect(baseEffect), new FireElfRace(baseRace));
-        List<ACard> cards= new ArrayList<>();
+        IEffect baseEffect = new BaseEffect();
+        IRace baseRace = new BaseRace();
+        ACard cardA = new MonsterCard("Fireelf", 20, new FireEffect(baseEffect), new FireElfRace(baseRace));
+        List<ACard> cards = new ArrayList<>();
         cards.add(cardA);
-        cardPackA= new NormalCardPack(cards);
+        cardPackA = new NormalCardPack(cards);
         cardPackA.setId(id);
 
         // act
@@ -90,12 +88,12 @@ public class TestInMemoryICardPackRepository {
     @DisplayName("Update ICardPack Wrong ID")
     void testUpdateICardPackWrongId() {
         // arrange
-        IEffect baseEffect= new BaseEffect();
-        IRace baseRace= new BaseRace();
-        ACard cardA=new MonsterCard("Fireelf",20,new FireEffect(baseEffect), new FireElfRace(baseRace));
-        List<ACard> cards= new ArrayList<>();
+        IEffect baseEffect = new BaseEffect();
+        IRace baseRace = new BaseRace();
+        ACard cardA = new MonsterCard("Fireelf", 20, new FireEffect(baseEffect), new FireElfRace(baseRace));
+        List<ACard> cards = new ArrayList<>();
         cards.add(cardA);
-        cardPackA= new NormalCardPack(cards);
+        cardPackA = new NormalCardPack(cards);
         // act
         boolean works = cardPackRepository.updateEntity(cardPackA);
 
@@ -110,7 +108,7 @@ public class TestInMemoryICardPackRepository {
         Long id = cardPackRepository.persistEntity(cardPackA);
 
         // act
-        boolean works= cardPackRepository.deleteEntity(id);
+        boolean works = cardPackRepository.deleteEntity(id);
         ICardPack foundCardPack = cardPackRepository.findEntity(id);
 
 
@@ -125,7 +123,7 @@ public class TestInMemoryICardPackRepository {
         // arrange
 
         // act
-        boolean works= cardPackRepository.deleteEntity(1L);
+        boolean works = cardPackRepository.deleteEntity(1L);
 
         // assert
         assertFalse(works);

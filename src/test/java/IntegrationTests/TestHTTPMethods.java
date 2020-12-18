@@ -33,16 +33,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestHTTPMethods {
 
     String command = "";
-    String command2= "";
+    String command2 = "";
     ObjectMapper mapper = new ObjectMapper();
-    static Message testMessage= new Message();
+    static Message testMessage = new Message();
 
     private static ServerSocket _listener = null;
 
     static MySocket socket;
-    static List<IHTTPMethod> methods= new ArrayList<>();
+    static List<IHTTPMethod> methods = new ArrayList<>();
     static Thread workerThread;
-    static boolean ready= false;
+    static boolean ready = false;
 
     @BeforeAll
     static void setUp() {
@@ -54,7 +54,7 @@ public class TestHTTPMethods {
         methods.add(new NotFound());
 
 
-        workerThread = new Thread(()-> {
+        workerThread = new Thread(() -> {
             try {
                 _listener = new ServerSocket(8000, 5);
             } catch (IOException e) {
@@ -62,7 +62,7 @@ public class TestHTTPMethods {
                 return;
             }
 
-            ready=true;
+            ready = true;
             while (true) {
                 try {
                     socket = new MySocket(_listener.accept());
@@ -90,11 +90,11 @@ public class TestHTTPMethods {
     void testCreateMessages() throws IOException {
 
         command = "curl -X POST -H \"Content-type: plain/text\" -d test localhost:8000/messages";
-        testMessage= new Message();
+        testMessage = new Message();
         testMessage.setContent("test");
         boolean gotId;
 
-        while (!ready);
+        while (!ready) ;
 
         Process process = Runtime.getRuntime().exec(command);
 
@@ -112,14 +112,12 @@ public class TestHTTPMethods {
         String response = textBuilder.toString();
         try {
             testMessage.setId(Integer.parseInt(response));
-            gotId=true;
-        }
-        catch( Exception e ) {
-            gotId=false;
+            gotId = true;
+        } catch (Exception e) {
+            gotId = false;
         }
 
         assertTrue(gotId);
-
 
 
     }
@@ -128,13 +126,13 @@ public class TestHTTPMethods {
     @Test
     @Order(2)
     @DisplayName("Test Get Messages")
-    void testGetMessages() throws IOException{
+    void testGetMessages() throws IOException {
 
         command = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages";
 
-        AtomicBoolean containsMessage= new AtomicBoolean(false);
+        AtomicBoolean containsMessage = new AtomicBoolean(false);
 
-        while (!ready);
+        while (!ready) ;
 
         Process process = Runtime.getRuntime().exec(command);
 
@@ -146,9 +144,10 @@ public class TestHTTPMethods {
                 textBuilder.append((char) c);
             }
         }
-        List<Message> messages = mapper.readValue(textBuilder.toString(),new TypeReference<>(){});
+        List<Message> messages = mapper.readValue(textBuilder.toString(), new TypeReference<>() {
+        });
         messages.forEach(x -> {
-            if(x.equals(testMessage))
+            if (x.equals(testMessage))
                 containsMessage.set(true);
         });
         assertTrue(containsMessage.get());
@@ -157,12 +156,12 @@ public class TestHTTPMethods {
     @Test
     @Order(3)
     @DisplayName("Test Get Message by Id")
-    void testGetMessageById() throws IOException{
+    void testGetMessageById() throws IOException {
 
-        command = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/"+testMessage.getId();
+        command = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/" + testMessage.getId();
 
 
-        while (!ready);
+        while (!ready) ;
 
         Process process = Runtime.getRuntime().exec(command);
 
@@ -174,9 +173,9 @@ public class TestHTTPMethods {
                 textBuilder.append((char) c);
             }
         }
-        Message recievedMessage = mapper.readValue(textBuilder.toString(),Message.class);
+        Message recievedMessage = mapper.readValue(textBuilder.toString(), Message.class);
 
-        assertEquals(testMessage,recievedMessage);
+        assertEquals(testMessage, recievedMessage);
     }
 
     @Test
@@ -184,10 +183,10 @@ public class TestHTTPMethods {
     @DisplayName("Test Change Message by Id")
     void testChangeMessageById() throws IOException, InterruptedException {
 
-        command = "curl -X PUT -H \"Content-type: plain/text\" -d testChanged localhost:8000/messages/"+testMessage.getId();
-        command2 = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/"+testMessage.getId();
+        command = "curl -X PUT -H \"Content-type: plain/text\" -d testChanged localhost:8000/messages/" + testMessage.getId();
+        command2 = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/" + testMessage.getId();
 
-        while (!ready);
+        while (!ready) ;
 
         Process process = Runtime.getRuntime().exec(command);
         process.waitFor();
@@ -201,9 +200,9 @@ public class TestHTTPMethods {
                 textBuilder.append((char) c);
             }
         }
-        Message recievedMessage = mapper.readValue(textBuilder.toString(),Message.class);
+        Message recievedMessage = mapper.readValue(textBuilder.toString(), Message.class);
 
-        assertEquals("testChanged",recievedMessage.getContent());
+        assertEquals("testChanged", recievedMessage.getContent());
     }
 
     @Test
@@ -211,10 +210,10 @@ public class TestHTTPMethods {
     @DisplayName("Test Delete Message by Id")
     void testDeleteMessageById() throws IOException, InterruptedException {
 
-        command = "curl -X DELETE -H \"Content-type: plain/text\" localhost:8000/messages/"+testMessage.getId();
-        command2 = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/"+testMessage.getId();
+        command = "curl -X DELETE -H \"Content-type: plain/text\" localhost:8000/messages/" + testMessage.getId();
+        command2 = "curl -X GET -H \"Content-type: plain/text\" localhost:8000/messages/" + testMessage.getId();
 
-        while (!ready);
+        while (!ready) ;
 
         Process process = Runtime.getRuntime().exec(command);
         process.waitFor();
@@ -229,9 +228,8 @@ public class TestHTTPMethods {
             }
         }
 
-        assertEquals("",textBuilder.toString());
+        assertEquals("", textBuilder.toString());
     }
-
 
 
 }

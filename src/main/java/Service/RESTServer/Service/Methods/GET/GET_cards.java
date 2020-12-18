@@ -8,10 +8,10 @@ import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -36,9 +36,10 @@ public class GET_cards implements IHTTPMethod {
         ResponseContext responseContext = new ResponseContext();
 
         if (userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
-            responseContext.setPayload(mapper.writerFor(new TypeReference<List<ACard>>() {
-            })
-                    .writeValueAsString(userRepository.getCardsOfUserWithToken(data.getHeaders().get("Authorization"))));
+            responseContext.setPayload(
+                    mapper.writerFor(new TypeReference<List<ACard>>() {})
+                            .with(new DefaultPrettyPrinter())
+                            .writeValueAsString(userRepository.getCardsOfUserWithToken(data.getHeaders().get("Authorization"))));
         } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Not logged In");

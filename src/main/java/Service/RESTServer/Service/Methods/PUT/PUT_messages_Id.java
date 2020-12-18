@@ -27,14 +27,12 @@ public class PUT_messages_Id implements IHTTPMethod {
     public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
 
-        Message messageToChange = repository.findEntity( parseInt(data.getHttpVerb_Res().substring("PUT /messages/".length(),data.getHttpVerb_Res().indexOf(" HTTP/"))));
-        if(messageToChange!= null)
-        {
+        Message messageToChange = repository.findEntity(parseInt(data.getHttpVerb_Res().substring("PUT /messages/".length(), data.getHttpVerb_Res().indexOf(" HTTP/"))));
+        if (messageToChange != null) {
             messageToChange.setContent(data.getPayload());
             repository.persistEntity(messageToChange);
             responseContext.setHttpStatusCode("HTTP/1.1 200");
-        }
-        else
+        } else
             responseContext.setHttpStatusCode("HTTP/1.1 400");
 
 

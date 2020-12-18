@@ -16,11 +16,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 }
 )
 //endregion
-public interface IEffect  {
+public interface IEffect {
 
     Long getId();
+
     void setId(Long id);
+
     String getName();
+
     double affect(ACard thisCard, ACard opponentCard);
 
     IEffect getBase();

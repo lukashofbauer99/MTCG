@@ -11,10 +11,15 @@ import java.util.List;
 public interface IUserRepository extends IRepository<User, Long> {
 
     String loginUser(Credentials cred);
+
     Boolean UserLoggedIn(String token);
+
     List<ACard> getCardsOfUserWithToken(String token);
+
     Deck getDeckOfUserWithToken(String token);
+
     User getUserWithToken(String token);
+
     User getUserWithUsername(String username);
 
 }

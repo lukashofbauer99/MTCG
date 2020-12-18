@@ -1,9 +1,9 @@
 package UnitTests.Model.User;
 
 import Model.Cards.CardPacks.AutoGenCardPack;
+import Model.Cards.CardPacks.PackType;
 import Model.Cards.Vendor.IVendor;
 import Model.Cards.Vendor.NormalVendor;
-import Model.Cards.CardPacks.PackType;
 import Model.User.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
@@ -11,16 +11,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class TestBuyCardPack {
-    PlayerHub playerHub= new PlayerHub();
+    PlayerHub playerHub = new PlayerHub();
 
-    IVendor vendor= new NormalVendor();
+    IVendor vendor = new NormalVendor();
 
-    User userA= new User();
+    User userA = new User();
 
     @Test
     @DisplayName("Buy CardPack")
@@ -30,12 +29,12 @@ public class TestBuyCardPack {
         userA.setCoins(20);
 
         // act
-        userA.buyCardPackage(PackType.AutoGen,vendor);
+        userA.buyCardPackage(PackType.AutoGen, vendor);
 
         // assert
         //verify(playerHub).buyCards(userA,PackType.Normal);
-        assertEquals(15,userA.getCoins());
-        assertEquals(4,userA.getStack().getCards().size());
+        assertEquals(15, userA.getCoins());
+        assertEquals(4, userA.getStack().getCards().size());
     }
 
     @Test
@@ -47,12 +46,12 @@ public class TestBuyCardPack {
         userA.setCoins(3);
 
         // act
-        userA.buyCardPackage(PackType.AutoGen,vendor);
+        userA.buyCardPackage(PackType.AutoGen, vendor);
 
 
         // assert
-        assertEquals(3,userA.getCoins());
-        assertEquals(0,userA.getStack().getCards().size());
+        assertEquals(3, userA.getCoins());
+        assertEquals(0, userA.getStack().getCards().size());
     }
 
 }

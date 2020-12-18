@@ -28,10 +28,10 @@ public class POST_NormalPackages implements IHTTPMethod {
     ObjectMapper mapper = new ObjectMapper();
 
 
-    public POST_NormalPackages(ICardPackRepository cardPackRepository, IACardRepository cardRepository,IEffectRepository effectRepository, IRaceRepository raceRepository,IVendorRepository vendorRepository) {
-        this.vendorRepository=vendorRepository;
-        this.raceRepository=raceRepository;
-        this.effectRepository=effectRepository;
+    public POST_NormalPackages(ICardPackRepository cardPackRepository, IACardRepository cardRepository, IEffectRepository effectRepository, IRaceRepository raceRepository, IVendorRepository vendorRepository) {
+        this.vendorRepository = vendorRepository;
+        this.raceRepository = raceRepository;
+        this.effectRepository = effectRepository;
         this.cardPackRepository = cardPackRepository;
         this.cardRepository = cardRepository;
         mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
@@ -47,16 +47,17 @@ public class POST_NormalPackages implements IHTTPMethod {
         ResponseContext responseContext = new ResponseContext();
         List<ACard> cards = new ArrayList<>();
         try {
-            cards = mapper.readValue(data.getPayload(), new TypeReference<>() {});
+            cards = mapper.readValue(data.getPayload(), new TypeReference<>() {
+            });
         } catch (JsonProcessingException e) {
             responseContext.setPayload("Invalid form of Data");
             responseContext.setHttpStatusCode("HTTP/1.1 400");
         }
 
         cards.forEach(this::addEffectsAndRaceDependingOnName);
-        cards.forEach(x->cardRepository.persistEntityGenNoId(x));
-        ICardPack cardPack= new NormalCardPack(cards);
-        Long id =cardPackRepository.persistEntity(cardPack);
+        cards.forEach(x -> cardRepository.persistEntityGenNoId(x));
+        ICardPack cardPack = new NormalCardPack(cards);
+        Long id = cardPackRepository.persistEntity(cardPack);
 
         vendorRepository.getAllEntities().stream().findFirst().ifPresent(vendor -> vendor.addICardPack(cardPack));
 
@@ -70,17 +71,15 @@ public class POST_NormalPackages implements IHTTPMethod {
     }
 
     // Just to make the given curls work, better way is to have the effect/race objects in the card object in the curl
-    void addEffectsAndRaceDependingOnName(ACard card)
-    {
+    void addEffectsAndRaceDependingOnName(ACard card) {
         card.setEffect(effectRepository.getAllEntities()
                 .stream()
-                .filter(x->card.getName().toLowerCase().contains(x.getName()))
+                .filter(x -> card.getName().toLowerCase().contains(x.getName()))
                 .findFirst()
                 .orElse(effectRepository.getIEffectWithName("normal")));
 
-        if(card.getClass()== MonsterCard.class)
-        {
-            ((MonsterCard)card).setRace( raceRepository.getAllEntities().stream().filter(x->card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));
+        if (card.getClass() == MonsterCard.class) {
+            ((MonsterCard) card).setRace(raceRepository.getAllEntities().stream().filter(x -> card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));
         }
     }
 }

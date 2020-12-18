@@ -8,9 +8,10 @@ public interface IResponseContext {
 
     void setHttpStatusCode(String httpStatusCode);
 
-    Map<String,String> getHeaders();
+    Map<String, String> getHeaders();
 
     void setPayload(String payload);
+
     String getPayload();
 
     void sendResponse(BufferedWriter writer) throws IOException;

@@ -1,32 +1,23 @@
 package Service.RESTServer.Service.Methods.PUT;
 
 import Domain.Cards.Interfaces.IACardRepository;
-import Domain.Cards.Interfaces.ICardPackRepository;
-import Domain.Cards.Interfaces.IVendorRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
 import Model.User.Deck;
 import Model.User.User;
-import Service.RESTServer.Domain.IRepository;
-import Service.RESTServer.Domain.MessageRepository;
-import Service.RESTServer.Model.Message;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static java.lang.Integer.parseInt;
 
 public class PUT_deck implements IHTTPMethod {
 
@@ -51,7 +42,8 @@ public class PUT_deck implements IHTTPMethod {
         ResponseContext responseContext = new ResponseContext();
         List<String> cardIds;
         try {
-            cardIds = mapper.readValue(data.getPayload(), new TypeReference<>() { });
+            cardIds = mapper.readValue(data.getPayload(), new TypeReference<>() {
+            });
             User user = userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
             List<ACard> cards = cardIds.stream().map(x -> cardRepository.findEntity(x)).filter(Objects::nonNull).collect(Collectors.toList());
             if (cards.size() == 4 && user != null) {
@@ -60,13 +52,16 @@ public class PUT_deck implements IHTTPMethod {
                     responseContext.setHttpStatusCode("HTTP/1.1 200");
                 } else {
                     responseContext.setHttpStatusCode("HTTP/1.1 400");
-                    responseContext.setPayload(mapper.writerFor(new TypeReference<Deck>() { })
+                    responseContext.setPayload(mapper.writerFor(new TypeReference<Deck>() {
+                    })
                             .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization"))));
                 }
             } else {
                 responseContext.setHttpStatusCode("HTTP/1.1 400");
-                responseContext.setPayload(mapper.writerFor(new TypeReference<Deck>() { })
-                        .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization"))));
+                responseContext.setPayload(
+                        mapper.writerFor(new TypeReference<Deck>() {})
+                                .with(new DefaultPrettyPrinter())
+                                .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization"))));
             }
         } catch (JsonProcessingException e) {
             responseContext.setPayload("Invalid form of data");

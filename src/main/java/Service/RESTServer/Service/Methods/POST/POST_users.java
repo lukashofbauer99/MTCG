@@ -11,8 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-
 public class POST_users implements IHTTPMethod {
 
     IUserRepository userRepository;
@@ -39,12 +37,11 @@ public class POST_users implements IHTTPMethod {
         }
         User user = new User(cred);
         user.getEditableUserData().setName(cred.getUsername());
-        Long id =userRepository.persistEntity(new User(cred));
-        if (id!=null) {
+        Long id = userRepository.persistEntity(new User(cred));
+        if (id != null) {
             responseContext.setPayload(String.valueOf(id));
             responseContext.setHttpStatusCode("HTTP/1.1 201");
-        }
-        else {
+        } else {
             responseContext.setPayload("User already Exists");
             responseContext.setHttpStatusCode("HTTP/1.1 409");
         }

@@ -33,11 +33,11 @@ public class TestPOST_messages {
     void testAnalyzeTrue() {
         // arrange
         post_messages = new POST_messages(repository);
-        requestContext=new RequestContext("POST /messages HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("POST /messages HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= post_messages.analyse(requestContext);
+        check = post_messages.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -49,11 +49,11 @@ public class TestPOST_messages {
     void testAnalyzeFalse() {
         // arrange
         post_messages = new POST_messages(repository);
-        requestContext=new RequestContext("POST /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("POST /messages/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= post_messages.analyse(requestContext);
+        check = post_messages.analyse(requestContext);
 
         // assert
         assertFalse(check);
@@ -65,7 +65,7 @@ public class TestPOST_messages {
         // arrange
         post_messages = new POST_messages(repository);
 
-        requestContext=new RequestContext("POST /messages/1 HTTP/1.1",new HashMap<>(),"message");
+        requestContext = new RequestContext("POST /messages/1 HTTP/1.1", new HashMap<>(), "message");
         // act
         post_messages.exec(requestContext);
         // assert

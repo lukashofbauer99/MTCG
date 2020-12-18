@@ -14,7 +14,7 @@ public class DragonRace extends ABaseRace {
 
     @Override
     public double affect(ACard thisCard, ACard opponentCard, State state) {
-        if(state == State.ATTACK) {
+        if (state == State.ATTACK) {
             if (opponentCard.getClass() == MonsterCard.class)
                 if (((MonsterCard) opponentCard).getRace().getClass() == FireElfRace.class)
                     return 0;

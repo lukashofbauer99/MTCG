@@ -3,7 +3,6 @@ package Model.Cards;
 import Model.Battle.State;
 import Model.Cards.Effects_Races.Effects.AEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,7 @@ public class SpellCard extends ACard {
 
     @Override
     public double calcDamage(State state, ACard oppenentCard) {
-            return this.effect.affect(this, oppenentCard);
-        }
+        return this.effect.affect(this, oppenentCard);
+    }
 
 }

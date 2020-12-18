@@ -5,7 +5,6 @@ import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 public class POST_tradings implements IHTTPMethod {

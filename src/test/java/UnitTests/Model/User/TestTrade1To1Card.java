@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class TestTrade1To1Card {
@@ -41,7 +41,7 @@ public class TestTrade1To1Card {
         userB.getStack().setCards(cardsB);
 
         // act
-        userA.tradeCard(userB,monsterCardA,monsterCardB);
+        userA.tradeCard(userB, monsterCardA, monsterCardB);
 
         // assert
         verify(cardsA).add(monsterCardB);

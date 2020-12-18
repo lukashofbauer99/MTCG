@@ -25,11 +25,11 @@ public class TestNotFound {
     void testAnalyzeTrue() {
         // arrange
         notFound = new NotFound();
-        requestContext=new RequestContext("DELETE /stsadagtasfas/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("DELETE /stsadagtasfas/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= notFound.analyse(requestContext);
+        check = notFound.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -41,13 +41,13 @@ public class TestNotFound {
     void testExec() {
         // arrange
         notFound = new NotFound();
-        requestContext=new RequestContext("DELETE /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("DELETE /messages/1 HTTP/1.1", new HashMap<>(), "");
 
         // act
         ResponseContext response = (ResponseContext) notFound.exec(requestContext);
         // assert
 
-        assertEquals("HTTP/1.1 404",response.getHttpStatusCode());
+        assertEquals("HTTP/1.1 404", response.getHttpStatusCode());
 
     }
 

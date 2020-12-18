@@ -19,7 +19,7 @@ import lombok.Setter;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MonsterCard.class, name = "Monster"),
-        @JsonSubTypes.Type(value = SpellCard.class, name = "Spell") }
+        @JsonSubTypes.Type(value = SpellCard.class, name = "Spell")}
 )
 //endregion
 public abstract class ACard {

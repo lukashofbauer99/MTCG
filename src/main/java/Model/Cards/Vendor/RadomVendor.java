@@ -19,10 +19,9 @@ public class RadomVendor implements IVendor {
 
 
     @Override
-    public ICardPack buyCards(User user, PackType packType)
-    {
-        ICardPack cardPack=availibleCardPacks.stream().filter(x->x.getPackType()==packType).findFirst().orElse(null);
-        if(cardPack!=null) {
+    public ICardPack buyCards(User user, PackType packType) {
+        ICardPack cardPack = availibleCardPacks.stream().filter(x -> x.getPackType() == packType).findFirst().orElse(null);
+        if (cardPack != null) {
             if (user.getCoins() >= cardPack.getCosts()) {
                 user.setCoins(user.getCoins() - cardPack.getCosts());
                 availibleCardPacks.remove(cardPack);
@@ -35,7 +34,7 @@ public class RadomVendor implements IVendor {
     @Override
     public ICardPack buyCards(User user) {
         Random rand = new Random();
-        if(availibleCardPacks.size()!=0) {
+        if (availibleCardPacks.size() != 0) {
             ICardPack cardPack = availibleCardPacks.get(rand.nextInt(availibleCardPacks.size()));
             if (cardPack != null) {
                 if (user.getCoins() >= cardPack.getCosts()) {

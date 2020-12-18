@@ -33,11 +33,11 @@ public class TestPUT_message_id {
     void testAnalyzeTrue() {
         // arrange
         put_message_id = new PUT_messages_Id(repository);
-        requestContext=new RequestContext("PUT /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("PUT /messages/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= put_message_id.analyse(requestContext);
+        check = put_message_id.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -49,11 +49,11 @@ public class TestPUT_message_id {
     void testAnalyzeFalse() {
         // arrange
         put_message_id = new PUT_messages_Id(repository);
-        requestContext=new RequestContext("PUT /messages HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("PUT /messages HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= put_message_id.analyse(requestContext);
+        check = put_message_id.analyse(requestContext);
 
         // assert
         assertFalse(check);
@@ -65,7 +65,7 @@ public class TestPUT_message_id {
         // arrange
         put_message_id = new PUT_messages_Id(repository);
 
-        requestContext=new RequestContext("PUT /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("PUT /messages/1 HTTP/1.1", new HashMap<>(), "");
 
         when(repository.findEntity(1)).thenReturn(new Message());
 

@@ -17,13 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestInMemoryIEffectRepository {
 
 
-    IEffect effectA =new BaseEffect();
+    IEffect effectA = new BaseEffect();
 
     IEffectRepository effectRepository = new InMemoryIEffectRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
+    void cleanUpRepo() {
         effectRepository = new InMemoryIEffectRepository();
     }
 
@@ -54,7 +53,7 @@ public class TestInMemoryIEffectRepository {
     @DisplayName("Update IEffect")
     void testUpdateIEffect() {
         // arrange
-        Long id =effectRepository.persistEntity(effectA);
+        Long id = effectRepository.persistEntity(effectA);
 
         effectA = new WaterEffect(new BaseEffect());
         effectA.setId(id);
@@ -87,7 +86,7 @@ public class TestInMemoryIEffectRepository {
         Long id = effectRepository.persistEntity(effectA);
 
         // act
-        boolean works= effectRepository.deleteEntity(id);
+        boolean works = effectRepository.deleteEntity(id);
         IEffect foundIEffect = effectRepository.findEntity(id);
 
 
@@ -102,7 +101,7 @@ public class TestInMemoryIEffectRepository {
         // arrange
 
         // act
-        boolean works= effectRepository.deleteEntity(50000L);
+        boolean works = effectRepository.deleteEntity(50000L);
 
         // assert
         assertFalse(works);

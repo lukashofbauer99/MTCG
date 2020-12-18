@@ -32,13 +32,12 @@ public class GET_messages_Id implements IHTTPMethod {
     public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
 
-        String returnMessageString= "";
+        String returnMessageString = "";
         Message returnMessage;
 
         responseContext.setHttpStatusCode("HTTP/1.1 400");
-        returnMessage=  repository.findEntity(parseInt(data.getHttpVerb_Res().substring("GET /messages/".length(),data.getHttpVerb_Res().indexOf(" HTTP/"))));
-        if(returnMessage!=null)
-        {
+        returnMessage = repository.findEntity(parseInt(data.getHttpVerb_Res().substring("GET /messages/".length(), data.getHttpVerb_Res().indexOf(" HTTP/"))));
+        if (returnMessage != null) {
             try {
                 responseContext.setHttpStatusCode("HTTP/1.1 200");
                 returnMessageString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(returnMessage);
@@ -50,7 +49,7 @@ public class GET_messages_Id implements IHTTPMethod {
         responseContext.setPayload(returnMessageString);
 
         responseContext.getHeaders().put("Connection", "close");
-        responseContext.getHeaders().put("Content-Length",  String.valueOf(returnMessageString.length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(returnMessageString.length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         return responseContext;
     }

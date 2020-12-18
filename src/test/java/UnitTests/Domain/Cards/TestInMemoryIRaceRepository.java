@@ -2,8 +2,6 @@ package UnitTests.Domain.Cards;
 
 import Domain.Cards.InMemory.InMemoryIRaceRepository;
 import Domain.Cards.Interfaces.IRaceRepository;
-import Model.Cards.Effects_Races.Effects.BaseEffect;
-import Model.Cards.Effects_Races.Effects.WaterEffect;
 import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.FireElfRace;
 import Model.Cards.Effects_Races.Races.IRace;
@@ -19,13 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestInMemoryIRaceRepository {
 
 
-    IRace iRaceA =new BaseRace();
+    IRace iRaceA = new BaseRace();
 
     IRaceRepository effectRepository = new InMemoryIRaceRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
+    void cleanUpRepo() {
         effectRepository = new InMemoryIRaceRepository();
     }
 
@@ -56,7 +53,7 @@ public class TestInMemoryIRaceRepository {
     @DisplayName("Update IRace")
     void testUpdateIRace() {
         // arrange
-        Long id =effectRepository.persistEntity(iRaceA);
+        Long id = effectRepository.persistEntity(iRaceA);
         iRaceA = new FireElfRace(new BaseRace());
         iRaceA.setId(id);
         // act
@@ -88,7 +85,7 @@ public class TestInMemoryIRaceRepository {
         Long id = effectRepository.persistEntity(iRaceA);
 
         // act
-        boolean works= effectRepository.deleteEntity(id);
+        boolean works = effectRepository.deleteEntity(id);
         IRace foundIRace = effectRepository.findEntity(id);
 
 
@@ -103,7 +100,7 @@ public class TestInMemoryIRaceRepository {
         // arrange
 
         // act
-        boolean works= effectRepository.deleteEntity(50000L);
+        boolean works = effectRepository.deleteEntity(50000L);
 
         // assert
         assertFalse(works);

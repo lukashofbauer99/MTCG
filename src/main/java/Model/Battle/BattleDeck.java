@@ -10,17 +10,14 @@ import java.util.Random;
 @Data
 public class BattleDeck {
 
-    List<ACard> cards ;
+    List<ACard> cards = new ArrayList<>();
     Random rand = new Random();
 
-    public BattleDeck(List<ACard> cards) {
-        this.cards = cards;
-    }
 
     public ACard drawCard() {
-        int index=0;
-        if(cards.size()!=1)
-            index = rand.nextInt(cards.size()-1);
+        int index = 0;
+        if (cards.size() != 1)
+            index = rand.nextInt(cards.size() - 1);
         ACard drawnCard = cards.get(index);
         cards.remove(drawnCard);
         return drawnCard;

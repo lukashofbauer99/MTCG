@@ -31,7 +31,7 @@ public class TestRequest {
                 Content-Type: text/plain
                 Content-Length: 7
 
-                message""".getBytes(StandardCharsets.UTF_8) );
+                message""".getBytes(StandardCharsets.UTF_8));
         var writeStream = new ByteArrayOutputStream();
 
         // mock the TCP client methods
@@ -45,10 +45,10 @@ public class TestRequest {
     void testHttpVerb_Res() throws IOException {
         // arrange
         // act
-        requestContext=new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+        requestContext = new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
 
         // assert
-        assertEquals("GET /messages HTTP/1.1",requestContext.getHttpVerb_Res());
+        assertEquals("GET /messages HTTP/1.1", requestContext.getHttpVerb_Res());
     }
 
     @Test
@@ -56,14 +56,14 @@ public class TestRequest {
     void testHeaders() throws IOException {
         // arrange
         // act
-        requestContext=new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+        requestContext = new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
 
-        Map<String,String> map = new HashMap<>();
-        map.put("Content-Type","text/plain");
-        map.put("Content-Length","7");
+        Map<String, String> map = new HashMap<>();
+        map.put("Content-Type", "text/plain");
+        map.put("Content-Length", "7");
 
         // assert
-        assertEquals(map,requestContext.getHeaders());
+        assertEquals(map, requestContext.getHeaders());
     }
 
     @Test
@@ -71,10 +71,10 @@ public class TestRequest {
     void testPayload() throws IOException {
         // arrange
         // act
-        requestContext=new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+        requestContext = new RequestContext(new BufferedReader(new InputStreamReader(socket.getInputStream())));
 
         // assert
-        assertEquals("message",requestContext.getPayload());
+        assertEquals("message", requestContext.getPayload());
     }
 }
 

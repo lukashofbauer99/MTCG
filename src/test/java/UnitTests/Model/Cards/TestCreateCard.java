@@ -15,13 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class TestCreateCard {
 
-    IEffect baseEffect=new BaseEffect();
-    IRace baseRace= new BaseRace();
+    IEffect baseEffect = new BaseEffect();
+    IRace baseRace = new BaseRace();
 
     ACard createdCard;
 
@@ -30,13 +29,13 @@ public class TestCreateCard {
     void testCreateSimpleNormalSpellCard() {
         // arrange
         // act
-        createdCard=new SpellCard("Spear Throw",10,baseEffect);
+        createdCard = new SpellCard("Spear Throw", 10, baseEffect);
 
         // assert
 
-        assertEquals(createdCard.getEffect(),baseEffect);
-        assertEquals(createdCard.getDamage(),10);
-        assertEquals(createdCard.getName(),"Spear Throw");
+        assertEquals(createdCard.getEffect(), baseEffect);
+        assertEquals(createdCard.getDamage(), 10);
+        assertEquals(createdCard.getName(), "Spear Throw");
     }
 
     @Test
@@ -45,13 +44,13 @@ public class TestCreateCard {
         // arrange
         // act
 
-        createdCard=new SpellCard("Ignite",5,new FireEffect(baseEffect));
+        createdCard = new SpellCard("Ignite", 5, new FireEffect(baseEffect));
 
         // assert
 
-        assertEquals(createdCard.getEffect().getBase(),baseEffect);
-        assertEquals(createdCard.getDamage(),5);
-        assertEquals(createdCard.getName(),"Ignite");
+        assertEquals(createdCard.getEffect().getBase(), baseEffect);
+        assertEquals(createdCard.getDamage(), 5);
+        assertEquals(createdCard.getName(), "Ignite");
     }
 
     @Test
@@ -60,14 +59,14 @@ public class TestCreateCard {
         // arrange
         // act
 
-        createdCard=new SpellCard("Meteor",30,
+        createdCard = new SpellCard("Meteor", 30,
                 new FireEffect(new FireEffect(new FireEffect(new FireEffect(baseEffect)))));
 
         // assert
 
-        assertEquals(createdCard.getEffect().getBase().getBase().getBase().getBase(),baseEffect);
-        assertEquals(createdCard.getDamage(),30);
-        assertEquals(createdCard.getName(),"Meteor");
+        assertEquals(createdCard.getEffect().getBase().getBase().getBase().getBase(), baseEffect);
+        assertEquals(createdCard.getDamage(), 30);
+        assertEquals(createdCard.getName(), "Meteor");
     }
 
     @Test
@@ -76,16 +75,15 @@ public class TestCreateCard {
         // arrange
 
         // act
-        createdCard=new MonsterCard("Human Warrior",7,baseEffect,baseRace);
-
+        createdCard = new MonsterCard("Human Warrior", 7, baseEffect, baseRace);
 
 
         // assert
 
-        assertEquals(createdCard.getEffect(),baseEffect);
-        assertEquals(((MonsterCard)createdCard).getRace(),baseRace);
-        assertEquals(createdCard.getDamage(),7);
-        assertEquals(createdCard.getName(),"Human Warrior");
+        assertEquals(createdCard.getEffect(), baseEffect);
+        assertEquals(((MonsterCard) createdCard).getRace(), baseRace);
+        assertEquals(createdCard.getDamage(), 7);
+        assertEquals(createdCard.getName(), "Human Warrior");
     }
 
     @Test
@@ -94,15 +92,14 @@ public class TestCreateCard {
         // arrange
 
         // act
-        createdCard=new MonsterCard("Orc Fire Mage",15,new FireEffect(baseEffect),new DragonRace(baseRace));
-
+        createdCard = new MonsterCard("Orc Fire Mage", 15, new FireEffect(baseEffect), new DragonRace(baseRace));
 
 
         // assert
 
-        assertEquals(createdCard.getEffect().getBase(),baseEffect);
-        assertEquals(((MonsterCard)createdCard).getRace().getBase(),baseRace);
-        assertEquals(createdCard.getDamage(),15);
-        assertEquals(createdCard.getName(),"Orc Fire Mage");
+        assertEquals(createdCard.getEffect().getBase(), baseEffect);
+        assertEquals(((MonsterCard) createdCard).getRace().getBase(), baseRace);
+        assertEquals(createdCard.getDamage(), 15);
+        assertEquals(createdCard.getName(), "Orc Fire Mage");
     }
 }

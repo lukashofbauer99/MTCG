@@ -378,7 +378,104 @@ public class TestHTTPMethods_User_Cards_Interaction {
         }
 
 
-        assertEquals("cards=[@type=Monster,id=845f0dc7-37d0-426e-994e-43fc3ac83c08,name=WaterGoblin,damage=10.0,effect=@type=Water,id=3,name=water,base=@type=Base,id=1,name=base,base=null,race=@type=Goblin,id=2,name=goblin,base=@type=Base,id=1,name=baseRace,base=null,@type=Monster,id=99f8f8dc-e25e-4a95-aa2c-782823f36e2a,name=Dragon,damage=50.0,effect=@type=Normal,id=4,name=normal,base=@type=Base,id=1,name=base,base=null,race=@type=Dragon,id=3,name=dragon,base=@type=Base,id=1,name=baseRace,base=null,@type=Spell,id=e85e3976-7c86-4d06-9a80-641c2019a79f,name=WaterSpell,damage=20.0,effect=@type=Water,id=3,name=water,base=@type=Base,id=1,name=base,base=null,@type=Monster,id=1cb6ab86-bdb2-47e5-b6e4-68c5ab389334,name=Ork,damage=45.0,effect=@type=Normal,id=4,name=normal,base=@type=Base,id=1,name=base,base=null,race=@type=Ork,id=5,name=ork,base=@type=Base,id=1,name=baseRace,base=null]"
+        assertEquals("\n  cards = [ \n" +
+                        "    @type = Monster,\n" +
+                        "    id = 845f0dc7-37d0-426e-994e-43fc3ac83c08,\n" +
+                        "    name = WaterGoblin,\n" +
+                        "    damage = 10.0,\n" +
+                        "    effect = \n" +
+                        "      @type = Water,\n" +
+                        "      id = 3,\n" +
+                        "      name = water,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = base,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    ,\n" +
+                        "    race = \n" +
+                        "      @type = Goblin,\n" +
+                        "      id = 2,\n" +
+                        "      name = goblin,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = baseRace,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    \n" +
+                        "  , \n" +
+                        "    @type = Monster,\n" +
+                        "    id = 99f8f8dc-e25e-4a95-aa2c-782823f36e2a,\n" +
+                        "    name = Dragon,\n" +
+                        "    damage = 50.0,\n" +
+                        "    effect = \n" +
+                        "      @type = Normal,\n" +
+                        "      id = 4,\n" +
+                        "      name = normal,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = base,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    ,\n" +
+                        "    race = \n" +
+                        "      @type = Dragon,\n" +
+                        "      id = 3,\n" +
+                        "      name = dragon,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = baseRace,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    \n" +
+                        "  , \n" +
+                        "    @type = Spell,\n" +
+                        "    id = e85e3976-7c86-4d06-9a80-641c2019a79f,\n" +
+                        "    name = WaterSpell,\n" +
+                        "    damage = 20.0,\n" +
+                        "    effect = \n" +
+                        "      @type = Water,\n" +
+                        "      id = 3,\n" +
+                        "      name = water,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = base,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    \n" +
+                        "  , \n" +
+                        "    @type = Monster,\n" +
+                        "    id = 1cb6ab86-bdb2-47e5-b6e4-68c5ab389334,\n" +
+                        "    name = Ork,\n" +
+                        "    damage = 45.0,\n" +
+                        "    effect = \n" +
+                        "      @type = Normal,\n" +
+                        "      id = 4,\n" +
+                        "      name = normal,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = base,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    ,\n" +
+                        "    race = \n" +
+                        "      @type = Ork,\n" +
+                        "      id = 5,\n" +
+                        "      name = ork,\n" +
+                        "      base = \n" +
+                        "        @type = Base,\n" +
+                        "        id = 1,\n" +
+                        "        name = baseRace,\n" +
+                        "        base = null\n" +
+                        "      \n" +
+                        "    \n" +
+                        "   ]\n"
                 ,deck);
     }
 

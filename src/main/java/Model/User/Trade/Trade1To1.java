@@ -15,7 +15,7 @@ public class Trade1To1 implements ITrade {
 
     @Override
     public boolean trade(User user, ACard card) {
-        if(requirements.evaluateRequirements(card)) {
+        if (requirements.evaluateRequirements(card)) {
             userOffer.getStack().getCards().remove(cardTradedFor);
             userOffer.getStack().getCards().add(card);
 

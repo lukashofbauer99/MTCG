@@ -15,14 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class TestInMemoryUserRepository {
 
-    User userA= new User(new Credentials("user","pw"));
+    User userA = new User(new Credentials("user", "pw"));
 
-    IUserRepository userRepository= new InMemoryUserRepository();
+    IUserRepository userRepository = new InMemoryUserRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
-        userRepository= new InMemoryUserRepository();
+    void cleanUpRepo() {
+        userRepository = new InMemoryUserRepository();
     }
 
     @Test
@@ -33,7 +32,7 @@ public class TestInMemoryUserRepository {
         Long id = userRepository.persistEntity(userA);
 
         // assert
-        assertEquals(1,id);
+        assertEquals(1, id);
     }
 
     @Test
@@ -83,7 +82,7 @@ public class TestInMemoryUserRepository {
         Long id = userRepository.persistEntity(userA);
 
         // act
-        boolean works= userRepository.deleteEntity(id);
+        boolean works = userRepository.deleteEntity(id);
         User foundUser = userRepository.findEntity(id);
 
 
@@ -98,7 +97,7 @@ public class TestInMemoryUserRepository {
         // arrange
 
         // act
-        boolean works= userRepository.deleteEntity(0L);
+        boolean works = userRepository.deleteEntity(0L);
 
         // assert
         assertFalse(works);
@@ -110,7 +109,7 @@ public class TestInMemoryUserRepository {
         // arrange
         userRepository.persistEntity(userA);
         // act
-        String token= userRepository.loginUser(userA.getCredentials());
+        String token = userRepository.loginUser(userA.getCredentials());
 
         // assert
         assertEquals("Basic " + userA.getCredentials().getUsername() + "-mtcgToken", token);
@@ -121,7 +120,7 @@ public class TestInMemoryUserRepository {
     void testLoginWrongCredentials() {
         // arrange
         // act
-        String token= userRepository.loginUser(userA.getCredentials());
+        String token = userRepository.loginUser(userA.getCredentials());
 
         // assert
         assertNull(token);
@@ -133,11 +132,11 @@ public class TestInMemoryUserRepository {
     void testGetUserWithToken() {
         userRepository.persistEntity(userA);
         // act
-        String token= userRepository.loginUser(userA.getCredentials());
-        User user= userRepository.getUserWithToken("Basic " + userA.getCredentials().getUsername() + "-mtcgToken");
+        String token = userRepository.loginUser(userA.getCredentials());
+        User user = userRepository.getUserWithToken("Basic " + userA.getCredentials().getUsername() + "-mtcgToken");
 
         // assert
-        assertEquals(userA,user);
+        assertEquals(userA, user);
     }
 
     @Test
@@ -145,10 +144,10 @@ public class TestInMemoryUserRepository {
     void testGetUserWithUsername() {
         userRepository.persistEntity(userA);
         // act
-        User user= userRepository.getUserWithUsername("user");
+        User user = userRepository.getUserWithUsername("user");
 
         // assert
-        assertEquals(userA,user);
+        assertEquals(userA, user);
     }
 
 }

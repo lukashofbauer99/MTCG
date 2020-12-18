@@ -32,22 +32,19 @@ public class PUT_users_name implements IHTTPMethod {
     @Override
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
-        String username= data.getHttpVerb_Res().substring("GET /users/".length(),data.getHttpVerb_Res().indexOf(" HTTP/"));
+        String username = data.getHttpVerb_Res().substring("GET /users/".length(), data.getHttpVerb_Res().indexOf(" HTTP/"));
 
-        if(userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
-            User user =userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
-            if( user.getCredentials().getUsername().equals(username))
-            {
-                user.setEditableUserData(mapper.readValue(data.getPayload(),EditableUserData.class));
+        if (userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
+            User user = userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
+            if (user.getCredentials().getUsername().equals(username)) {
+                user.setEditableUserData(mapper.readValue(data.getPayload(), EditableUserData.class));
                 userRepository.updateEntity(user);
                 responseContext.setHttpStatusCode("HTTP/1.1 200");
-            }
-            else {
+            } else {
                 responseContext.setHttpStatusCode("HTTP/1.1 401");
                 responseContext.setPayload("Insufficient Permissions");
             }
-        }
-        else {
+        } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Not logged In");
         }

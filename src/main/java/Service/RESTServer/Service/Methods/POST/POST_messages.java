@@ -28,7 +28,7 @@ public class POST_messages implements IHTTPMethod {
 
         int messageID;
         Message message = new Message(data.getPayload());
-        messageID=repository.persistEntity(message);
+        messageID = repository.persistEntity(message);
         responseContext.setPayload(String.valueOf(messageID));
 
         responseContext.setHttpStatusCode("HTTP/1.1 201");

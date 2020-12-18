@@ -23,36 +23,31 @@ public class NormalTradeCardRequirements implements ITradeCardRequirements {
     List<IRace> raceOnCard;
 
     public boolean evaluateRequirements(ACard card) {
-        if(card.getDamage()<minimumDamage)
+        if (card.getDamage() < minimumDamage)
             return false;
-        if (cardType!=card.getClass())
+        if (cardType != card.getClass())
             return false;
-        if(card.getClass()== MonsterCard.class)
-        {
+        if (card.getClass() == MonsterCard.class) {
             getAllEffects(card.getEffect());
 
-            getAllRaces(((MonsterCard)card).getRace());
+            getAllRaces(((MonsterCard) card).getRace());
             return effectsOnCard.contains(effect) && raceOnCard.contains(race);
-        }
-        else if(card.getClass()== SpellCard.class) {
+        } else if (card.getClass() == SpellCard.class) {
             getAllEffects(card.getEffect());
             return effectsOnCard.contains(effect);
-        }
-        else
+        } else
             return false;
     }
 
-    void getAllEffects(IEffect curEffect)
-    {
+    void getAllEffects(IEffect curEffect) {
         effectsOnCard.add(curEffect);
-        if(curEffect.getBase()!=null)
+        if (curEffect.getBase() != null)
             getAllEffects(curEffect.getBase());
     }
 
-    void getAllRaces(IRace curRace)
-    {
+    void getAllRaces(IRace curRace) {
         raceOnCard.add(curRace);
-        if(curRace.getBase()!=null)
+        if (curRace.getBase() != null)
             getAllRaces(curRace.getBase());
     }
 

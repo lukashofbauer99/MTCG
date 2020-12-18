@@ -15,7 +15,7 @@ import java.util.Random;
 @Getter
 public class AutoGenCardPack extends ACardPackFixedSizeAndCost {
 
-    PackType packType= PackType.AutoGen;
+    PackType packType = PackType.AutoGen;
 
     Random rand = new Random();
 
@@ -24,19 +24,19 @@ public class AutoGenCardPack extends ACardPackFixedSizeAndCost {
         genereateCards();
     }
 
-    BaseEffect baseEffect= new BaseEffect();
+    BaseEffect baseEffect = new BaseEffect();
     BaseRace baseRace = new BaseRace();
 
     void genereateCards() {
-        int roll=rand.nextInt(50);
-        if(roll<=2)
-            super.cards.add(new MonsterCard("OP Dragon",1000,new FireEffect(baseEffect),new DragonRace(baseRace)));
+        int roll = rand.nextInt(50);
+        if (roll <= 2)
+            super.cards.add(new MonsterCard("OP Dragon", 1000, new FireEffect(baseEffect), new DragonRace(baseRace)));
         else
-            super.cards.add(new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace)));
+            super.cards.add(new MonsterCard("Dragon", 10, new FireEffect(baseEffect), new DragonRace(baseRace)));
 
-         super.cards.add(new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace)));
-         super.cards.add(new SpellCard("Fire Spell",10,new FireEffect(baseEffect)));
-         super.cards.add(new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace));
+        super.cards.add(new MonsterCard("Water Goblin", 100, new WaterEffect(baseEffect), new GoblinRace(baseRace)));
+        super.cards.add(new SpellCard("Fire Spell", 10, new FireEffect(baseEffect)));
+        super.cards.add(new MonsterCard("Water Monster", 7, new WaterEffect(baseEffect), baseRace));
 
     }
 }

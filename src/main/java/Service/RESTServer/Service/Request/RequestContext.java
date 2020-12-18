@@ -14,16 +14,16 @@ public class RequestContext implements IRequestContext {
 
     String httpVerb_Res;
 
-    Map<String,String> headers= new HashMap<>();
+    Map<String, String> headers = new HashMap<>();
 
-    String payload="";
+    String payload = "";
 
 
     public RequestContext(BufferedReader reader) {
         int contentLength;
         try {
-            contentLength = readHttpHeader( reader );
-        payload = readHttpBody( reader, contentLength );
+            contentLength = readHttpHeader(reader);
+            payload = readHttpBody(reader, contentLength);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,17 +34,16 @@ public class RequestContext implements IRequestContext {
         String line;
         int contentLength = 0;
 
-        if((line = reader.readLine())!=null)
-        {
-            httpVerb_Res=line;
+        if ((line = reader.readLine()) != null) {
+            httpVerb_Res = line;
         }
 
         //read line after line and fill into Map
-        while ( (line=reader.readLine())!=null ) {
-            if (line.isBlank() )
+        while ((line = reader.readLine()) != null) {
+            if (line.isBlank())
                 break;
             headers.put(line.substring(0, line.indexOf(":")), line.substring(line.indexOf(":") + 2).trim());
-            if (line.toLowerCase().startsWith("content-length:") ) {
+            if (line.toLowerCase().startsWith("content-length:")) {
                 contentLength = Integer.parseInt(line.substring(15).trim());
             }
         }
@@ -52,8 +51,7 @@ public class RequestContext implements IRequestContext {
     }
 
     private String readHttpBody(BufferedReader reader, int contentLength) throws IOException {
-        if(contentLength==0)
-        {
+        if (contentLength == 0) {
             return "";
         }
         StringBuilder sb = new StringBuilder(10000);
@@ -63,16 +61,15 @@ public class RequestContext implements IRequestContext {
         while ((len = reader.read(buf)) != -1) {
             sb.append(buf, 0, len);
             totalLen += len;
-            if( totalLen >= contentLength )
+            if (totalLen >= contentLength)
                 break;
         }
 
         return sb.toString();
     }
 
-    public String formatedString()
-    {
-        StringBuilder returnString= new StringBuilder("REQUEST:\n");
+    public String formatedString() {
+        StringBuilder returnString = new StringBuilder("REQUEST:\n");
         returnString.append(httpVerb_Res).append("\n\n");
         returnString.append("HEADERS:\n");
         for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -83,8 +80,6 @@ public class RequestContext implements IRequestContext {
         returnString.append(payload);
         return returnString.toString();
     }
-
-
 
 
 }

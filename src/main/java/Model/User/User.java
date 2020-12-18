@@ -3,19 +3,19 @@ package Model.User;
 import Model.Battle.Battle;
 import Model.Cards.ACard;
 import Model.Cards.CardPacks.ICardPack;
-import Model.Cards.Vendor.IVendor;
 import Model.Cards.CardPacks.PackType;
+import Model.Cards.Vendor.IVendor;
+import Model.User.Statistics.Stats;
 import Model.User.Trade.ITrade;
 import Model.User.Trade.ITradeCardRequirements;
 import Model.User.Trade.Trade1To1;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -28,7 +28,7 @@ public class User {
     @Setter
     int coins = 20;
     @Setter
-    int mmr = 0;
+    int mmr = 100;
 
     @Setter
     EditableUserData editableUserData = new EditableUserData();
@@ -75,21 +75,19 @@ public class User {
     }
 
 
-
     public boolean defineDeck(List<ACard> cards) {
-       if (cards.size()==4)
-       {
-           AtomicBoolean cardsOwned= new AtomicBoolean(true);
-           cards.forEach(x-> {
-               if(!stack.cards.contains(x))
-                   cardsOwned.set(false);
-           });
-           if(cardsOwned.get()) {
-               deck.cards = cards;
-               return true;
-           }
-       }
-       return false;
+        if (cards.size() == 4) {
+            AtomicBoolean cardsOwned = new AtomicBoolean(true);
+            cards.forEach(x -> {
+                if (!stack.cards.contains(x))
+                    cardsOwned.set(false);
+            });
+            if (cardsOwned.get()) {
+                deck.cards = cards;
+                return true;
+            }
+        }
+        return false;
     }
 
     //@Transaction
@@ -110,5 +108,12 @@ public class User {
 
     public void searchBattle() {
         playerHub.registerForMatchmaking(this);
+    }
+
+    public Stats showStats() {
+        double battleCount = battleHistory.size();
+        double battlesWon = (int) battleHistory.stream().filter(x -> x.getWinner().equals(this)).count();
+        double winrate = battlesWon / battleCount;
+        return new Stats(this.credentials.username, mmr, (int) battleCount, winrate);
     }
 }

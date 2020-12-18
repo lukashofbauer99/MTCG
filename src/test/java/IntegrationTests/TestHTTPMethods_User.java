@@ -3,8 +3,11 @@ package IntegrationTests;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Model.User.Deck;
+import Model.User.Statistics.Stats;
 import Model.User.User;
 import Service.RESTServer.Service.Methods.GET.GET_deck;
+import Service.RESTServer.Service.Methods.GET.GET_score;
+import Service.RESTServer.Service.Methods.GET.GET_stats;
 import Service.RESTServer.Service.Methods.GET.GET_user_name;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.POST_sessions;
@@ -13,6 +16,7 @@ import Service.RESTServer.Service.Methods.PUT.PUT_users_name;
 import Service.RESTServer.Service.Request.RequestContext;
 import Service.RESTServer.Service.Socket.MySocket;
 import Service.RESTServer.Service.WorkerThread;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -40,13 +44,13 @@ public class TestHTTPMethods_User {
     private static ServerSocket _listener = null;
 
     static MySocket socket;
-    static List<IHTTPMethod> methods= new ArrayList<>();
+    static List<IHTTPMethod> methods = new ArrayList<>();
     static Thread workerThread;
-    static volatile boolean ready= false;
+    static volatile boolean ready = false;
 
     static ObjectMapper mapper = new ObjectMapper();
 
-    static IUserRepository userRepo=new InMemoryUserRepository();
+    static IUserRepository userRepo = new InMemoryUserRepository();
 
 
     @BeforeAll
@@ -57,7 +61,7 @@ public class TestHTTPMethods_User {
         methods.add(new POST_sessions(userRepo));
 
 
-        workerThread = new Thread(()-> {
+        workerThread = new Thread(() -> {
             try {
                 _listener = new ServerSocket(10001, 5);
             } catch (IOException e) {
@@ -65,7 +69,7 @@ public class TestHTTPMethods_User {
                 return;
             }
 
-            ready=true;
+            ready = true;
             while (true) {
                 try {
                     socket = new MySocket(_listener.accept());
@@ -113,7 +117,7 @@ public class TestHTTPMethods_User {
 
         String response = textBuilder.toString();
 
-        assertEquals("1",response);
+        assertEquals("1", response);
     }
 
     @Test
@@ -142,14 +146,14 @@ public class TestHTTPMethods_User {
 
         String response = textBuilder.toString();
 
-        assertEquals("2",response);
+        assertEquals("2", response);
     }
 
 
     @Test
     @Order(3)
     @DisplayName("Test Login User")
-    void testLoginUser() throws IOException{
+    void testLoginUser() throws IOException {
 
         command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
 
@@ -172,13 +176,13 @@ public class TestHTTPMethods_User {
         }
 
         String response = textBuilder.toString();
-        assertEquals("Basic kienboec-mtcgToken",response);
+        assertEquals("Basic kienboec-mtcgToken", response);
     }
 
     @Test
     @Order(4)
     @DisplayName("Test Login User 2nd")
-    void testLoginUser2nd() throws IOException{
+    void testLoginUser2nd() throws IOException {
 
         command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
 
@@ -201,13 +205,13 @@ public class TestHTTPMethods_User {
         }
 
         String response = textBuilder.toString();
-        assertEquals("Basic altenhof-mtcgToken",response);
+        assertEquals("Basic altenhof-mtcgToken", response);
     }
 
     @Test
     @Order(5)
     @DisplayName("Test Login User Fail")
-    void testLoginUserFail() throws IOException{
+    void testLoginUserFail() throws IOException {
 
         command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"different\"}";
 
@@ -230,7 +234,7 @@ public class TestHTTPMethods_User {
         }
 
         String response = textBuilder.toString();
-        assertEquals("Invalid Credentials or already logged in",response);
+        assertEquals("Invalid Credentials or already logged in", response);
     }
 
     @Test
@@ -239,19 +243,19 @@ public class TestHTTPMethods_User {
     void testShowUser() throws IOException {
 
 
-        Map<String,String> headers = new HashMap<>();
-        headers.put("Authorization","Basic kienboec-mtcgToken");
-        headers.put("Content-Type","application/json");
-        RequestContext requestContext = new RequestContext("GET /users/kienboec HTTP/1.1",headers,"");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("GET /users/kienboec HTTP/1.1", headers, "");
 
         IHTTPMethod method = new GET_user_name(userRepo);
         User user = new User();
-        if(method.analyse(requestContext)) {
+        if (method.analyse(requestContext)) {
             user = mapper.readValue(method.exec(requestContext).getPayload(), User.class);
         }
 
 
-        assertEquals("kienboec",user.getCredentials().getUsername());
+        assertEquals("kienboec", user.getCredentials().getUsername());
     }
 
     @Test
@@ -260,19 +264,19 @@ public class TestHTTPMethods_User {
     void testShowUserFail() throws IOException {
 
 
-        Map<String,String> headers = new HashMap<>();
-        headers.put("Authorization","Basic kienboec-mtcgToken");
-        headers.put("Content-Type","application/json");
-        RequestContext requestContext = new RequestContext("GET /users/altenhof HTTP/1.1",headers,"");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("GET /users/altenhof HTTP/1.1", headers, "");
 
         IHTTPMethod method = new GET_user_name(userRepo);
         String response = "";
-        if(method.analyse(requestContext)) {
-            response =method.exec(requestContext).getPayload();
+        if (method.analyse(requestContext)) {
+            response = method.exec(requestContext).getPayload();
         }
 
 
-        assertEquals("Insufficient Permissions",response);
+        assertEquals("Insufficient Permissions", response);
     }
 
     @Test
@@ -281,20 +285,20 @@ public class TestHTTPMethods_User {
     void testEditUser() throws IOException {
 
 
-        Map<String,String> headers = new HashMap<>();
-        headers.put("Authorization","Basic kienboec-mtcgToken");
-        headers.put("Content-Type","application/json");
-        RequestContext requestContext = new RequestContext("PUT /users/kienboec HTTP/1.1",headers,"{\"Name\": \"Hoax\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("PUT /users/kienboec HTTP/1.1", headers, "{\"Name\": \"Hoax\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
 
         IHTTPMethod method = new PUT_users_name(userRepo);
         User user = new User();
-        if(method.analyse(requestContext)) {
+        if (method.analyse(requestContext)) {
             method.exec(requestContext).getPayload();
             user = userRepo.getUserWithToken("Basic kienboec-mtcgToken");
         }
 
 
-        assertEquals(":-)",user.getEditableUserData().getImage());
+        assertEquals(":-)", user.getEditableUserData().getImage());
     }
 
     @Test
@@ -303,20 +307,63 @@ public class TestHTTPMethods_User {
     void testEditUserFail() throws IOException {
 
 
-        Map<String,String> headers = new HashMap<>();
-        headers.put("Authorization","Basic kienboec-mtcgToken");
-        headers.put("Content-Type","application/json");
-        RequestContext requestContext = new RequestContext("PUT /users/altenhof HTTP/1.1",headers,"{\"Name\": \"Hoax\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("PUT /users/altenhof HTTP/1.1", headers, "{\"Name\": \"Hoax\",  \"Bio\": \"me playin...\", \"Image\": \":-)\"}");
 
         IHTTPMethod method = new PUT_users_name(userRepo);
         User user = new User();
-        if(method.analyse(requestContext)) {
+        if (method.analyse(requestContext)) {
             method.exec(requestContext).getPayload();
             user = userRepo.getUserWithToken("Basic kienboec-mtcgToken");
         }
 
 
-        assertEquals(":-)",user.getEditableUserData().getImage());
+        assertEquals(":-)", user.getEditableUserData().getImage());
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("Test Show Stats")
+    void testShowStats() throws IOException {
+
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("GET /stats HTTP/1.1", headers, "");
+
+        IHTTPMethod method = new GET_stats(userRepo);
+        Stats stats = new Stats();
+        if (method.analyse(requestContext)) {
+            stats = mapper.readValue(method.exec(requestContext).getPayload(), Stats.class);
+        }
+
+
+        assertEquals(100, stats.getMmr());
+    }
+
+    @Test
+    @Order(11)
+    @DisplayName("Test Show Scoreboard")
+    void testShowScoreboard() throws IOException {
+
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "Basic kienboec-mtcgToken");
+        headers.put("Content-Type", "application/json");
+        RequestContext requestContext = new RequestContext("GET /score HTTP/1.1", headers, "");
+
+        IHTTPMethod method = new GET_score(userRepo);
+        List<Stats> score = new ArrayList<>();
+        if (method.analyse(requestContext)) {
+            score = mapper.readValue(method.exec(requestContext).getPayload(), new TypeReference<>() {
+            });
+        }
+
+
+        assertEquals(2, score.size());
     }
 
 }

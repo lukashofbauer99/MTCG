@@ -9,7 +9,7 @@ public class MySocket implements IMySocket {
     private Socket socket;
 
     public MySocket(Socket accept) {
-        this.socket=accept;
+        this.socket = accept;
     }
 
     @Override

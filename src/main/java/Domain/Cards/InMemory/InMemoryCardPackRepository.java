@@ -11,12 +11,12 @@ import java.util.concurrent.ConcurrentMap;
 public class InMemoryCardPackRepository implements ICardPackRepository {
 
     ConcurrentMap<Long, ICardPack> cardPacks = new ConcurrentHashMap<>();
-    Long currentID=1l;
+    Long currentID = 1L;
 
 
     @Override
     public synchronized Long persistEntity(ICardPack entity) {
-        while (cardPacks.containsKey(currentID.toString())) {
+        while (cardPacks.containsKey(currentID)) {
             currentID++;
         }
         entity.setId(currentID);
@@ -26,7 +26,7 @@ public class InMemoryCardPackRepository implements ICardPackRepository {
 
     @Override
     public synchronized boolean updateEntity(ICardPack entity) {
-        if(entity.getId()!=null) {
+        if (entity.getId() != null) {
             if (cardPacks.containsKey(entity.getId())) {
                 cardPacks.put(entity.getId(), entity);
                 return true;
@@ -42,7 +42,7 @@ public class InMemoryCardPackRepository implements ICardPackRepository {
 
     @Override
     public synchronized boolean deleteEntity(Long id) {
-        if(cardPacks.containsKey(id)) {
+        if (cardPacks.containsKey(id)) {
             cardPacks.remove(id);
             return true;
         }
@@ -51,7 +51,7 @@ public class InMemoryCardPackRepository implements ICardPackRepository {
 
     @Override
     public List<ICardPack> getAllEntities() {
-        return new ArrayList<ICardPack>(cardPacks.values());
+        return new ArrayList<>(cardPacks.values());
     }
 
 }

@@ -27,7 +27,7 @@ public class TestRegisterForMatchmaking {
     @DisplayName("Match Register 1 Player")
     void testRegisterOnePlayer() {
         // arrange
-        userA= new User(playerhubA);
+        userA = new User(playerhubA);
 
         // act
         userA.searchBattle();
@@ -41,10 +41,9 @@ public class TestRegisterForMatchmaking {
     void testRegisterMultiplePlayer() {
         // arrange
 
-        userA= new User(playerhubA);
-        userB= new User(playerhubA);
-        userC= new User(playerhubA);
-
+        userA = new User(playerhubA);
+        userB = new User(playerhubA);
+        userC = new User(playerhubA);
 
 
         // act

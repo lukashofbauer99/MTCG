@@ -2,7 +2,6 @@ package UnitTests.Service.RESTServer.Service.Methods;
 
 import Service.RESTServer.Domain.IRepository;
 import Service.RESTServer.Model.Message;
-
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Request.RequestContext;
@@ -32,11 +31,11 @@ public class TestDELETE_message_id {
     void testAnalyzeTrue() {
         // arrange
         delete_message_id = new DELETE_messages_Id(repository);
-        requestContext=new RequestContext("DELETE /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("DELETE /messages/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= delete_message_id.analyse(requestContext);
+        check = delete_message_id.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -48,11 +47,11 @@ public class TestDELETE_message_id {
     void testAnalyzeFalse() {
         // arrange
         delete_message_id = new DELETE_messages_Id(repository);
-        requestContext=new RequestContext("DELETE /messages HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("DELETE /messages HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= delete_message_id.analyse(requestContext);
+        check = delete_message_id.analyse(requestContext);
 
         // assert
         assertFalse(check);
@@ -63,7 +62,7 @@ public class TestDELETE_message_id {
     void testExec() {
         // arrange
         delete_message_id = new DELETE_messages_Id(repository);
-        requestContext=new RequestContext("DELETE /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("DELETE /messages/1 HTTP/1.1", new HashMap<>(), "");
 
         // act
         delete_message_id.exec(requestContext);

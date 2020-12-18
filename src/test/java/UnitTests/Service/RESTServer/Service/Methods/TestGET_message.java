@@ -32,12 +32,12 @@ public class TestGET_message {
     @DisplayName("Test GET_Messages-analyze true")
     void testAnalyzeTrue() {
         // arrange
-        get_messages= new GET_messages(repository);
-        requestContext=new RequestContext("GET /messages HTTP/1.1",new HashMap<>(),"");
+        get_messages = new GET_messages(repository);
+        requestContext = new RequestContext("GET /messages HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check=get_messages.analyse(requestContext);
+        check = get_messages.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -48,12 +48,12 @@ public class TestGET_message {
     @DisplayName("Test GET_Messages-analyze false")
     void testAnalyzeFalse() {
         // arrange
-        get_messages= new GET_messages(repository);
-        requestContext=new RequestContext("GET /messages/1 HTTP/1.1",new HashMap<>(),"");
+        get_messages = new GET_messages(repository);
+        requestContext = new RequestContext("GET /messages/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check=get_messages.analyse(requestContext);
+        check = get_messages.analyse(requestContext);
 
         // assert
         assertFalse(check);
@@ -63,7 +63,7 @@ public class TestGET_message {
     @DisplayName("Test GET_Messages-exec")
     void testExec() {
         // arrange
-        get_messages= new GET_messages(repository);
+        get_messages = new GET_messages(repository);
 
         when(repository.getAllEntities()).thenReturn(new ArrayList<>());
         // act

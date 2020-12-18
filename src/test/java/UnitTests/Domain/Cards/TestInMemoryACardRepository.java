@@ -2,7 +2,6 @@ package UnitTests.Domain.Cards;
 
 import Domain.Cards.InMemory.InMemoryACardRepository;
 import Domain.Cards.Interfaces.IACardRepository;
-import Domain.User.InMemory.InMemoryUserRepository;
 import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
@@ -11,8 +10,6 @@ import Model.Cards.Effects_Races.Races.BaseRace;
 import Model.Cards.Effects_Races.Races.FireElfRace;
 import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
-import Model.User.Credentials;
-import Model.User.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,15 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestInMemoryACardRepository {
 
 
-    IEffect baseEffect= new BaseEffect();
-    IRace baseRace= new BaseRace();
-    ACard cardA=new MonsterCard("Fireelf",20,new FireEffect(baseEffect), new FireElfRace(baseRace));
+    IEffect baseEffect = new BaseEffect();
+    IRace baseRace = new BaseRace();
+    ACard cardA = new MonsterCard("Fireelf", 20, new FireEffect(baseEffect), new FireElfRace(baseRace));
 
     IACardRepository cardRepository = new InMemoryACardRepository();
 
     @BeforeEach()
-    void cleanUpRepo()
-    {
+    void cleanUpRepo() {
         cardRepository = new InMemoryACardRepository();
     }
 
@@ -45,7 +41,7 @@ public class TestInMemoryACardRepository {
         String id = cardRepository.persistEntity(cardA);
 
         // assert
-        assertEquals("1",id);
+        assertEquals("1", id);
     }
 
     @Test
@@ -57,7 +53,7 @@ public class TestInMemoryACardRepository {
         String id = cardRepository.persistEntityGenNoId(cardA);
 
         // assert
-        assertEquals("predef",id);
+        assertEquals("predef", id);
     }
 
     @Test
@@ -107,7 +103,7 @@ public class TestInMemoryACardRepository {
         String id = cardRepository.persistEntity(cardA);
 
         // act
-        boolean works= cardRepository.deleteEntity(id);
+        boolean works = cardRepository.deleteEntity(id);
         ACard foundACard = cardRepository.findEntity(id);
 
 
@@ -122,7 +118,7 @@ public class TestInMemoryACardRepository {
         // arrange
 
         // act
-        boolean works= cardRepository.deleteEntity("0");
+        boolean works = cardRepository.deleteEntity("0");
 
         // assert
         assertFalse(works);

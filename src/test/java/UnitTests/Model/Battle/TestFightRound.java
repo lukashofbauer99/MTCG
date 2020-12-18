@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(MockitoExtension.class)
 public class TestFightRound {
 
-    Round round= new Round();
+    Round round = new Round();
 
     ACard attackingCard;
     ACard defendingCard;
 
-    BaseEffect baseEffect= new BaseEffect();
+    BaseEffect baseEffect = new BaseEffect();
     BaseRace baseRace = new BaseRace();
 
 
@@ -33,8 +33,8 @@ public class TestFightRound {
     @DisplayName("Normal SpellCard vs normal MonsterCard Fight Round")
     void test_NormalSpellCard_FightRound() {
         // arrange
-        attackingCard =new SpellCard("Spear Throw",10,baseEffect);
-        defendingCard =new MonsterCard("Human Warrior",7,baseEffect,baseRace);
+        attackingCard = new SpellCard("Spear Throw", 10, baseEffect);
+        defendingCard = new MonsterCard("Human Warrior", 7, baseEffect, baseRace);
 
         // act
         round.fight(attackingCard, defendingCard);
@@ -48,8 +48,8 @@ public class TestFightRound {
     @DisplayName("Normal Monster Cards Fight Round")
     void test_NormalMonsterCard_FightRound() {
         // arrange
-        attackingCard =new SpellCard("Spear Throw",10,baseEffect);
-        defendingCard =new MonsterCard("Human Warrior",7,baseEffect,baseRace);
+        attackingCard = new SpellCard("Spear Throw", 10, baseEffect);
+        defendingCard = new MonsterCard("Human Warrior", 7, baseEffect, baseRace);
 
         // act
         round.fight(attackingCard, defendingCard);
@@ -63,8 +63,8 @@ public class TestFightRound {
     @DisplayName("Fire Monster vs Water Monster Fight Round")
     void test_FireMVsWaterM_FightRound() {
         // arrange
-        attackingCard =new MonsterCard("Fire Monster",10,new FireEffect(baseEffect),baseRace);
-        defendingCard =new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace);
+        attackingCard = new MonsterCard("Fire Monster", 10, new FireEffect(baseEffect), baseRace);
+        defendingCard = new MonsterCard("Water Monster", 7, new WaterEffect(baseEffect), baseRace);
 
         // act
         round.fight(attackingCard, defendingCard);
@@ -78,8 +78,8 @@ public class TestFightRound {
     @DisplayName("Fire Spell vs Water Monster Fight Round")
     void test_FireSVsWaterM_FightRound() {
         // arrange
-        attackingCard =new SpellCard("Fire Spell",10,new FireEffect(baseEffect));
-        defendingCard =new MonsterCard("Water Monster",7,new WaterEffect(baseEffect),baseRace);
+        attackingCard = new SpellCard("Fire Spell", 10, new FireEffect(baseEffect));
+        defendingCard = new MonsterCard("Water Monster", 7, new WaterEffect(baseEffect), baseRace);
 
         // act
         round.fight(attackingCard, defendingCard);
@@ -94,8 +94,8 @@ public class TestFightRound {
     @DisplayName("Fire Dragon vs Water Goblin Fight Round")
     void test_FireDVsWaterG_FightRound() {
         // arrange
-        attackingCard =new MonsterCard("Water Goblin",100,new WaterEffect(baseEffect),new GoblinRace(baseRace));
-        defendingCard =new MonsterCard("Dragon",10,new FireEffect(baseEffect),new DragonRace(baseRace));
+        attackingCard = new MonsterCard("Water Goblin", 100, new WaterEffect(baseEffect), new GoblinRace(baseRace));
+        defendingCard = new MonsterCard("Dragon", 10, new FireEffect(baseEffect), new DragonRace(baseRace));
         int damageCalculated;
 
         // act

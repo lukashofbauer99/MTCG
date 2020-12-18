@@ -23,7 +23,7 @@ public class MessageRepository implements IRepository<Message> {
     ObjectMapper mapper = new ObjectMapper();
     int currentID = 0;
 
-    public MessageRepository(String messagePath,String idPath) {
+    public MessageRepository(String messagePath, String idPath) {
         this.messagePath = messagePath;
         this.idPath = idPath;
     }
@@ -47,12 +47,9 @@ public class MessageRepository implements IRepository<Message> {
         try {
             //read JSON value from file
             return mapper.readValue(Files.readString(Path.of(messagePath + id + ".json")), Message.class);
-        }
-        catch(NoSuchFileException e)
-        {
+        } catch (NoSuchFileException e) {
             return null;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println("An error occurred while reading the message");
             e.printStackTrace();
         }
@@ -60,12 +57,9 @@ public class MessageRepository implements IRepository<Message> {
     }
 
     public boolean deleteEntity(int id) {
-        try
-        {
+        try {
             Files.deleteIfExists(Paths.get(messagePath + id + ".json"));
-        }
-        catch(NoSuchFileException e)
-        {
+        } catch (NoSuchFileException e) {
             return false;
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +74,7 @@ public class MessageRepository implements IRepository<Message> {
         //List of all files
         String[] contents = directoryPath.list();
 
-        if (contents!=null) {
+        if (contents != null) {
             for (String content : contents) {
                 try {
                     messages.add(mapper.readValue(Files.readString(Path.of(messagePath + content)), Message.class));

@@ -21,7 +21,7 @@ public class GET_messages implements IHTTPMethod {
     IRepository<Message> repository = new MessageRepository();
 
     public GET_messages(IRepository<Message> repository) {
-        this.repository=repository;
+        this.repository = repository;
     }
 
     @Override
@@ -39,14 +39,14 @@ public class GET_messages implements IHTTPMethod {
         List<Message> messages = new ArrayList<>(repository.getAllEntities());
 
         try {
-            messagesString= mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messages);
+            messagesString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messages);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
 
         responseContext.setPayload(messagesString);
         responseContext.setHttpStatusCode("HTTP/1.1 200");
-        responseContext.getHeaders().put("Content-Length",  String.valueOf(messagesString.length()));
+        responseContext.getHeaders().put("Content-Length", String.valueOf(messagesString.length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");
         responseContext.getHeaders().put("Connection", "close");
 

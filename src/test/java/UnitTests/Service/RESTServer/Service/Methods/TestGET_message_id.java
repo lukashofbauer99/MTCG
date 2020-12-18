@@ -32,12 +32,12 @@ public class TestGET_message_id {
     @DisplayName("Test GET_Message_id-analyze true")
     void testAnalyzeTrue() {
         // arrange
-        get_message_id= new GET_messages_Id(repository);
-        requestContext=new RequestContext("GET /messages/1 HTTP/1.1",new HashMap<>(),"");
+        get_message_id = new GET_messages_Id(repository);
+        requestContext = new RequestContext("GET /messages/1 HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= get_message_id.analyse(requestContext);
+        check = get_message_id.analyse(requestContext);
 
         // assert
         assertTrue(check);
@@ -48,12 +48,12 @@ public class TestGET_message_id {
     @DisplayName("Test GET_Message_id-analyze false")
     void testAnalyzeFalse() {
         // arrange
-        get_message_id= new GET_messages_Id(repository);
-        requestContext=new RequestContext("GET /messages HTTP/1.1",new HashMap<>(),"");
+        get_message_id = new GET_messages_Id(repository);
+        requestContext = new RequestContext("GET /messages HTTP/1.1", new HashMap<>(), "");
         boolean check;
 
         // act
-        check= get_message_id.analyse(requestContext);
+        check = get_message_id.analyse(requestContext);
 
         // assert
         assertFalse(check);
@@ -65,7 +65,7 @@ public class TestGET_message_id {
         // arrange
         get_message_id = new GET_messages_Id(repository);
 
-        requestContext=new RequestContext("GET /messages/1 HTTP/1.1",new HashMap<>(),"");
+        requestContext = new RequestContext("GET /messages/1 HTTP/1.1", new HashMap<>(), "");
 
         when(repository.findEntity(1)).thenReturn(new Message());
         // act

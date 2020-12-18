@@ -4,7 +4,6 @@ import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Races.KrakenRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
-import lombok.NoArgsConstructor;
 
 public class BaseEffect extends AEffect {
 
@@ -14,10 +13,8 @@ public class BaseEffect extends AEffect {
 
     @Override
     public double affect(ACard thisCard, ACard opponentCard) {
-        if(thisCard.getClass()== SpellCard.class&&opponentCard.getClass()== MonsterCard.class)
-        {
-            if(((MonsterCard) opponentCard).getRace().getClass()==KrakenRace.class)
-            {
+        if (thisCard.getClass() == SpellCard.class && opponentCard.getClass() == MonsterCard.class) {
+            if (((MonsterCard) opponentCard).getRace().getClass() == KrakenRace.class) {
                 return 0;
             }
         }

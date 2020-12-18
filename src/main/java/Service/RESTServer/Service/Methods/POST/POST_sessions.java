@@ -10,8 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
-
 public class POST_sessions implements IHTTPMethod {
 
     public POST_sessions(IUserRepository userRepository) {
@@ -38,12 +36,11 @@ public class POST_sessions implements IHTTPMethod {
             responseContext.setPayload("Invalid form of Data");
         }
 
-        String sessionToken =userRepository.loginUser(cred);
-        if(sessionToken!=null) {
+        String sessionToken = userRepository.loginUser(cred);
+        if (sessionToken != null) {
             responseContext.setPayload(sessionToken);
             responseContext.setHttpStatusCode("HTTP/1.1 200");
-        }
-        else {
+        } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Invalid Credentials or already logged in");
         }

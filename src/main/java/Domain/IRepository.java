@@ -3,7 +3,7 @@ package Domain;
 import java.util.List;
 
 //TODO: Implement Rest APIs
-public interface IRepository<entityType,idType> {
+public interface IRepository<entityType, idType> {
 
     idType persistEntity(entityType entity);
 
