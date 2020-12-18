@@ -37,14 +37,19 @@ public class POST_users implements IHTTPMethod {
         } catch (JsonProcessingException e) {
             responseContext.setPayload("Invalid form of Data");
         }
+        User user = new User(cred);
+        user.getEditableUserData().setName(cred.getUsername());
         Long id =userRepository.persistEntity(new User(cred));
         if (id!=null) {
             responseContext.setPayload(String.valueOf(id));
+            responseContext.setHttpStatusCode("HTTP/1.1 201");
         }
-        else
+        else {
             responseContext.setPayload("User already Exists");
+            responseContext.setHttpStatusCode("HTTP/1.1 409");
+        }
 
-        responseContext.setHttpStatusCode("HTTP/1.1 201");
+
         responseContext.getHeaders().put("Connection", "close");
         responseContext.getHeaders().put("Content-Length", String.valueOf(responseContext.getPayload().length()));
         responseContext.getHeaders().put("Content-Type", "text/plain");

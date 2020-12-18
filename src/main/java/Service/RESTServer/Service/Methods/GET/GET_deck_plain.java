@@ -2,7 +2,6 @@ package Service.RESTServer.Service.Methods.GET;
 
 import Domain.User.Interfaces.IUserRepository;
 import Model.User.Deck;
-import Model.User.User;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
@@ -13,44 +12,38 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class GET_user_name implements IHTTPMethod {
+public class GET_deck_plain implements IHTTPMethod {
 
+    ObjectMapper mapper = new ObjectMapper();
     IUserRepository userRepository;
 
-    public GET_user_name(IUserRepository userRepository) {
+    public GET_deck_plain(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    ObjectMapper mapper = new ObjectMapper();
-
     @Override
     public Boolean analyse(IRequestContext data) {
-        return data.getHttpVerb_Res().startsWith("GET /users/");
+        return data.getHttpVerb_Res().startsWith("GET /deck?format=plain ");
     }
 
     @Override
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
-        String username= data.getHttpVerb_Res().substring("GET /users/".length(),data.getHttpVerb_Res().indexOf(" HTTP/"));
-
-
         if(userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
-            User user =userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
-            if( user.getCredentials().getUsername().equals(username)) {
-                responseContext.setPayload(mapper.writerFor(new TypeReference<User>() {
-                }).writeValueAsString(userRepository.getUserWithUsername(username)));
-            }
-            else {
-                responseContext.setHttpStatusCode("HTTP/1.1 401");
-                responseContext.setPayload("Insufficient Permissions");
-            }
-
+            responseContext.setPayload(
+                    mapper.writerFor(new TypeReference<Deck>() {
+                    })
+                            .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization")))
+                            .replace("{", "")
+                            .replace("}", "")
+                            .replace(":", "=")
+                            .replace("\"", "")
+            );
         }
         else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Not logged In");
         }
-
 
         responseContext.setHttpStatusCode("HTTP/1.1 200");
         responseContext.getHeaders().put("Connection", "close");

@@ -35,8 +35,14 @@ public class GET_cards implements IHTTPMethod {
     public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
 
-        responseContext.setPayload(mapper.writerFor(new TypeReference<List<ACard>>() { })
-                .writeValueAsString(userRepository.getCardsOfUserWithToken(data.getHeaders().get("Authorization"))));
+        if (userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
+            responseContext.setPayload(mapper.writerFor(new TypeReference<List<ACard>>() {
+            })
+                    .writeValueAsString(userRepository.getCardsOfUserWithToken(data.getHeaders().get("Authorization"))));
+        } else {
+            responseContext.setHttpStatusCode("HTTP/1.1 401");
+            responseContext.setPayload("Not logged In");
+        }
 
         responseContext.setHttpStatusCode("HTTP/1.1 200");
         responseContext.getHeaders().put("Connection", "close");

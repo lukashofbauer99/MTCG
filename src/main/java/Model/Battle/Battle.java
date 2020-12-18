@@ -82,15 +82,21 @@ public class Battle {
        }
        if(battleDeckUser1.cards.size()<battleDeckUser2.cards.size()) {
            battleOutcome = BattleOutcome.User2Won;
+           user1.getBattleHistory().add(this);
+           user2.getBattleHistory().add(this);
            return user1;
        }
        else {
            if (battleDeckUser2.cards.size() < battleDeckUser1.cards.size()){
                battleOutcome = BattleOutcome.User1Won;
+               user1.getBattleHistory().add(this);
+               user2.getBattleHistory().add(this);
                return user2;
            }
            else {
                battleOutcome = BattleOutcome.Draw;
+               user1.getBattleHistory().add(this);
+               user2.getBattleHistory().add(this);
                return null;
            }
        }

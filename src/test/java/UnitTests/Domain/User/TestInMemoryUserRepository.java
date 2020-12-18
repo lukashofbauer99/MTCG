@@ -140,4 +140,15 @@ public class TestInMemoryUserRepository {
         assertEquals(userA,user);
     }
 
+    @Test
+    @DisplayName("get User With Username")
+    void testGetUserWithUsername() {
+        userRepository.persistEntity(userA);
+        // act
+        User user= userRepository.getUserWithUsername("user");
+
+        // assert
+        assertEquals(userA,user);
+    }
+
 }

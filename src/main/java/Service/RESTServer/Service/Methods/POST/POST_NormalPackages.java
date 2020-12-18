@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //TODO: create POST_NormalPackages_new with Authorisation
@@ -44,11 +45,12 @@ public class POST_NormalPackages implements IHTTPMethod {
     @Override
     public IResponseContext exec(IRequestContext data) {
         ResponseContext responseContext = new ResponseContext();
-        List<ACard> cards = null;
+        List<ACard> cards = new ArrayList<>();
         try {
             cards = mapper.readValue(data.getPayload(), new TypeReference<>() {});
         } catch (JsonProcessingException e) {
             responseContext.setPayload("Invalid form of Data");
+            responseContext.setHttpStatusCode("HTTP/1.1 400");
         }
 
         cards.forEach(this::addEffectsAndRaceDependingOnName);

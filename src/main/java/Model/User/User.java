@@ -8,6 +8,8 @@ import Model.Cards.CardPacks.PackType;
 import Model.User.Trade.ITrade;
 import Model.User.Trade.ITradeCardRequirements;
 import Model.User.Trade.Trade1To1;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,6 +29,10 @@ public class User {
     int coins = 20;
     @Setter
     int mmr = 0;
+
+    @Setter
+    EditableUserData editableUserData = new EditableUserData();
+
 
     Stack stack = new Stack();
     Deck deck = new Deck();

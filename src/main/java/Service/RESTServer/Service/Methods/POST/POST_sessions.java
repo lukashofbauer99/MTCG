@@ -34,6 +34,7 @@ public class POST_sessions implements IHTTPMethod {
         try {
             cred = mapper.readValue(data.getPayload(), Credentials.class);
         } catch (JsonProcessingException e) {
+            responseContext.setHttpStatusCode("HTTP/1.1 400");
             responseContext.setPayload("Invalid form of Data");
         }
 

@@ -45,6 +45,7 @@ public class POST_cards_Effects_RaceFromName implements IHTTPMethod {
             card = mapper.readValue(data.getPayload(), ACard.class);
         } catch (JsonProcessingException e) {
             responseContext.setPayload("Invalid form of data");
+            responseContext.setHttpStatusCode("HTTP/1.1 400");
         }
 
         addEffectsAndRaceDependingOnName(card);

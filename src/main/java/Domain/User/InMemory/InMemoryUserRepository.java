@@ -25,7 +25,7 @@ public class InMemoryUserRepository implements IUserRepository {
     @Override
     public synchronized Long persistEntity(User entity) {
         if(!users.values().stream().map(x->x.getCredentials().getUsername()).collect(toList()).contains(entity.getCredentials().getUsername())) {
-            while (users.containsKey(currentID.toString())) {
+            while (users.containsKey(currentID)) {
                 currentID++;
             }
             users.put(currentID, entity);
@@ -80,6 +80,11 @@ public class InMemoryUserRepository implements IUserRepository {
     }
 
     @Override
+    public Boolean UserLoggedIn(String token) {
+        return usersInSession.containsKey(token);
+    }
+
+    @Override
     public List<ACard> getCardsOfUserWithToken(String token) {
         User user = getUserWithToken(token);
         if(user!=null)
@@ -108,5 +113,10 @@ public class InMemoryUserRepository implements IUserRepository {
             return usersInSession.get(token);
         }
         return null;
+    }
+
+    @Override
+    public User getUserWithUsername(String username) {
+        return users.values().stream().filter(x->x.getCredentials().getUsername().equals(username)).findFirst().orElse(null);
     }
 }

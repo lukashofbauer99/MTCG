@@ -8,6 +8,7 @@ import Model.Cards.ACard;
 import Model.User.Deck;
 import Service.RESTServer.Service.Methods.GET.GET_cards;
 import Service.RESTServer.Service.Methods.GET.GET_deck;
+import Service.RESTServer.Service.Methods.GET.GET_deck_plain;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.POST_NormalPackages;
 import Service.RESTServer.Service.Methods.POST.POST_sessions;
@@ -225,10 +226,6 @@ public class TestHTTPMethods_User_Cards_Interaction {
     @DisplayName("Test Buy NormalPackage No Package availible")
     void testBuyNormalPackageFail() throws IOException {
 
-        //Doesnt work Curls behaves strange when executed from java
-        //command = "curl -X POST http://localhost:10003/transactions/packages --header \"Content-Type: application/json\" --header Authorization:Basic kienboec-mtcgToken";
-        //Process process= Runtime.getRuntime().exec(command);
-
         Map<String,String> headers = new HashMap<>();
         headers.put("Authorization","Basic kienboec-mtcgToken");
         headers.put("Content-Type","application/json");
@@ -246,10 +243,6 @@ public class TestHTTPMethods_User_Cards_Interaction {
     @Order(6)
     @DisplayName("Test Show Cards Of User")
     void testShowCardsOfUser() throws IOException {
-
-        //command= "curl -X GET http://localhost:10003/cards --header Authorization: Basic kienboec-mtcgToken";
-        //Process process = Runtime.getRuntime().exec(command);
-
 
         Map<String,String> headers = new HashMap<>();
         headers.put("Authorization","Basic kienboec-mtcgToken");
@@ -272,10 +265,6 @@ public class TestHTTPMethods_User_Cards_Interaction {
     @DisplayName("Test unconfigured Show Deck Of User")
     void testShowUnconfDeckOfUser() throws IOException {
 
-        //command= "curl -X GET http://localhost:10003/cards --header Authorization: Basic kienboec-mtcgToken";
-        //Process process = Runtime.getRuntime().exec(command);
-
-
         Map<String,String> headers = new HashMap<>();
         headers.put("Authorization","Basic kienboec-mtcgToken");
         headers.put("Content-Type","application/json");
@@ -295,10 +284,6 @@ public class TestHTTPMethods_User_Cards_Interaction {
     @Order(7)
     @DisplayName("Test Define Deck Of User")
     void testDefineDeckOfUser() throws IOException {
-
-        //command= "curl -X GET http://localhost:10003/cards --header Authorization: Basic kienboec-mtcgToken";
-        //Process process = Runtime.getRuntime().exec(command);
-
 
         Map<String,String> headers = new HashMap<>();
         headers.put("Authorization","Basic kienboec-mtcgToken");
@@ -325,10 +310,6 @@ public class TestHTTPMethods_User_Cards_Interaction {
     @Order(8)
     @DisplayName("Test Show Deck Of User")
     void testShowDeckOfUser() throws IOException {
-
-        //command= "curl -X GET http://localhost:10003/cards --header Authorization: Basic kienboec-mtcgToken";
-        //Process process = Runtime.getRuntime().exec(command);
-
 
         Map<String,String> headers = new HashMap<>();
         headers.put("Authorization","Basic kienboec-mtcgToken");
@@ -375,6 +356,31 @@ public class TestHTTPMethods_User_Cards_Interaction {
         assertNotEquals(SentIds,idsInDeck);
     }
 
+
+    @Test
+    @Order(8)
+    @DisplayName("Test Show Deck Of User other Format")
+    void testShowDeckOfUserOtherFormat() throws IOException {
+
+        //command= "curl -X GET http://localhost:10003/cards --header Authorization: Basic kienboec-mtcgToken";
+        //Process process = Runtime.getRuntime().exec(command);
+
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("GET /deck?format=plain HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new GET_deck_plain(userRepository);
+        String deck="";
+        if(method.analyse(requestContext)) {
+            deck = method.exec(requestContext).getPayload();
+        }
+
+
+        assertEquals("cards=[@type=Monster,id=845f0dc7-37d0-426e-994e-43fc3ac83c08,name=WaterGoblin,damage=10.0,effect=@type=Water,id=3,name=water,base=@type=Base,id=1,name=base,base=null,race=@type=Goblin,id=2,name=goblin,base=@type=Base,id=1,name=baseRace,base=null,@type=Monster,id=99f8f8dc-e25e-4a95-aa2c-782823f36e2a,name=Dragon,damage=50.0,effect=@type=Normal,id=4,name=normal,base=@type=Base,id=1,name=base,base=null,race=@type=Dragon,id=3,name=dragon,base=@type=Base,id=1,name=baseRace,base=null,@type=Spell,id=e85e3976-7c86-4d06-9a80-641c2019a79f,name=WaterSpell,damage=20.0,effect=@type=Water,id=3,name=water,base=@type=Base,id=1,name=base,base=null,@type=Monster,id=1cb6ab86-bdb2-47e5-b6e4-68c5ab389334,name=Ork,damage=45.0,effect=@type=Normal,id=4,name=normal,base=@type=Base,id=1,name=base,base=null,race=@type=Ork,id=5,name=ork,base=@type=Base,id=1,name=baseRace,base=null]"
+                ,deck);
+    }
 
 
 }

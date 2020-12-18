@@ -7,14 +7,12 @@ import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
-import Service.RESTServer.Service.Methods.GET.GET_cards;
-import Service.RESTServer.Service.Methods.GET.GET_deck;
-import Service.RESTServer.Service.Methods.GET.GET_messages;
-import Service.RESTServer.Service.Methods.GET.GET_messages_Id;
+import Service.RESTServer.Service.Methods.GET.*;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.*;
 import Service.RESTServer.Service.Methods.PUT.PUT_deck;
 import Service.RESTServer.Service.Methods.PUT.PUT_messages_Id;
+import Service.RESTServer.Service.Methods.PUT.PUT_users_name;
 import Service.RESTServer.Service.Socket.IMySocket;
 import Service.RESTServer.Service.Socket.MySocket;
 
@@ -49,6 +47,9 @@ public class MainServer implements Runnable {
         registeredMethods.add(new POST_messages());
 
 
+        registeredMethods.add(new PUT_users_name(userRepository));
+        registeredMethods.add(new GET_user_name(userRepository));
+        registeredMethods.add(new GET_deck_plain(userRepository));
         registeredMethods.add(new PUT_deck(userRepository,cardRepository));
         registeredMethods.add(new GET_deck(userRepository));
         registeredMethods.add(new GET_cards(userRepository));
