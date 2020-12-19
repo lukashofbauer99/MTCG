@@ -2,13 +2,17 @@ package IntegrationTests;
 
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
+import Domain.User.InMemory.InMemoryITradeRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
+import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
 import Model.User.Deck;
+import Model.User.Trade.ITrade;
 import Service.RESTServer.Service.Methods.GET.GET_cards;
 import Service.RESTServer.Service.Methods.GET.GET_deck;
 import Service.RESTServer.Service.Methods.GET.GET_deck_plain;
+import Service.RESTServer.Service.Methods.GET.GET_tradings;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.POST_NormalPackages;
 import Service.RESTServer.Service.Methods.POST.POST_sessions;
@@ -60,6 +64,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
     static IRaceRepository raceRepository= new InMemoryIRaceRepository();
     static IVendorRepository vendorRepository= new InMemoryIVendorRepository();
     static IUserRepository userRepository= new InMemoryUserRepository();
+    static ITradeRepository tradeRepository= new InMemoryITradeRepository();
 
 
     @BeforeAll
@@ -477,6 +482,26 @@ public class TestHTTPMethods_User_Cards_Interaction {
                         "    \n" +
                         "   ]\n"
                 ,deck);
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("Test show trades")
+    void testShowTrades() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("GET /tradings HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new GET_tradings(userRepository,tradeRepository);
+        List<ITrade> trades = new ArrayList<>();
+        if(method.analyse(requestContext)) {
+            trades = mapper.readValue(method.exec(requestContext).getPayload(),new TypeReference<>() {});
+        }
+
+
+        assertEquals(0,trades.size());
     }
 
 

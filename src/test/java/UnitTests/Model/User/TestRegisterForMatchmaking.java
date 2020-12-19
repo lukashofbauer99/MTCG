@@ -27,10 +27,10 @@ public class TestRegisterForMatchmaking {
     @DisplayName("Match Register 1 Player")
     void testRegisterOnePlayer() {
         // arrange
-        userA = new User(playerhubA);
+        userA = new User();
 
         // act
-        userA.searchBattle();
+        userA.searchBattle(playerhubA);
 
         // assert
         verify(playerhubA).registerForMatchmaking(userA);
@@ -40,16 +40,14 @@ public class TestRegisterForMatchmaking {
     @DisplayName("Match Register Multiple Players")
     void testRegisterMultiplePlayer() {
         // arrange
-
-        userA = new User(playerhubA);
-        userB = new User(playerhubA);
-        userC = new User(playerhubA);
-
+        userA = new User();
+        userB = new User();
+        userC = new User();
 
         // act
-        userA.searchBattle();
-        userB.searchBattle();
-        userC.searchBattle();
+        userA.searchBattle(playerhubA);
+        userB.searchBattle(playerhubA);
+        userC.searchBattle(playerhubA);
 
         // assert
         verify(playerhubA).registerForMatchmaking(userA);

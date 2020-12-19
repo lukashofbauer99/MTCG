@@ -2,7 +2,9 @@ package Service.RESTServer.Service;
 
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
+import Domain.User.InMemory.InMemoryITradeRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
+import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
@@ -37,6 +39,7 @@ public class MainServer implements Runnable {
         IEffectRepository effectRepository = new InMemoryIEffectRepository();
         IRaceRepository raceRepository = new InMemoryIRaceRepository();
         IVendorRepository vendorRepository = new InMemoryIVendorRepository();
+        ITradeRepository tradeRepository = new InMemoryITradeRepository();
 
         //register Methods
         registeredMethods.add(new GET_messages());
@@ -46,7 +49,9 @@ public class MainServer implements Runnable {
         registeredMethods.add(new POST_messages());
 
 
-        registeredMethods.add(new GET_score(userRepository));
+        registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
+        registeredMethods.add(new POST_tradings(userRepository,cardRepository,tradeRepository));
+        registeredMethods.add(new GET_tradings(userRepository,tradeRepository));
         registeredMethods.add(new GET_stats(userRepository));
         registeredMethods.add(new PUT_users_name(userRepository));
         registeredMethods.add(new GET_user_name(userRepository));

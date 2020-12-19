@@ -39,10 +39,6 @@ public class User {
     List<Battle> battleHistory = new ArrayList<>();
 
 
-    //@Autowired
-    PlayerHub playerHub;
-
-
     public User() {
     }
 
@@ -50,9 +46,6 @@ public class User {
         this.credentials = credentials;
     }
 
-    public User(PlayerHub playerHub) {
-        this.playerHub = playerHub;
-    }
 
     public boolean buyCardPackage(PackType packType, IVendor vendor) {
         ICardPack pack = vendor.buyCards(this, packType);
@@ -92,9 +85,9 @@ public class User {
 
     //@Transaction
 
-    public ITrade createTrade(User user, ACard cardToTrade, ITradeCardRequirements requirements) {
+    public ITrade createTrade(String id, ACard cardToTrade, ITradeCardRequirements requirements) {
         if (stack.getCards().contains(cardToTrade)) {
-            return new Trade1To1(user, cardToTrade, requirements);
+            return new Trade1To1(id,this, cardToTrade, requirements);
         } else return null;
     }
 
@@ -106,7 +99,15 @@ public class User {
         user.getStack().getCards().add(cardGiven);
     }
 
-    public void searchBattle() {
+    public boolean accectTradeOffer(ITrade trade, ACard card) {
+        if (stack.getCards().contains(card)) {
+            return trade.trade(this, card);
+        }
+        else
+            return false;
+    }
+
+    public void searchBattle(PlayerHub playerHub) {
         playerHub.registerForMatchmaking(this);
     }
 

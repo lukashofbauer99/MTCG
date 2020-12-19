@@ -5,5 +5,7 @@ import Model.User.User;
 
 public interface ITrade {
 
+    String getId();
+    void setId(String id);
     boolean trade(User user, ACard card);
 }
