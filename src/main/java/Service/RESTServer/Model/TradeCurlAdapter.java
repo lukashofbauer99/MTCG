@@ -1,10 +1,17 @@
 package Service.RESTServer.Model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class TradeCurlAdapter {
-    String id;
+
+    public String id;
     String cardToTrade;
     String type;
     double minimumDamage;

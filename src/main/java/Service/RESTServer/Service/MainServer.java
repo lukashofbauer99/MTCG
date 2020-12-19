@@ -7,6 +7,7 @@ import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
+import Service.RESTServer.Service.Methods.DELETE.DELETE_tradings_id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.*;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
@@ -49,6 +50,8 @@ public class MainServer implements Runnable {
         registeredMethods.add(new POST_messages());
 
 
+        registeredMethods.add(new DELETE_tradings_id(userRepository,tradeRepository));
+        registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new POST_tradings(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new GET_tradings(userRepository,tradeRepository));

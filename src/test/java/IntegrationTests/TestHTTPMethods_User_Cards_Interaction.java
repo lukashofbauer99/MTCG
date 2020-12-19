@@ -9,15 +9,14 @@ import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
 import Model.User.Deck;
 import Model.User.Trade.ITrade;
+import Model.User.User;
+import Service.RESTServer.Service.Methods.DELETE.DELETE_tradings_id;
 import Service.RESTServer.Service.Methods.GET.GET_cards;
 import Service.RESTServer.Service.Methods.GET.GET_deck;
 import Service.RESTServer.Service.Methods.GET.GET_deck_plain;
 import Service.RESTServer.Service.Methods.GET.GET_tradings;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
-import Service.RESTServer.Service.Methods.POST.POST_NormalPackages;
-import Service.RESTServer.Service.Methods.POST.POST_sessions;
-import Service.RESTServer.Service.Methods.POST.POST_transaction_packages;
-import Service.RESTServer.Service.Methods.POST.POST_users;
+import Service.RESTServer.Service.Methods.POST.*;
 import Service.RESTServer.Service.Methods.PUT.PUT_deck;
 import Service.RESTServer.Service.Request.RequestContext;
 import Service.RESTServer.Service.Socket.MySocket;
@@ -41,8 +40,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Long.parseLong;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 //Start whole test class otherwise the Tests will fail
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -112,6 +110,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
     }
 
+    //region Create user1
     @Test
     @Order(1)
     @DisplayName("Test Create User")
@@ -225,6 +224,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
         assertEquals(5,userRepository.getAllEntities().stream().findFirst().orElse(null).getStack().getCards().size());
     }
+    //endregion
 
     @Test
     @Order(5)
@@ -266,7 +266,320 @@ public class TestHTTPMethods_User_Cards_Interaction {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
+    @DisplayName("Test (no) show trades")
+    void testNpShowTrades() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("GET /tradings HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new GET_tradings(userRepository,tradeRepository);
+        List<ITrade> trades = new ArrayList<>();
+        if(method.analyse(requestContext)) {
+            trades = mapper.readValue(method.exec(requestContext).getPayload(),new TypeReference<>() {});
+        }
+
+
+        assertEquals(0,trades.size());
+    }
+
+    @Test
+    @Order(8)
+    @DisplayName("Test create trade")
+    void testCreateTrade() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings HTTP/1.1",headers,"{\"Id\": \"6cd85277-4590-49d4-b0cf-ba0a921faad0\", \"CardToTrade\": \"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\", \"Type\": \"monster\", \"MinimumDamage\": 15}");
+
+        IHTTPMethod method = new POST_tradings(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertEquals(1,tradeRepository.getAllEntities().size());
+    }
+
+    @Test
+    @Order(9)
+    @DisplayName("Test show trades")
+    void testShowTrades() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("GET /tradings HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new GET_tradings(userRepository,tradeRepository);
+        List<ITrade> trades = new ArrayList<>();
+        if(method.analyse(requestContext)) {
+            trades = mapper.readValue(method.exec(requestContext).getPayload(),new TypeReference<>() {});
+        }
+
+
+        assertEquals(1,trades.size());
+    }
+
+    //region create user2
+    @Test
+    @Order(10)
+    @DisplayName("Test Create User2")
+    void testCreateUser2() throws IOException {
+
+        //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
+        command = "curl -X POST http://localhost:10003/users -H \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
+        while (!ready) {
+            Thread.onSpinWait();
+        }
+
+        Process process = Runtime.getRuntime().exec(command);
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String response = textBuilder.toString();
+
+        assertEquals("2",response);
+    }
+
+
+    @Test
+    @Order(11)
+    @DisplayName("Test Login User2")
+    void testLoginUser2() throws IOException{
+
+        command = "curl -X POST http://localhost:10003/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
+
+
+        while (!ready) {
+            Thread.onSpinWait();
+        }
+
+        Process process = Runtime.getRuntime().exec(command);
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String response = textBuilder.toString();
+        assertEquals("Basic altenhof-mtcgToken",response);
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("Test Create NormalPackage2")
+    void testCreateNormalPackage2() throws IOException {
+
+        //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
+        command= "curl -X POST http://localhost:10003/packages --header \"Content-Type: application/json\" -d [{\"@type\":\"Monster\",\"Id\":\"644808c2-f87a-4600-b313-122b02322fd5\",\"Name\":\"WaterGoblin\",\"Damage\":9.0},{\"@type\":\"Monster\",\"Id\":\"4a2757d6-b1c3-47ac-b9a3-91deab093531\",\"Name\":\"Dragon\",\"Damage\":55.0},{\"@type\":\"Spell\",\"Id\":\"91a6471b-1426-43f6-ad65-6fc473e16f9f\",\"Name\":\"WaterSpell\",\"Damage\":21.0},{\"@type\":\"Monster\",\"Id\":\"4ec8b269-0dfa-4f97-809a-2c63fe2a0025\",\"Name\":\"Ork\",\"Damage\":55.0},{\"@type\":\"Spell\",\"Id\":\"f8043c23-1534-4487-b66b-238e0c3c39b5\",\"Name\":\"WaterSpell\",\"Damage\":23.0}]";
+
+        while (!ready) {
+            Thread.onSpinWait();
+        }
+        Process process = Runtime.getRuntime().exec(command);
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(new InputStreamReader
+                (process.getInputStream(), Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String response = textBuilder.toString();
+
+        assertEquals("2",response);
+    }
+
+    @Test
+    @Order(13)
+    @DisplayName("Test Buy NormalPackage2")
+    void testBuyNormalPackage2() throws IOException {
+
+        while (!ready) {
+            Thread.onSpinWait();
+        }
+
+        //Doesnt work Curls behaves strange when executed from java
+        //command = "curl -X POST http://localhost:10003/transactions/packages --header \"Content-Type: application/json\" --header Authorization:Basic kienboec-mtcgToken";
+        //Process process= Runtime.getRuntime().exec(command);
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic altenhof-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /transactions/packages HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new POST_transaction_packages(userRepository,vendorRepository);
+        if(method.analyse(requestContext))
+            method.exec(requestContext);
+
+
+        assertEquals(5,userRepository.getUserWithToken("Basic altenhof-mtcgToken").getStack().getCards().size());
+    }
+
+    //endregion
+
+    @Test
+    @Order(14)
+    @DisplayName("Test accept Trade card not own")
+    void testAcceptTradeCardNotOwned() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic altenhof-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings/6cd85277-4590-49d4-b0cf-ba0a921faad0 HTTP/1.1",headers,"99f8f8dc-e25e-4a95-aa2c-782823f36e2a");
+
+        User user = userRepository.getUserWithToken("Basic altenhof-mtcgToken");
+        IHTTPMethod method = new POST_tradings_id(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertFalse(user.getStack().getCards().contains(cardRepo.findEntity("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334")));
+    }
+
+    @Test
+    @Order(15)
+    @DisplayName("Test accept Trade with self")
+    void testAcceptTradeSelf() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings/6cd85277-4590-49d4-b0cf-ba0a921faad0 HTTP/1.1",headers,"99f8f8dc-e25e-4a95-aa2c-782823f36e2a");
+
+        User user = userRepository.getUserWithToken("Basic altenhof-mtcgToken");
+        IHTTPMethod method = new POST_tradings_id(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertFalse(user.getStack().getCards().contains(cardRepo.findEntity("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334")));
+    }
+
+    @Test
+    @Order(16)
+    @DisplayName("Test accept Trade")
+    void testAcceptTrade() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic altenhof-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings/6cd85277-4590-49d4-b0cf-ba0a921faad0 HTTP/1.1",headers,"4a2757d6-b1c3-47ac-b9a3-91deab093531");
+
+        User user = userRepository.getUserWithToken("Basic altenhof-mtcgToken");
+        IHTTPMethod method = new POST_tradings_id(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertTrue(user.getStack().getCards().contains(cardRepo.findEntity("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334")));
+    }
+
+    @Test
+    @Order(17)
+    @DisplayName("Test create trade2")
+    void testCreateTrade2() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic altenhof-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings HTTP/1.1",headers,"{\"Id\": \"7cd85277-4590-49d4-b0cf-ba0a921faad0\", \"CardToTrade\": \"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\", \"Type\": \"monster\", \"MinimumDamage\": 15}");
+
+        IHTTPMethod method = new POST_tradings(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertEquals(1,tradeRepository.getAllEntities().size());
+    }
+
+    @Test
+    @Order(18)
+    @DisplayName("Test accept Trade2")
+    void testAcceptTrade2() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings/7cd85277-4590-49d4-b0cf-ba0a921faad0 HTTP/1.1",headers,"4a2757d6-b1c3-47ac-b9a3-91deab093531");
+
+        User user = userRepository.getUserWithToken("Basic kienboec-mtcgToken");
+        IHTTPMethod method = new POST_tradings_id(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertTrue(user.getStack().getCards().contains(cardRepo.findEntity("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334")));
+    }
+
+    @Test
+    @Order(19)
+    @DisplayName("Test create trade3")
+    void testCreateTrade3() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("POST /tradings HTTP/1.1",headers,"{\"Id\": \"8cd85277-4590-49d4-b0cf-ba0a921faad0\", \"CardToTrade\": \"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\", \"Type\": \"monster\", \"MinimumDamage\": 15}");
+
+        IHTTPMethod method = new POST_tradings(userRepository,cardRepo,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertEquals(1,tradeRepository.getAllEntities().size());
+    }
+
+    @Test
+    @Order(20)
+    @DisplayName("Test delete trade3")
+    void testDeleteTrade3() throws IOException {
+
+        Map<String,String> headers = new HashMap<>();
+        headers.put("Authorization","Basic kienboec-mtcgToken");
+        headers.put("Content-Type","application/json");
+        RequestContext requestContext = new RequestContext("DELETE /tradings/8cd85277-4590-49d4-b0cf-ba0a921faad0 HTTP/1.1",headers,"");
+
+        IHTTPMethod method = new DELETE_tradings_id(userRepository,tradeRepository);
+        if(method.analyse(requestContext)) {
+            method.exec(requestContext);
+        }
+
+
+        assertEquals(0,tradeRepository.getAllEntities().size());
+    }
+
+    @Test
+    @Order(20)
     @DisplayName("Test unconfigured Show Deck Of User")
     void testShowUnconfDeckOfUser() throws IOException {
 
@@ -286,7 +599,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
     }
 
     @Test
-    @Order(7)
+    @Order(21)
     @DisplayName("Test Define Deck Of User")
     void testDefineDeckOfUser() throws IOException {
 
@@ -312,7 +625,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
 
     @Test
-    @Order(8)
+    @Order(22)
     @DisplayName("Test Show Deck Of User")
     void testShowDeckOfUser() throws IOException {
 
@@ -333,7 +646,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
 
     @Test
-    @Order(7)
+    @Order(23)
     @DisplayName("Test Define Deck Of User Fail")
     void testDefineDeckOfUserFail() throws IOException {
 
@@ -363,7 +676,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
 
     @Test
-    @Order(8)
+    @Order(24)
     @DisplayName("Test Show Deck Of User other Format")
     void testShowDeckOfUserOtherFormat() throws IOException {
 
@@ -484,25 +797,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
                 ,deck);
     }
 
-    @Test
-    @Order(6)
-    @DisplayName("Test show trades")
-    void testShowTrades() throws IOException {
 
-        Map<String,String> headers = new HashMap<>();
-        headers.put("Authorization","Basic kienboec-mtcgToken");
-        headers.put("Content-Type","application/json");
-        RequestContext requestContext = new RequestContext("GET /tradings HTTP/1.1",headers,"");
-
-        IHTTPMethod method = new GET_tradings(userRepository,tradeRepository);
-        List<ITrade> trades = new ArrayList<>();
-        if(method.analyse(requestContext)) {
-            trades = mapper.readValue(method.exec(requestContext).getPayload(),new TypeReference<>() {});
-        }
-
-
-        assertEquals(0,trades.size());
-    }
 
 
 }

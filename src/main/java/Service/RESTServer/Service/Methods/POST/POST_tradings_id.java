@@ -14,6 +14,7 @@ import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
@@ -31,6 +32,8 @@ public class POST_tradings_id implements IHTTPMethod {
         this.userRepository = userRepository;
         this.cardRepository = cardPackRepository;
         this.tradeRepository=tradeRepository;
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
     }
 
     @Override
@@ -47,10 +50,17 @@ public class POST_tradings_id implements IHTTPMethod {
 
             ITrade trade = tradeRepository.findEntity(tradeId);
 
-            ACard card =cardRepository.findEntity(data.getPayload());
+            ACard card =cardRepository.findEntity(data.getPayload().replace("\"",""));
             if(card!=null) {
-                user.accectTradeOffer(trade, card);
-                responseContext.setHttpStatusCode("HTTP/1.1 200");
+                if(user.accectTradeOffer(trade, card)) {
+                    tradeRepository.deleteEntity(trade.getId());
+                    responseContext.setHttpStatusCode("HTTP/1.1 200");
+                }
+                else
+                {
+                    responseContext.setPayload("Trade failed");
+                    responseContext.setHttpStatusCode("HTTP/1.1 400");
+                }
 
             }
             else

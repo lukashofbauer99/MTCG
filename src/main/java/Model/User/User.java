@@ -77,6 +77,7 @@ public class User {
             });
             if (cardsOwned.get()) {
                 deck.cards = cards;
+                stack.cards.removeAll(cards);
                 return true;
             }
         }

@@ -15,6 +15,7 @@ import Service.RESTServer.Service.Response.IResponseContext;
 import Service.RESTServer.Service.Response.ResponseContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 
@@ -32,6 +33,8 @@ public class POST_tradings implements IHTTPMethod {
         this.userRepository = userRepository;
         this.cardRepository = cardPackRepository;
         this.tradeRepository=tradeRepository;
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+
     }
 
     @Override
@@ -51,7 +54,7 @@ public class POST_tradings implements IHTTPMethod {
                 ITradeCardRequirements tradeCardRequirements=
                         new NormalTradeCardRequirements
                                 (tradeCurlAdapter.getMinimumDamage(),
-                                        Class.forName("com.Model.Cards."+(tradeCurlAdapter.getType().substring(0,1).toUpperCase() + tradeCurlAdapter.getType().substring(1).toLowerCase())+"Card")
+                                        Class.forName("Model.Cards."+(tradeCurlAdapter.getType().substring(0,1).toUpperCase() + tradeCurlAdapter.getType().substring(1).toLowerCase())+"Card")
                                         ,null,null);
 
                 ITrade trade= user.createTrade(tradeCurlAdapter.getId(), cardRepository.findEntity(tradeCurlAdapter.getCardToTrade()),tradeCardRequirements);
