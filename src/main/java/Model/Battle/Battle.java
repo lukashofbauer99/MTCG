@@ -3,6 +3,8 @@ package Model.Battle;
 import Model.Cards.ACard;
 import Model.User.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +12,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class Battle {
-
-
     User user1;
     User user2;
 
@@ -35,6 +37,11 @@ public class Battle {
     Boolean toggleAttacker = true;
 
     public void Start() {
+        battleDeckUser1 = new BattleDeck();
+        battleDeckUser2 = new BattleDeck();
+        battleDeckUser1.cards.addAll(user1.getDeck().getCards());
+        battleDeckUser2.cards.addAll(user2.getDeck().getCards());
+
         while (battleDeckUser1.getCards().size() > 0 && battleDeckUser2.getCards().size() > 0 && rounds.size() < 101) {
 
             Round currentRound = new Round();

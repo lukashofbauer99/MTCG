@@ -1,5 +1,6 @@
 package Model.User;
 
+import Domain.PlayerHub;
 import Model.Battle.Battle;
 import Model.Cards.ACard;
 import Model.Cards.CardPacks.ICardPack;
@@ -9,13 +10,13 @@ import Model.User.Statistics.Stats;
 import Model.User.Trade.ITrade;
 import Model.User.Trade.ITradeCardRequirements;
 import Model.User.Trade.Trade1To1;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 
 @Getter
@@ -34,8 +35,11 @@ public class User {
     EditableUserData editableUserData = new EditableUserData();
 
 
+    @JsonIgnore
     Stack stack = new Stack();
+    @JsonIgnore
     Deck deck = new Deck();
+    @JsonIgnore
     List<Battle> battleHistory = new ArrayList<>();
 
 
@@ -108,8 +112,8 @@ public class User {
             return false;
     }
 
-    public void searchBattle(PlayerHub playerHub) {
-        playerHub.registerForMatchmaking(this);
+    public Battle searchBattle(PlayerHub playerHub) {
+        return playerHub.matchPlayers(this);
     }
 
     public Stats showStats() {

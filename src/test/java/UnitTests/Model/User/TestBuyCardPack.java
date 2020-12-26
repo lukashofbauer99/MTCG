@@ -4,7 +4,7 @@ import Model.Cards.CardPacks.AutoGenCardPack;
 import Model.Cards.CardPacks.PackType;
 import Model.Cards.Vendor.IVendor;
 import Model.Cards.Vendor.NormalVendor;
-import Model.User.PlayerHub;
+import Domain.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

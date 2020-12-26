@@ -1,6 +1,7 @@
 package Model.Battle;
 
 import Model.Cards.ACard;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Random;
 public class BattleDeck {
 
     List<ACard> cards = new ArrayList<>();
+    @JsonIgnore
     Random rand = new Random();
 
 

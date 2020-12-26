@@ -2,10 +2,12 @@ package IntegrationTests;
 
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
+import Domain.PlayerHub;
 import Domain.User.InMemory.InMemoryITradeRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
+import Model.Battle.Battle;
 import Model.Cards.ACard;
 import Model.User.Deck;
 import Model.User.Trade.ITrade;
@@ -37,9 +39,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
-import static java.lang.Long.parseLong;
 import static org.junit.jupiter.api.Assertions.*;
 
 //Start whole test class otherwise the Tests will fail
@@ -55,6 +59,8 @@ public class TestHTTPMethods_User_Cards_Interaction {
     static List<IHTTPMethod> methods= new ArrayList<>();
     static Thread workerThread;
     static volatile boolean ready= false;
+
+    static PlayerHub playerHub = new PlayerHub();
 
     static ICardPackRepository cardPackRepo=new InMemoryCardPackRepository();
     static IACardRepository cardRepo=new InMemoryACardRepository();
@@ -696,105 +702,162 @@ public class TestHTTPMethods_User_Cards_Interaction {
         }
 
 
-        assertEquals("\n  cards = [ \n" +
-                        "    @type = Monster,\n" +
-                        "    id = 845f0dc7-37d0-426e-994e-43fc3ac83c08,\n" +
-                        "    name = WaterGoblin,\n" +
-                        "    damage = 10.0,\n" +
-                        "    effect = \n" +
-                        "      @type = Water,\n" +
-                        "      id = 3,\n" +
-                        "      name = water,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = base,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    ,\n" +
-                        "    race = \n" +
-                        "      @type = Goblin,\n" +
-                        "      id = 2,\n" +
-                        "      name = goblin,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = baseRace,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    \n" +
-                        "  , \n" +
-                        "    @type = Monster,\n" +
-                        "    id = 99f8f8dc-e25e-4a95-aa2c-782823f36e2a,\n" +
-                        "    name = Dragon,\n" +
-                        "    damage = 50.0,\n" +
-                        "    effect = \n" +
-                        "      @type = Normal,\n" +
-                        "      id = 4,\n" +
-                        "      name = normal,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = base,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    ,\n" +
-                        "    race = \n" +
-                        "      @type = Dragon,\n" +
-                        "      id = 3,\n" +
-                        "      name = dragon,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = baseRace,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    \n" +
-                        "  , \n" +
-                        "    @type = Spell,\n" +
-                        "    id = e85e3976-7c86-4d06-9a80-641c2019a79f,\n" +
-                        "    name = WaterSpell,\n" +
-                        "    damage = 20.0,\n" +
-                        "    effect = \n" +
-                        "      @type = Water,\n" +
-                        "      id = 3,\n" +
-                        "      name = water,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = base,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    \n" +
-                        "  , \n" +
-                        "    @type = Monster,\n" +
-                        "    id = 1cb6ab86-bdb2-47e5-b6e4-68c5ab389334,\n" +
-                        "    name = Ork,\n" +
-                        "    damage = 45.0,\n" +
-                        "    effect = \n" +
-                        "      @type = Normal,\n" +
-                        "      id = 4,\n" +
-                        "      name = normal,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = base,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    ,\n" +
-                        "    race = \n" +
-                        "      @type = Ork,\n" +
-                        "      id = 5,\n" +
-                        "      name = ork,\n" +
-                        "      base = \n" +
-                        "        @type = Base,\n" +
-                        "        id = 1,\n" +
-                        "        name = baseRace,\n" +
-                        "        base = null\n" +
-                        "      \n" +
-                        "    \n" +
-                        "   ]\n"
+        assertEquals("""
+
+                          cards = [\s
+                            @type = Monster,
+                            id = 845f0dc7-37d0-426e-994e-43fc3ac83c08,
+                            name = WaterGoblin,
+                            damage = 10.0,
+                            effect =\s
+                              @type = Water,
+                              id = 3,
+                              name = water,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = base,
+                                base = null
+                             \s
+                            ,
+                            race =\s
+                              @type = Goblin,
+                              id = 2,
+                              name = goblin,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = baseRace,
+                                base = null
+                             \s
+                           \s
+                          ,\s
+                            @type = Monster,
+                            id = 99f8f8dc-e25e-4a95-aa2c-782823f36e2a,
+                            name = Dragon,
+                            damage = 50.0,
+                            effect =\s
+                              @type = Normal,
+                              id = 4,
+                              name = normal,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = base,
+                                base = null
+                             \s
+                            ,
+                            race =\s
+                              @type = Dragon,
+                              id = 3,
+                              name = dragon,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = baseRace,
+                                base = null
+                             \s
+                           \s
+                          ,\s
+                            @type = Spell,
+                            id = e85e3976-7c86-4d06-9a80-641c2019a79f,
+                            name = WaterSpell,
+                            damage = 20.0,
+                            effect =\s
+                              @type = Water,
+                              id = 3,
+                              name = water,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = base,
+                                base = null
+                             \s
+                           \s
+                          ,\s
+                            @type = Monster,
+                            id = 1cb6ab86-bdb2-47e5-b6e4-68c5ab389334,
+                            name = Ork,
+                            damage = 45.0,
+                            effect =\s
+                              @type = Normal,
+                              id = 4,
+                              name = normal,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = base,
+                                base = null
+                             \s
+                            ,
+                            race =\s
+                              @type = Ork,
+                              id = 5,
+                              name = ork,
+                              base =\s
+                                @type = Base,
+                                id = 1,
+                                name = baseRace,
+                                base = null
+                             \s
+                           \s
+                           ]
+                        """
                 ,deck);
+    }
+
+
+
+    class MatchPlayersCallable implements Callable<Battle>
+    {
+
+        String token;
+
+        public MatchPlayersCallable(String token) {
+            this.token=token;
+        }
+
+        public Battle call() throws Exception
+        {
+            Map<String,String> headers = new HashMap<>();
+            headers.put("Authorization",token);
+            headers.put("Content-Type","application/json");
+            RequestContext requestContext = new RequestContext("POST /battles HTTP/1.1",headers,"");
+
+            IHTTPMethod method = new POST_battles(userRepository,playerHub);
+            Battle battle=null;
+            if(method.analyse(requestContext)) {
+                battle=mapper.readValue((method.exec(requestContext).getPayload()), new TypeReference<>(){});
+            }
+            System.out.println(battle.getWinner().getId());
+
+            return battle;
+        }
+
+    }
+
+
+    @Test
+    @Order(25)
+    @DisplayName("Test Matchmaking")
+    public void testMatchmaking() throws ExecutionException, InterruptedException {
+
+        //Thread 1
+        FutureTask<Battle> task = new FutureTask<>(new MatchPlayersCallable("Basic kienboec-mtcgToken"));
+
+        Thread thread1=new Thread(task);
+        thread1.start();
+
+        //Thread2
+        FutureTask<Battle> task2 = new FutureTask<>(new MatchPlayersCallable("Basic altenhof-mtcgToken"));
+        Thread thread2=new Thread(task2);
+        thread2.start();
+
+
+
+        assertNotNull(task2.get());
+        assertNotNull(task.get());
+
     }
 
 

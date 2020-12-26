@@ -1,6 +1,6 @@
 package UnitTests.Model.User;
 
-import Model.User.PlayerHub;
+import Domain.PlayerHub;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class TestRegisterForMatchmaking {
         userA.searchBattle(playerhubA);
 
         // assert
-        verify(playerhubA).registerForMatchmaking(userA);
+        verify(playerhubA).matchPlayers(userA);
     }
 
     @Test
@@ -50,9 +50,9 @@ public class TestRegisterForMatchmaking {
         userC.searchBattle(playerhubA);
 
         // assert
-        verify(playerhubA).registerForMatchmaking(userA);
-        verify(playerhubA).registerForMatchmaking(userB);
-        verify(playerhubA).registerForMatchmaking(userC);
+        verify(playerhubA).matchPlayers(userA);
+        verify(playerhubA).matchPlayers(userB);
+        verify(playerhubA).matchPlayers(userC);
     }
 
 }

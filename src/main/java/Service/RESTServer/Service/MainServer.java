@@ -2,6 +2,7 @@ package Service.RESTServer.Service;
 
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
+import Domain.PlayerHub;
 import Domain.User.InMemory.InMemoryITradeRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
@@ -33,6 +34,8 @@ public class MainServer implements Runnable {
 
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
+        PlayerHub playerHub= new PlayerHub();
+
         //repositories
         IUserRepository userRepository = new InMemoryUserRepository();
         ICardPackRepository cardPackRepository = new InMemoryCardPackRepository();
@@ -50,11 +53,14 @@ public class MainServer implements Runnable {
         registeredMethods.add(new POST_messages());
 
 
+
+        registeredMethods.add(new POST_battles(userRepository,playerHub));
         registeredMethods.add(new DELETE_tradings_id(userRepository,tradeRepository));
         registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new POST_tradings(userRepository,cardRepository,tradeRepository));
         registeredMethods.add(new GET_tradings(userRepository,tradeRepository));
+        registeredMethods.add(new GET_score(userRepository));
         registeredMethods.add(new GET_stats(userRepository));
         registeredMethods.add(new PUT_users_name(userRepository));
         registeredMethods.add(new GET_user_name(userRepository));

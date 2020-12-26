@@ -1,8 +1,9 @@
 package Service.RESTServer.Service.Methods.POST;
 
 import Domain.User.Interfaces.IUserRepository;
-import Model.User.Credentials;
-import Model.User.PlayerHub;
+import Domain.PlayerHub;
+import Model.Battle.Battle;
+import Model.User.Deck;
 import Model.User.User;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
@@ -32,12 +33,14 @@ public class POST_battles implements IHTTPMethod {
     }
 
     @Override
-    public IResponseContext exec(IRequestContext data) {
+    public IResponseContext exec(IRequestContext data) throws JsonProcessingException {
         ResponseContext responseContext = new ResponseContext();
         if (userRepository.UserLoggedIn(data.getHeaders().get("Authorization"))) {
             User user = userRepository.getUserWithToken(data.getHeaders().get("Authorization"));
-            user.searchBattle(playerHub);
-
+            responseContext.setPayload(mapper.writerFor(new TypeReference<Battle>() {})
+                    .with(new DefaultPrettyPrinter())
+                    .writeValueAsString(user.searchBattle(playerHub)));
+            responseContext.setHttpStatusCode("HTTP/1.1 200");
         } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");
             responseContext.setPayload("Not logged In");
