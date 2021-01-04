@@ -1,4 +1,4 @@
-package IntegrationTests;
+package IntegrationTests.IntegrationTests_InMemory;
 
 import Service.RESTServer.Model.Message;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;

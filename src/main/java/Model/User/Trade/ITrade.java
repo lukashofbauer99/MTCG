@@ -19,6 +19,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public interface ITrade {
 
     User getUserOffer();
+    void setUserOffer(User user);
+    ACard getCardTradedFor();
+    void setCardTradedFor(ACard cardTradedFor);
+    ITradeCardRequirements getRequirements();
+    void setRequirements(ITradeCardRequirements tradeCardRequirements);
     String getId();
     void setId(String id);
     boolean trade(User user, ACard card);

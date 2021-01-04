@@ -1,11 +1,9 @@
-package IntegrationTests;
+package IntegrationTests.IntegrationTests_InMemory;
 
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
-import Model.User.Deck;
 import Model.User.Statistics.Stats;
 import Model.User.User;
-import Service.RESTServer.Service.Methods.GET.GET_deck;
 import Service.RESTServer.Service.Methods.GET.GET_score;
 import Service.RESTServer.Service.Methods.GET.GET_stats;
 import Service.RESTServer.Service.Methods.GET.GET_user_name;
@@ -63,7 +61,7 @@ public class TestHTTPMethods_User {
 
         workerThread = new Thread(() -> {
             try {
-                _listener = new ServerSocket(10001, 5);
+                _listener = new ServerSocket(10002, 5);
             } catch (IOException e) {
                 e.printStackTrace();
                 return;
@@ -97,7 +95,7 @@ public class TestHTTPMethods_User {
     void testCreateUser() throws IOException {
 
         //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
-        command = "curl -X POST http://localhost:10001/users -H \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
+        command = "curl -X POST http://localhost:10002/users -H \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
         while (!ready) {
             Thread.onSpinWait();
         }
@@ -126,7 +124,7 @@ public class TestHTTPMethods_User {
     void testCreateUser2nd() throws IOException {
 
         //No white spaces in Json Object allowed, if the request is sent from java, because the Content-Type get evaluated automatically
-        command = "curl -X POST http://localhost:10001/users -H \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
+        command = "curl -X POST http://localhost:10002/users -H \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
         while (!ready) {
             Thread.onSpinWait();
         }
@@ -155,7 +153,7 @@ public class TestHTTPMethods_User {
     @DisplayName("Test Login User")
     void testLoginUser() throws IOException {
 
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
+        command = "curl -X POST http://localhost:10002/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"daniel\"}";
 
 
         while (!ready) {
@@ -184,7 +182,7 @@ public class TestHTTPMethods_User {
     @DisplayName("Test Login User 2nd")
     void testLoginUser2nd() throws IOException {
 
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
+        command = "curl -X POST http://localhost:10002/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"altenhof\",\"Password\":\"markus\"}";
 
 
         while (!ready) {
@@ -213,7 +211,7 @@ public class TestHTTPMethods_User {
     @DisplayName("Test Login User Fail")
     void testLoginUserFail() throws IOException {
 
-        command = "curl -X POST http://localhost:10001/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"different\"}";
+        command = "curl -X POST http://localhost:10002/sessions --header \"Content-Type: application/json\" -d {\"Username\":\"kienboec\",\"Password\":\"different\"}";
 
 
         while (!ready) {

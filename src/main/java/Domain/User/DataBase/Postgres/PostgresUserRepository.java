@@ -5,24 +5,30 @@ import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
-import Model.Cards.SpellCard;
 import Model.User.Credentials;
 import Model.User.Deck;
 import Model.User.EditableUserData;
 import Model.User.User;
 import lombok.AllArgsConstructor;
 
+import javax.xml.transform.Result;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 //TODO: Clean up code, use private Methods, Test, Implement PostgresITradeRepository
 public class PostgresUserRepository implements IUserRepository {
+
+    Map<String, User> usersInSession = new HashMap<>();
 
     @AllArgsConstructor
     class entry {
@@ -38,32 +44,133 @@ public class PostgresUserRepository implements IUserRepository {
 
     @Override
     public String loginUser(Credentials cred) {
+        PreparedStatement statement;
+        try {
+            statement = _connection.prepareStatement("""
+                    SELECT 
+                    id
+                    FROM users 
+                    WHERE username=? AND password=?
+                    """);
+
+
+            statement.setString(1, cred.getUsername());
+            statement.setString(2, cred.getPassword());
+            ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next())
+            {
+                String sessionToken = "Basic " + cred.getUsername() + "-mtcgToken";
+                if (!usersInSession.containsKey(sessionToken)) {
+                    User us =findEntity(resultSet.getLong(1));
+                    usersInSession.put(sessionToken, us);
+                }
+                return sessionToken;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         return null;
     }
 
     @Override
     public Boolean UserLoggedIn(String token) {
-        return null;
+        return usersInSession.containsKey(token);
     }
 
     @Override
     public List<ACard> getCardsOfUserWithToken(String token) {
+        User user = getUserWithToken(token);
+        if (user != null) {
+            List<ACard> cardsOfUser = user.getStack().getCards();
+            cardsOfUser.addAll(user.getDeck().getCards());
+            return cardsOfUser;
+        }
         return null;
     }
 
     @Override
     public Deck getDeckOfUserWithToken(String token) {
+        User user = getUserWithToken(token);
+        if (user != null) {
+            return user.getDeck();
+        }
         return null;
     }
 
     @Override
     public User getUserWithToken(String token) {
+        if (usersInSession.containsKey(token)) {
+            return usersInSession.get(token);
+        }
         return null;
     }
 
     @Override
     public User getUserWithUsername(String username) {
-        return null;
+        User user = null;
+        try {
+            //region user data
+            PreparedStatement statement = _connection.prepareStatement("""
+                    SELECT 
+                    id, 
+                    username,
+                    password,
+                    coins,
+                    mmr,
+                    name,
+                    image,
+                    bio
+                    FROM users 
+                    where username=?
+                    """);
+
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                user = new User(
+                        resultSet.getLong(1),
+                        new Credentials(resultSet.getString(2), resultSet.getString(3)),
+                        resultSet.getInt(4),
+                        resultSet.getInt(5),
+                        new EditableUserData(resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
+
+                //region stack
+                PreparedStatement statementStack = _connection.prepareStatement("""
+                        SELECT 
+                        s.userid,
+                        s.cardid
+                        FROM stacks s
+                        where s.userid=?
+                        """);
+
+                statementStack.setLong(1, user.getId());
+                ResultSet resultSetStack = statementStack.executeQuery();
+                while (resultSetStack.next()) {
+                    user.getStack().getCards().add(findCard(resultSetStack.getString(2)));
+                }
+                //endregion
+                //region deck
+                PreparedStatement statementDeck = _connection.prepareStatement("""
+                        SELECT 
+                        d.userid,
+                        d.cardid
+                        FROM decks d
+                        where d.userid=?
+                        """);
+
+                statementDeck.setLong(1, user.getId());
+                ResultSet resultSetDeck = statementDeck.executeQuery();
+                while (resultSetDeck.next()) {
+                    user.getDeck().getCards().add(findCard(resultSet.getString(2)));
+                }
+                //endregion
+            }
+            //endregion
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return user;
     }
 
     @Override
@@ -249,7 +356,7 @@ public class PostgresUserRepository implements IUserRepository {
     }
 
     @Override
-    public User findEntity(Long id) { //TODO: check if cards and effects are added to user and cards | add cards of deck and effecs and races
+    public User findEntity(Long id) {
         User user = null;
         try {
             //region user data
@@ -275,285 +382,42 @@ public class PostgresUserRepository implements IUserRepository {
                         new Credentials(resultSet.getString(2), resultSet.getString(3)),
                         resultSet.getInt(4),
                         resultSet.getInt(5),
-                        new EditableUserData(resultSet.getString(6), resultSet.getString(7), resultSet.getString(8))
-                );
-            }
-            //endregion
-            //region stack
-            PreparedStatement statementStack = _connection.prepareStatement("""
-                    SELECT 
-                    cs.type,
-                    cs.id,
-                    cs.name,
-                    cs.damage,
-                    e.type,
-                    cs.effectid,
-                    e.name,
-                    e.baseeffectid,
-                    r.type,
-                    cs.raceid,
-                    r.name,
-                    r.baseraceid
-                    FROM stacks s
-                    JOIN cards cs on cs.id = s.cardid
-                    JOIN effects e on e.id = cs.effectID
-                    JOIN races r on r.id = cs.raceID
-                    where s.userid=?
-                    """);
+                        new EditableUserData(resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
 
-            statementStack.setLong(1, id);
-            ResultSet resultSetStack = statementStack.executeQuery();
-            while (resultSetStack.next()) {
-                //Class.forName("Model.Cards.MonsterCard");
-                ACard card;
-                Class cardClass = Class.forName(resultSetStack.getString(1));
-                if (cardClass == SpellCard.class) {
-                    card = new MonsterCard(
-                            resultSetStack.getString(2),
-                            resultSetStack.getString(3),
-                            resultSetStack.getDouble(4)
+                //region stack
+                PreparedStatement statementStack = _connection.prepareStatement("""
+                        SELECT 
+                        s.userid,
+                        s.cardid
+                        FROM stacks s
+                        where s.userid=?
+                        """);
 
-                    );
-
-                    //region Race
-                    Class raceClass = Class.forName(resultSetStack.getString(9));
-                    IRace topRace = (IRace) ((Class<?>) raceClass).getDeclaredConstructor().newInstance();
-                    topRace.setId(resultSet.getLong(10));
-                    topRace.setName(resultSet.getString(11));
-
-                    if (resultSet.getString(9) != null) {
-                        IRace currentRace;
-                        PreparedStatement outerStatementEffect = _connection.prepareStatement("""
-                                    SELECT 
-                                    type,
-                                    id,
-                                    name,
-                                    baseraceid
-                                    FROM races
-                                    where id=?
-                                """);
-
-                        outerStatementEffect.setLong(1, resultSet.getLong(8));
-                        ResultSet outerResultSetRace = outerStatementEffect.executeQuery();
-                        Class outerRaceClass = Class.forName(outerResultSetRace.getString(1));
-                        currentRace = (IRace) ((Class<?>) outerRaceClass).getDeclaredConstructor().newInstance();
-                        currentRace.setId(outerResultSetRace.getLong(2));
-                        currentRace.setName(outerResultSetRace.getString(3));
-                        topRace.setBase(currentRace);
-                        while (currentRace.getBase() != null) {
-                            PreparedStatement innerStatementEffect = _connection.prepareStatement("""
-                                        SELECT 
-                                        type,
-                                        id,
-                                        name,
-                                        baseraceid
-                                        FROM races
-                                        where id=?
-                                    """);
-
-                            innerStatementEffect.setLong(1, resultSet.getLong(8));
-                            ResultSet innerResultSetEffect = innerStatementEffect.executeQuery();
-                            Class innerEffectClass = Class.forName(innerResultSetEffect.getString(1));
-                            currentRace = (IRace) ((Class<?>) innerEffectClass).getDeclaredConstructor().newInstance();
-                            currentRace.setId(innerResultSetEffect.getLong(2));
-                            currentRace.setName(innerResultSetEffect.getString(3));
-                        }
-                    }
-                    //endregion
-                } else {
-                    card = new SpellCard(
-                            resultSetStack.getString(2),
-                            resultSetStack.getString(3),
-                            resultSetStack.getDouble(4)
-                    );
+                statementStack.setLong(1, id);
+                ResultSet resultSetStack = statementStack.executeQuery();
+                while (resultSetStack.next()) {
+                    user.getStack().getCards().add(findCard(resultSetStack.getString(2)));
                 }
+                //endregion
+                //region deck
+                PreparedStatement statementDeck = _connection.prepareStatement("""
+                        SELECT 
+                        d.userid,
+                        d.cardid
+                        FROM decks d
+                        where d.userid=?
+                        """);
 
-                //region Effect
-                Class effectClass = Class.forName(resultSetStack.getString(5));
-                IEffect topEffect = (IEffect) ((Class<?>) effectClass).getDeclaredConstructor().newInstance();
-                topEffect.setId(resultSet.getLong(6));
-                topEffect.setName(resultSet.getString(7));
-
-                if (resultSet.getString(8) != null) {
-                    IEffect currentEffect = null;
-                    PreparedStatement outerStatementEffect = _connection.prepareStatement("""
-                                SELECT 
-                                type,
-                                id,
-                                name,
-                                baseeffectid
-                                FROM effects
-                                where id=?
-                            """);
-
-                    outerStatementEffect.setLong(1, resultSet.getLong(8));
-                    ResultSet outerResultSetEffect = outerStatementEffect.executeQuery();
-                    Class outerEffectClass = Class.forName(outerResultSetEffect.getString(1));
-                    currentEffect = (IEffect) ((Class<?>) outerEffectClass).getDeclaredConstructor().newInstance();
-                    currentEffect.setId(outerResultSetEffect.getLong(2));
-                    currentEffect.setName(outerResultSetEffect.getString(3));
-                    topEffect.setBase(currentEffect);
-                    while (currentEffect.getBase() != null) {
-                        PreparedStatement innerStatementEffect = _connection.prepareStatement("""
-                                    SELECT 
-                                    type,
-                                    id,
-                                    name,
-                                    baseeffectid
-                                    FROM effects
-                                    where id=?
-                                """);
-
-                        innerStatementEffect.setLong(1, resultSet.getLong(8));
-                        ResultSet innerResultSetEffect = innerStatementEffect.executeQuery();
-                        Class innerEffectClass = Class.forName(innerResultSetEffect.getString(1));
-                        currentEffect = (IEffect) ((Class<?>) innerEffectClass).getDeclaredConstructor().newInstance();
-                        currentEffect.setId(innerResultSetEffect.getLong(2));
-                        currentEffect.setName(innerResultSetEffect.getString(3));
-                    }
+                statementDeck.setLong(1, id);
+                ResultSet resultSetDeck = statementDeck.executeQuery();
+                while (resultSetDeck.next()) {
+                    user.getDeck().getCards().add(findCard(resultSet.getString(2)));
                 }
                 //endregion
             }
             //endregion
-            //region deck
-            PreparedStatement statementDeck = _connection.prepareStatement("""
-                    SELECT 
-                    cs.type,
-                    cs.id,
-                    cs.name,
-                    cs.damage,
-                    e.type,
-                    cs.effectid,
-                    e.name,
-                    e.baseeffectid,
-                    r.type,
-                    cs.raceid,
-                    r.name,
-                    r.baseraceid
-                    FROM decks d
-                    JOIN cards cs on cs.id = d.cardid
-                    JOIN effects e on e.id = cs.effectID
-                    JOIN races r on r.id = cs.raceID
-                    where d.userid=?
-                    """);
 
-            statementDeck.setLong(1, id);
-            ResultSet resultSetDeck = statementDeck.executeQuery();
-            while (resultSetDeck.next()) {
-                //Class.forName("Model.Cards.MonsterCard");
-                ACard card;
-                Class cardClass = Class.forName(resultSetDeck.getString(1));
-                if (cardClass == SpellCard.class) {
-                    card = new MonsterCard(
-                            resultSetDeck.getString(2),
-                            resultSetDeck.getString(3),
-                            resultSetDeck.getDouble(4)
-
-                    );
-
-                    //region Race
-                    Class raceClass = Class.forName(resultSetDeck.getString(9));
-                    IRace topRace = (IRace) ((Class<?>) raceClass).getDeclaredConstructor().newInstance();
-                    topRace.setId(resultSet.getLong(10));
-                    topRace.setName(resultSet.getString(11));
-
-                    if (resultSet.getString(9) != null) {
-                        IRace currentRace;
-                        PreparedStatement outerStatementEffect = _connection.prepareStatement("""
-                                    SELECT 
-                                    type,
-                                    id,
-                                    name,
-                                    baseraceid
-                                    FROM races
-                                    where id=?
-                                """);
-
-                        outerStatementEffect.setLong(1, resultSet.getLong(8));
-                        ResultSet outerResultSetRace = outerStatementEffect.executeQuery();
-                        Class outerRaceClass = Class.forName(outerResultSetRace.getString(1));
-                        currentRace = (IRace) ((Class<?>) outerRaceClass).getDeclaredConstructor().newInstance();
-                        currentRace.setId(outerResultSetRace.getLong(2));
-                        currentRace.setName(outerResultSetRace.getString(3));
-                        topRace.setBase(currentRace);
-                        while (currentRace.getBase() != null) {
-                            PreparedStatement innerStatementEffect = _connection.prepareStatement("""
-                                        SELECT 
-                                        type,
-                                        id,
-                                        name,
-                                        baseraceid
-                                        FROM races
-                                        where id=?
-                                    """);
-
-                            innerStatementEffect.setLong(1, resultSet.getLong(8));
-                            ResultSet innerResultSetEffect = innerStatementEffect.executeQuery();
-                            Class innerEffectClass = Class.forName(innerResultSetEffect.getString(1));
-                            currentRace = (IRace) ((Class<?>) innerEffectClass).getDeclaredConstructor().newInstance();
-                            currentRace.setId(innerResultSetEffect.getLong(2));
-                            currentRace.setName(innerResultSetEffect.getString(3));
-                        }
-                    }
-                    //endregion
-                } else {
-                    card = new SpellCard(
-                            resultSetDeck.getString(2),
-                            resultSetDeck.getString(3),
-                            resultSetDeck.getDouble(4)
-                    );
-                }
-
-                //region Effect
-                Class effectClass = Class.forName(resultSetDeck.getString(5));
-                IEffect topEffect = (IEffect) ((Class<?>) effectClass).getDeclaredConstructor().newInstance();
-                topEffect.setId(resultSet.getLong(6));
-                topEffect.setName(resultSet.getString(7));
-
-                if (resultSet.getString(8) != null) {
-                    IEffect currentEffect;
-                    PreparedStatement outerStatementEffect = _connection.prepareStatement("""
-                                SELECT 
-                                type,
-                                id,
-                                name,
-                                baseeffectid
-                                FROM effects
-                                where id=?
-                            """);
-
-                    outerStatementEffect.setLong(1, resultSet.getLong(8));
-                    ResultSet outerResultSetEffect = outerStatementEffect.executeQuery();
-                    Class outerEffectClass = Class.forName(outerResultSetEffect.getString(1));
-                    currentEffect = (IEffect) ((Class<?>) outerEffectClass).getDeclaredConstructor().newInstance();
-                    currentEffect.setId(outerResultSetEffect.getLong(2));
-                    currentEffect.setName(outerResultSetEffect.getString(3));
-                    topEffect.setBase(currentEffect);
-                    while (currentEffect.getBase() != null) {
-                        PreparedStatement innerStatementEffect = _connection.prepareStatement("""
-                                    SELECT 
-                                    type,
-                                    id,
-                                    name,
-                                    baseeffectid
-                                    FROM effects
-                                    where id=?
-                                """);
-
-                        innerStatementEffect.setLong(1, resultSet.getLong(8));
-                        ResultSet innerResultSetEffect = innerStatementEffect.executeQuery();
-                        Class innerEffectClass = Class.forName(innerResultSetEffect.getString(1));
-                        currentEffect = (IEffect) ((Class<?>) innerEffectClass).getDeclaredConstructor().newInstance();
-                        currentEffect.setId(innerResultSetEffect.getLong(2));
-                        currentEffect.setName(innerResultSetEffect.getString(3));
-                    }
-                }
-                //endregion
-            }
-
-            //endregion
-
-        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException throwables) {
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return user;
@@ -568,10 +432,12 @@ public class PostgresUserRepository implements IUserRepository {
                     DELETE
                     FROM users
                     WHERE id=?
+                    returning id
                     """);
             statement.setLong(1, id);
-            statement.execute();
-
+            ResultSet resultSet= statement.executeQuery();
+            if(!resultSet.next())
+                return false;
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -587,33 +453,158 @@ public class PostgresUserRepository implements IUserRepository {
         PreparedStatement statement;
         try {
             statement = _connection.prepareStatement("""
+                    SELECT 
+                    id, 
+                    username,
+                    password,
+                    coins,
+                    mmr,
+                    name,
+                    image,
+                    bio
+                    FROM users 
+                    """);
+
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                User user = new User(
+                        resultSet.getLong(1),
+                        new Credentials(resultSet.getString(2), resultSet.getString(3)),
+                        resultSet.getInt(4),
+                        resultSet.getInt(5),
+                        new EditableUserData(resultSet.getString(6), resultSet.getString(7), resultSet.getString(8)));
+
+                //region stack
+                PreparedStatement statementStack = _connection.prepareStatement("""
                         SELECT 
-                        id, 
-                        username,
-                        password,
-                        coins,
-                        mmr,
-                        name,
-                        image,
-                        bio
-                        FROM users 
+                        s.userid,
+                        s.cardid
+                        FROM stacks s
+                        where s.userid=?
                         """);
 
+                statementStack.setLong(1, user.getId());
+                ResultSet resultSetStack = statementStack.executeQuery();
+                while (resultSetStack.next()) {
+                    user.getStack().getCards().add(findCard(resultSetStack.getString(2)));
+                }
+                //endregion
+                //region deck
+                PreparedStatement statementDeck = _connection.prepareStatement("""
+                        SELECT 
+                        d.userid,
+                        d.cardid
+                        FROM decks d
+                        where d.userid=?
+                        """);
 
-        ResultSet resultSet = statement.executeQuery();
-        while (resultSet.next()) {
-            users.add(new User(
-                    resultSet.getLong(1),
-                    new Credentials(resultSet.getString(2), resultSet.getString(3)),
-                    resultSet.getInt(4),
-                    resultSet.getInt(5),
-                    new EditableUserData(resultSet.getString(6), resultSet.getString(7), resultSet.getString(8))
-            ));
-        }
+                statementDeck.setLong(1, user.getId());
+                ResultSet resultSetDeck = statementDeck.executeQuery();
+                while (resultSetDeck.next()) {
+                    user.getDeck().getCards().add(findCard(resultSet.getString(2)));
+                }
+                //endregion
+                users.add(user);
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         //endregion
         return users;
+    }
+
+    public ACard findCard(String id) {
+        ACard card = null;
+        try {
+            PreparedStatement statement = _connection.prepareStatement("""
+                    SELECT 
+                    type,
+                    id, 
+                    name,
+                    damage,
+                    effectid,
+                    raceid
+                    FROM cards
+                    where id=?
+                    """);
+
+            statement.setString(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Class cardClass = Class.forName(resultSet.getString(1));
+                card = (ACard) ((Class<?>) cardClass).getDeclaredConstructor().newInstance();
+                card.setId(resultSet.getString(2));
+                card.setName(resultSet.getString(3));
+                card.setDamage(resultSet.getDouble(4));
+                card.setEffect(findEffect(resultSet.getLong(5)));
+
+                if (card.getClass() == MonsterCard.class) {
+                    ((MonsterCard) card).setRace(findRace(resultSet.getLong(6)));
+
+                }
+            }
+        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException throwables) {
+            throwables.printStackTrace();
+        }
+        return card;
+    }
+
+    private IEffect findEffect(Long id) {
+        IEffect effect = null;
+        try {
+            PreparedStatement statement = _connection.prepareStatement("""
+                    SELECT 
+                    id, 
+                    type,
+                    name,
+                    baseeffectid
+                    FROM effects 
+                    where id=?
+                    """);
+
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Class effectClass = Class.forName(resultSet.getString(2));
+                effect = (IEffect) ((Class<?>) effectClass).getDeclaredConstructor().newInstance();
+                effect.setId(resultSet.getLong(1));
+                effect.setName(resultSet.getString(3));
+                resultSet.getLong(4);
+                effect.setBase(findEffect(resultSet.getLong(4)));
+            }
+        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException throwables) {
+            throwables.printStackTrace();
+        }
+        return effect;
+    }
+
+    private IRace findRace(Long id) {
+        IRace race = null;
+        try {
+            PreparedStatement statement = _connection.prepareStatement("""
+                    SELECT 
+                    id, 
+                    type,
+                    name,
+                    baseraceid
+                    FROM races 
+                    where id=?
+                    """);
+
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Class raceClass = Class.forName(resultSet.getString(2));
+                race = (IRace) ((Class<?>) raceClass).getDeclaredConstructor().newInstance();
+                race.setId(resultSet.getLong(1));
+                race.setName(resultSet.getString(3));
+                resultSet.getLong(4);
+                race.setBase(findRace(resultSet.getLong(4)));
+            }
+        } catch (SQLException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException throwables) {
+            throwables.printStackTrace();
+        }
+        return race;
     }
 }

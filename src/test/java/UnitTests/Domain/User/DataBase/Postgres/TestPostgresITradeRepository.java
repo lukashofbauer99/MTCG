@@ -6,19 +6,22 @@ import Domain.Cards.DataBase.Postgres.PostgresIRaceRepository;
 import Domain.Cards.Interfaces.IACardRepository;
 import Domain.Cards.Interfaces.IEffectRepository;
 import Domain.Cards.Interfaces.IRaceRepository;
+import Domain.User.DataBase.Postgres.PostgresITradeRepository;
 import Domain.User.DataBase.Postgres.PostgresUserRepository;
-import Domain.User.InMemory.InMemoryUserRepository;
+import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
 import Model.Cards.Effects_Races.Effects.IEffect;
 import Model.Cards.Effects_Races.Races.BaseRace;
-import Model.Cards.Effects_Races.Races.FireElfRace;
 import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
-import Model.Cards.SpellCard;
 import Model.User.Credentials;
+import Model.User.Trade.ITrade;
+import Model.User.Trade.ITradeCardRequirements;
+import Model.User.Trade.NormalTradeCardRequirements;
+import Model.User.Trade.Trade1To1;
 import Model.User.User;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +34,7 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestPostgresUserRepository {
+public class TestPostgresITradeRepository {
 
     User userA = new User(new Credentials("user", "pw"));
 
@@ -49,8 +52,9 @@ public class TestPostgresUserRepository {
     static IACardRepository cardRepository;
     static IEffectRepository effectRepository;
     static IRaceRepository iRaceRepository;
+    static ITradeRepository iTradeRepository;
 
-    public TestPostgresUserRepository() {
+    public TestPostgresITradeRepository() {
     }
 
     @BeforeEach()
@@ -60,6 +64,8 @@ public class TestPostgresUserRepository {
         cardRepository = new PostgresACardRepository(connection);
         effectRepository = new PostgresIEffectRepository(connection);
         iRaceRepository = new PostgresIRaceRepository(connection);
+        iTradeRepository = new PostgresITradeRepository(connection);
+
     }
 
     @AfterEach()
@@ -170,19 +176,8 @@ public class TestPostgresUserRepository {
     }
 
     @Test
-    @DisplayName("Create User")
-    void testCreateUser() {
-        // arrange
-        // act
-        Long id = userRepository.persistEntity(userA);
-
-        // assert
-        assertEquals(1, id);
-    }
-
-    @Test
-    @DisplayName("Find User")
-    void testFindUser() {
+    @DisplayName("Create ITrade")
+    void testCreateITrade() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
@@ -195,28 +190,67 @@ public class TestPostgresUserRepository {
         card.setId(cardRepository.persistEntity(card));
 
         userA.getStack().getCards().add(card);
-        Long id = userRepository.persistEntity(userA);
+        userA.setId(userRepository.persistEntity(userA));
+        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
         // act
-        User foundUser = userRepository.findEntity(id);
+
+        String id = iTradeRepository.persistEntityGenNoId(trade);
+        // assert
+        assertEquals("id", id);
+    }
+
+    @Test
+    @DisplayName("Find ITrade")
+    void testFindITrade() {
+        // arrange
+        IEffect baseEf= new BaseEffect();
+        baseEf.setId(effectRepository.persistEntity(baseEf));
+        IEffect fireEffect= new FireEffect(baseEf);
+        fireEffect.setId(effectRepository.persistEntity(fireEffect));
+
+        IRace baseRace = new BaseRace();
+        baseRace.setId(iRaceRepository.persistEntity(baseRace));
+        ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
+        card.setId(cardRepository.persistEntity(card));
+
+        userA.getStack().getCards().add(card);
+        userA.setId(userRepository.persistEntity(userA));
+        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
+
+        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
+        // act
+        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
 
         // assert
-        assertEquals(foundUser.getStack().getCards().stream().findFirst().orElse(null).getEffect().getBase().getId(), baseEf.getId());
+        assertEquals(foundTrade.getCardTradedFor().getId(), card.getId());
     }
 
     @Test
     @DisplayName("Update User")
     void testUpdateUser() {
         // arrange
+        IEffect baseEf= new BaseEffect();
+        baseEf.setId(effectRepository.persistEntity(baseEf));
+        IEffect fireEffect= new FireEffect(baseEf);
+        fireEffect.setId(effectRepository.persistEntity(fireEffect));
+
+        IRace baseRace = new BaseRace();
+        baseRace.setId(iRaceRepository.persistEntity(baseRace));
+        ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
+        card.setId(cardRepository.persistEntity(card));
+
+        userA.getStack().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        userA.getCredentials().setUsername("newName");
-        userA.getStack().getCards().add(new MonsterCard("Fireelf", 20, new BaseEffect(), new BaseRace()));
+        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
+        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
+        trade.getRequirements().setMinimumDamage(5d);
         // act
-        boolean works = userRepository.updateEntity(userA);
-        User foundUser = userRepository.findEntity(1L);
+        boolean works = iTradeRepository.updateEntity(trade);
+        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
 
         // assert
         assertTrue(works);
-        assertEquals(userA.getCredentials().getUsername(), foundUser.getCredentials().getUsername());
+        assertEquals(trade.getRequirements().getMinimumDamage(), foundTrade.getRequirements().getMinimumDamage());
 
     }
 
@@ -224,10 +258,24 @@ public class TestPostgresUserRepository {
     @DisplayName("Update User Wrong ID")
     void testUpdateUserWrongId() {
         // arrange
-        userA.setId(1L);
-        userA.getCredentials().setUsername("newName");
+        IEffect baseEf= new BaseEffect();
+        baseEf.setId(effectRepository.persistEntity(baseEf));
+        IEffect fireEffect= new FireEffect(baseEf);
+        fireEffect.setId(effectRepository.persistEntity(fireEffect));
+
+        IRace baseRace = new BaseRace();
+        baseRace.setId(iRaceRepository.persistEntity(baseRace));
+        ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
+        card.setId(cardRepository.persistEntity(card));
+
+        userA.getStack().getCards().add(card);
+        userA.setId(userRepository.persistEntity(userA));
+        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
+        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
+        trade.getRequirements().setMinimumDamage(5d);
+        trade.setId("wrongid");
         // act
-        boolean works = userRepository.updateEntity(userA);
+        boolean works = iTradeRepository.updateEntity(trade);
 
         // assert
         assertFalse(works);
@@ -237,16 +285,30 @@ public class TestPostgresUserRepository {
     @DisplayName("Delete User")
     void testDeleteUser() {
         // arrange
-        Long id = userRepository.persistEntity(userA);
+        IEffect baseEf= new BaseEffect();
+        baseEf.setId(effectRepository.persistEntity(baseEf));
+        IEffect fireEffect= new FireEffect(baseEf);
+        fireEffect.setId(effectRepository.persistEntity(fireEffect));
+
+        IRace baseRace = new BaseRace();
+        baseRace.setId(iRaceRepository.persistEntity(baseRace));
+        ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
+        card.setId(cardRepository.persistEntity(card));
+
+        userA.getStack().getCards().add(card);
+        userA.setId(userRepository.persistEntity(userA));
+        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
+
+        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
 
         // act
-        boolean works = userRepository.deleteEntity(id);
-        User foundUser = userRepository.findEntity(id);
+        boolean works = iTradeRepository.deleteEntity(trade.getId());
+        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
 
 
         // assert
         assertTrue(works);
-        assertNull(foundUser);
+        assertNull(foundTrade);
     }
 
     @Test
@@ -255,57 +317,11 @@ public class TestPostgresUserRepository {
         // arrange
 
         // act
-        boolean works = userRepository.deleteEntity(0L);
+        boolean works = iTradeRepository.deleteEntity("ids");
 
         // assert
         assertFalse(works);
     }
 
-    @Test
-    @DisplayName("Login")
-    void testLogin() {
-        // arrange
-        userRepository.persistEntity(userA);
-        // act
-        String token = userRepository.loginUser(userA.getCredentials());
-
-        // assert
-        assertEquals("Basic " + userA.getCredentials().getUsername() + "-mtcgToken", token);
-    }
-
-    @Test
-    @DisplayName("Login Wrong Credentials")
-    void testLoginWrongCredentials() {
-        // arrange
-        // act
-        String token = userRepository.loginUser(userA.getCredentials());
-
-        // assert
-        assertNull(token);
-    }
-
-
-    @Test
-    @DisplayName("get User With Token")
-    void testGetUserWithToken() {
-        userRepository.persistEntity(userA);
-        // act
-        String token = userRepository.loginUser(userA.getCredentials());
-        User user = userRepository.getUserWithToken("Basic " + userA.getCredentials().getUsername() + "-mtcgToken");
-
-        // assert
-        assertEquals(userA.getId(), user.getId());
-    }
-
-    @Test
-    @DisplayName("get User With Username")
-    void testGetUserWithUsername() {
-        userRepository.persistEntity(userA);
-        // act
-        User user = userRepository.getUserWithUsername("user");
-
-        // assert
-        assertEquals(userA.getId(), user.getId());
-    }
 
 }

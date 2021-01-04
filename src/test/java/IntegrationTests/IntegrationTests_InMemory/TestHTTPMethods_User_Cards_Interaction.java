@@ -1,4 +1,4 @@
-package IntegrationTests;
+package IntegrationTests.IntegrationTests_InMemory;
 
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
@@ -848,6 +848,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
         Thread thread1=new Thread(task);
         thread1.start();
 
+        Thread.sleep(100);
         //Thread2
         FutureTask<Battle> task2 = new FutureTask<>(new MatchPlayersCallable("Basic altenhof-mtcgToken"));
         Thread thread2=new Thread(task2);
