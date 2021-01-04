@@ -15,6 +15,9 @@ import java.util.concurrent.Future;
 @Setter
 @NoArgsConstructor
 public class Battle {
+
+    Long id;
+
     User user1;
     User user2;
 

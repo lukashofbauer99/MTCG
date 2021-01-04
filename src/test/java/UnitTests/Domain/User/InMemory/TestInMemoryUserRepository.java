@@ -1,4 +1,4 @@
-package UnitTests.Domain.User;
+package UnitTests.Domain.User.InMemory;
 
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestInMemoryITradeRepository {
+public class TestInMemoryUserRepository {
 
     User userA = new User(new Credentials("user", "pw"));
 

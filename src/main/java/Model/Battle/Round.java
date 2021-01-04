@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 public class Round {
 
+    Long id;
+
     RoundOutcome roundOutcome;
 
     double winnerDmg;

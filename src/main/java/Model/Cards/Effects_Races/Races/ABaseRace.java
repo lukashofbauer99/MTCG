@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
+@Setter
 public abstract class ABaseRace implements IRace {
 
-    @Setter
     Long id;
     protected String name;
     protected IRace base;

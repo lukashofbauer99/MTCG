@@ -31,6 +31,14 @@ public class User {
     @Setter
     int mmr = 100;
 
+    public User(Long id, Credentials credentials, int coins, int mmr, EditableUserData editableUserData) {
+        this.id = id;
+        this.credentials = credentials;
+        this.coins = coins;
+        this.mmr = mmr;
+        this.editableUserData = editableUserData;
+    }
+
     @Setter
     EditableUserData editableUserData = new EditableUserData();
 

@@ -24,7 +24,11 @@ public interface IEffect {
 
     String getName();
 
+    void setName(String name);
+
     double affect(ACard thisCard, ACard opponentCard);
 
     IEffect getBase();
+
+    void setBase(IEffect base);
 }

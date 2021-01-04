@@ -2,6 +2,7 @@ package Model.Cards.Effects_Races.Races;
 
 import Model.Battle.State;
 import Model.Cards.ACard;
+import Model.Cards.Effects_Races.Effects.IEffect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -29,7 +30,11 @@ public interface IRace {
 
     String getName();
 
+    void setName(String name);
+
     double affect(ACard thisCard, ACard opponentCard, State state);
 
     IRace getBase();
+
+    void setBase(IRace base);
 }

@@ -36,5 +36,11 @@ public abstract class ACard {
         this.effect = effect;
     }
 
+    public ACard(String id,String name, double damage) {
+        this.id=id;
+        this.name = name;
+        this.damage = damage;
+    }
+
     public abstract double calcDamage(State state, ACard oppenentCard);
 }

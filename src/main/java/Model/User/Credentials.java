@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class Credentials {
     @Getter
     String username;
-    //only temporary
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password;
 }

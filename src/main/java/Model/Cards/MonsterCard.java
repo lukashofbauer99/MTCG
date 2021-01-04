@@ -19,10 +19,8 @@ public class MonsterCard extends ACard {
         super(name, damage, effect);
         this.race = race;
     }
-
-    public MonsterCard(String name, double damage, IEffect attackEffect, IEffect defendEffect, IRace race) {
-        super(name, damage, attackEffect);
-        this.race = race;
+    public MonsterCard(String id,String name, double damage) {
+        super(id,name, damage);
     }
 
 

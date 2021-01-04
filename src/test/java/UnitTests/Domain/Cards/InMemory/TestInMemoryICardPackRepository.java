@@ -1,4 +1,4 @@
-package UnitTests.Domain.Cards;
+package UnitTests.Domain.Cards.InMemory;
 
 import Domain.Cards.InMemory.InMemoryCardPackRepository;
 import Domain.Cards.Interfaces.ICardPackRepository;

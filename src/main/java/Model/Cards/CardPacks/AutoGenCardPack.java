@@ -9,18 +9,17 @@ import Model.Cards.Effects_Races.Races.GoblinRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Random;
 
 @Getter
 public class AutoGenCardPack extends ACardPackFixedSizeAndCost {
 
-    PackType packType = PackType.AutoGen;
-
     Random rand = new Random();
 
     public AutoGenCardPack() {
-        super(5, 4);
+        super(5, 4,PackType.AutoGen);
         genereateCards();
     }
 

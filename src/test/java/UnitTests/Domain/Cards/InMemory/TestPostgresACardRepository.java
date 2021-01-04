@@ -1,4 +1,4 @@
-package UnitTests.Domain.Cards;
+package UnitTests.Domain.Cards.InMemory;
 
 import Domain.Cards.InMemory.InMemoryACardRepository;
 import Domain.Cards.Interfaces.IACardRepository;
@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestInMemoryACardRepository {
+public class TestPostgresACardRepository {
 
 
     IEffect baseEffect = new BaseEffect();

@@ -1,4 +1,4 @@
-package UnitTests.Domain.Cards;
+package UnitTests.Domain.Cards.InMemory;
 
 import Domain.Cards.InMemory.InMemoryIEffectRepository;
 import Domain.Cards.Interfaces.IEffectRepository;

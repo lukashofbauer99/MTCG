@@ -5,6 +5,7 @@ import Model.Cards.ACard;
 import Model.Cards.CardPacks.ICardPack;
 import Model.Cards.CardPacks.NormalCardPack;
 import Model.Cards.MonsterCard;
+import Model.Cards.Vendor.IVendor;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Request.IRequestContext;
 import Service.RESTServer.Service.Response.IResponseContext;
@@ -59,7 +60,12 @@ public class POST_NormalPackages implements IHTTPMethod {
         ICardPack cardPack = new NormalCardPack(cards);
         Long id = cardPackRepository.persistEntity(cardPack);
 
-        vendorRepository.getAllEntities().stream().findFirst().ifPresent(vendor -> vendor.addICardPack(cardPack));
+        IVendor vendor= vendorRepository.getAllEntities().stream().findFirst().orElse(null);
+        if(vendor!=null) {
+            vendor.addICardPack(cardPack);
+            vendorRepository.updateEntity(vendor);
+        }
+
 
         responseContext.setPayload(String.valueOf(id));
 

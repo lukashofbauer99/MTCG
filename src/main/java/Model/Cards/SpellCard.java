@@ -21,6 +21,10 @@ public class SpellCard extends ACard {
         super(name, damage, attackEffect);
     }
 
+    public SpellCard(String id,String name, double damage) {
+        super(id,name, damage);
+    }
+
     @Override
     public double calcDamage(State state, ACard oppenentCard) {
         return this.effect.affect(this, oppenentCard);
