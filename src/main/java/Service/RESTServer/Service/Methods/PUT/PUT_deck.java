@@ -49,6 +49,7 @@ public class PUT_deck implements IHTTPMethod {
             if (cards.size() == 4 && user != null) {
                 worked = user.defineDeck(cards);
                 if (worked) {
+                    userRepository.updateEntity(user);
                     responseContext.setHttpStatusCode("HTTP/1.1 200");
                 } else {
                     responseContext.setHttpStatusCode("HTTP/1.1 400");

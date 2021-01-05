@@ -1,6 +1,7 @@
 package Domain.Cards.DataBase.Postgres;
 
 import Domain.Cards.Interfaces.IRaceRepository;
+import Model.Cards.Effects_Races.Effects.*;
 import Model.Cards.Effects_Races.Races.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,21 +16,21 @@ public class PostgresIRaceRepository implements IRaceRepository {
 
     private Connection _connection = null;
 
-    public PostgresIRaceRepository(Connection connection) {
+    public PostgresIRaceRepository(Connection connection,Boolean initVals) {
         this._connection = connection;
+        if(initVals) {
+            IRace base = new BaseRace();
+            persistEntity(base);
+            persistEntity(new GoblinRace(base));
+            persistEntity(new DragonRace(base));
+            persistEntity(new WizardRace(base));
+            persistEntity(new OrkRace(base));
+            persistEntity(new KrakenRace(base));
+            persistEntity(new FireElfRace(base));
+            persistEntity(new KnightRace(base));
+        }
     }
 
-    public PostgresIRaceRepository() {
-        IRace base = new BaseRace();
-        persistEntity(base);
-        persistEntity(new GoblinRace(base));
-        persistEntity(new DragonRace(base));
-        persistEntity(new WizardRace(base));
-        persistEntity(new OrkRace(base));
-        persistEntity(new KrakenRace(base));
-        persistEntity(new FireElfRace(base));
-        persistEntity(new KnightRace(base));
-    }
 
     @Override
     public synchronized Long persistEntity(IRace entity) {

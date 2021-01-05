@@ -11,7 +11,6 @@ import Model.User.EditableUserData;
 import Model.User.User;
 import lombok.AllArgsConstructor;
 
-import javax.xml.transform.Result;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 //TODO: Clean up code, use private Methods, Test, Implement PostgresITradeRepository
 public class PostgresUserRepository implements IUserRepository {
@@ -81,7 +78,7 @@ public class PostgresUserRepository implements IUserRepository {
     public List<ACard> getCardsOfUserWithToken(String token) {
         User user = getUserWithToken(token);
         if (user != null) {
-            List<ACard> cardsOfUser = user.getStack().getCards();
+            List<ACard> cardsOfUser = findEntity(user.getId()).getStack().getCards();
             cardsOfUser.addAll(user.getDeck().getCards());
             return cardsOfUser;
         }
@@ -92,7 +89,7 @@ public class PostgresUserRepository implements IUserRepository {
     public Deck getDeckOfUserWithToken(String token) {
         User user = getUserWithToken(token);
         if (user != null) {
-            return user.getDeck();
+            return findEntity(user.getId()).getDeck();
         }
         return null;
     }
@@ -100,7 +97,7 @@ public class PostgresUserRepository implements IUserRepository {
     @Override
     public User getUserWithToken(String token) {
         if (usersInSession.containsKey(token)) {
-            return usersInSession.get(token);
+            return findEntity(usersInSession.get(token).getId());
         }
         return null;
     }
@@ -276,7 +273,7 @@ public class PostgresUserRepository implements IUserRepository {
             ResultSet resultSetStack = statementStack.executeQuery();
             List<entry> stackEntriesDB = new ArrayList<>();
             while (resultSetStack.next()) {
-                stackEntriesDB.add(new entry(resultSet.getLong(1), resultSet.getString(2)));
+                stackEntriesDB.add(new entry(resultSetStack.getLong(1), resultSetStack.getString(2)));
             }
             List<entry> stackEntriesMemory = entity.getStack().getCards().stream().map(x -> new entry(entity.getId(), x.getId())).collect(Collectors.toList());
 
@@ -411,7 +408,7 @@ public class PostgresUserRepository implements IUserRepository {
                 statementDeck.setLong(1, id);
                 ResultSet resultSetDeck = statementDeck.executeQuery();
                 while (resultSetDeck.next()) {
-                    user.getDeck().getCards().add(findCard(resultSet.getString(2)));
+                    user.getDeck().getCards().add(findCard(resultSetDeck.getString(2)));
                 }
                 //endregion
             }

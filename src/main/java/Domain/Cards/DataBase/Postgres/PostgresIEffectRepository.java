@@ -15,17 +15,18 @@ public class PostgresIEffectRepository implements IEffectRepository {
 
     private Connection _connection = null;
 
-    public PostgresIEffectRepository(Connection connection) {
+    public PostgresIEffectRepository(Connection connection,Boolean initVals) {
+
         this._connection = connection;
+        if(initVals) {
+            IEffect base = new BaseEffect();
+            base.setId(persistEntity(base));
+            persistEntity(new FireEffect(base));
+            persistEntity(new WaterEffect(base));
+            persistEntity(new NormalEffect(base));
+        }
     }
 
-    public PostgresIEffectRepository() {
-        IEffect base = new BaseEffect();
-        persistEntity(base);
-        persistEntity(new FireEffect(base));
-        persistEntity(new WaterEffect(base));
-        persistEntity(new NormalEffect(base));
-    }
 
     @Override
     public synchronized Long persistEntity(IEffect entity) {

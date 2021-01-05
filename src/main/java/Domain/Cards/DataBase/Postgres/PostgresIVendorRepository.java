@@ -8,6 +8,7 @@ import Model.Cards.Effects_Races.Effects.IEffect;
 import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
 import Model.Cards.Vendor.IVendor;
+import Model.Cards.Vendor.NormalVendor;
 import lombok.AllArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,12 +27,12 @@ public class PostgresIVendorRepository implements IVendorRepository {
 
     private Connection _connection = null;
 
-    public PostgresIVendorRepository(Connection connection) {
+    public PostgresIVendorRepository(Connection connection,Boolean initVals) {
         this._connection = connection;
+        if(initVals)
+            persistEntity(new NormalVendor());
     }
 
-    public PostgresIVendorRepository() {
-    }
 
     @Override
     public synchronized Long persistEntity(IVendor entity) {
@@ -129,7 +130,7 @@ public class PostgresIVendorRepository implements IVendorRepository {
 
             List<entry> toInsert = stackEntriesMemory.stream().filter(x -> !packEntriesDB.contains(x)).collect(Collectors.toList());
             for (entry item : toInsert) {
-                InsertVendorIdIntoCardPack(item.cardPackId, item.cardPackId);
+                InsertVendorIdIntoCardPack(item.vendorId, item.cardPackId);
             }
             //endregion
         } catch (SQLException throwables) {

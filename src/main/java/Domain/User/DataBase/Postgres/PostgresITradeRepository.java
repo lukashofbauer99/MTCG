@@ -97,7 +97,8 @@ public class PostgresITradeRepository implements ITradeRepository {
         String id = null;
         PreparedStatement statement;
         try {
-            statement = _connection.prepareStatement("""
+            if(entity.getRequirements().getEffect()!=null&&entity.getRequirements().getRace()!=null) {
+                statement = _connection.prepareStatement("""
                     INSERT 
                     INTO
                     normaltrades
@@ -110,7 +111,7 @@ public class PostgresITradeRepository implements ITradeRepository {
                     """);
             statement.setString(1,entity.getId());
             statement.setDouble(2, entity.getRequirements().getMinimumDamage());
-            statement.setString(3, entity.getRequirements().getClass().getTypeName());
+            statement.setString(3, entity.getRequirements().getCardType().getTypeName());
             statement.setLong(4, entity.getRequirements().getEffect().getId());
             statement.setLong(5, entity.getRequirements().getRace().getId());
             statement.setLong(6, entity.getUserOffer().getId());
@@ -121,6 +122,84 @@ public class PostgresITradeRepository implements ITradeRepository {
             resultSet2.next();
             id = resultSet2.getString(1);
             entity.setId(id);
+            }
+            else if(entity.getRequirements().getEffect()!=null)
+            {
+                statement = _connection.prepareStatement("""
+                    INSERT 
+                    INTO
+                    normaltrades
+                    (id, minimumdamage, cardtype, effectid, userid, cardid)
+                    VALUES 
+                    (
+                    ?,?,?,?,?,?
+                    )
+                    returning id
+                    """);
+                statement.setString(1,entity.getId());
+                statement.setDouble(2, entity.getRequirements().getMinimumDamage());
+                statement.setString(3, entity.getRequirements().getCardType().getTypeName());
+                statement.setLong(4, entity.getRequirements().getEffect().getId());
+                statement.setLong(5, entity.getUserOffer().getId());
+                statement.setString(6, entity.getCardTradedFor().getId());
+                //statement.execute();
+
+                ResultSet resultSet2 = statement.executeQuery();
+                resultSet2.next();
+                id = resultSet2.getString(1);
+                entity.setId(id);
+            }
+            else if(entity.getRequirements().getRace()!=null)
+            {
+                statement = _connection.prepareStatement("""
+                    INSERT 
+                    INTO
+                    normaltrades
+                    (id, minimumdamage, cardtype, raceid, userid, cardid)
+                    VALUES 
+                    (
+                    ?,?,?,?,?,?
+                    )
+                    returning id
+                    """);
+                statement.setString(1,entity.getId());
+                statement.setDouble(2, entity.getRequirements().getMinimumDamage());
+                statement.setString(3, entity.getRequirements().getCardType().getTypeName());
+                statement.setLong(4, entity.getRequirements().getRace().getId());
+                statement.setLong(5, entity.getUserOffer().getId());
+                statement.setString(6, entity.getCardTradedFor().getId());
+                //statement.execute();
+
+                ResultSet resultSet2 = statement.executeQuery();
+                resultSet2.next();
+                id = resultSet2.getString(1);
+                entity.setId(id);
+            }
+            else
+            {
+                statement = _connection.prepareStatement("""
+                    INSERT 
+                    INTO
+                    normaltrades
+                    (id, minimumdamage, cardtype, userid, cardid)
+                    VALUES 
+                    (
+                    ?,?,?,?,?
+                    )
+                    returning id
+                    """);
+                statement.setString(1,entity.getId());
+                statement.setDouble(2, entity.getRequirements().getMinimumDamage());
+                statement.setString(3, entity.getRequirements().getCardType().getTypeName());
+                statement.setLong(4, entity.getUserOffer().getId());
+                statement.setString(5, entity.getCardTradedFor().getId());
+                //statement.execute();
+
+                ResultSet resultSet2 = statement.executeQuery();
+                resultSet2.next();
+                id = resultSet2.getString(1);
+                entity.setId(id);
+            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

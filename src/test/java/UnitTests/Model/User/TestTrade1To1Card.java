@@ -70,7 +70,12 @@ public class TestTrade1To1Card {
     void testTradeCardWithOffer() {
         // arrange
         userA = new User();
+        userA.setId(1l);
         userB = new User();
+        userB.setId(2l);
+        cardC.setId("1");
+        cardD.setId("2");
+
 
         userA.getStack().getCards().add(cardC);
         userB.getStack().getCards().add(cardD);

@@ -1,6 +1,7 @@
 package UnitTests.Model.User;
 
 import Model.Cards.ACard;
+import Model.Cards.SpellCard;
 import Model.User.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,16 +64,24 @@ public class TestDefineDeck {
     void testDefineDeckFail() {
         // arrange
 
-        userA.getStack().getCards().add(cardA);
-        userA.getStack().getCards().add(cardB);
-        userA.getStack().getCards().add(cardC);
-        userA.getStack().getCards().add(cardD);
+        ACard cardE= new SpellCard();
+        userA.getStack().getCards().add(cardE);
+        cardE.setId("1");
+
+        ACard cardF= new SpellCard();
+        userA.getStack().getCards().add(cardF);
+        cardF.setId("2");
+
+        ACard cardG= new SpellCard();
+        userA.getStack().getCards().add(cardG);
+        cardG.setId("3");
+
+
 
         List<ACard> cardstoAdd = new ArrayList<>();
-        cardstoAdd.add(cardA);
-        cardstoAdd.add(cardB);
-        cardstoAdd.add(cardC);
         cardstoAdd.add(cardE);
+        cardstoAdd.add(cardF);
+        cardstoAdd.add(cardG);
 
         // act
         boolean worked = userA.defineDeck(cardstoAdd);

@@ -1,5 +1,6 @@
 package IntegrationTests.IntegrationTests_Postgres;
 
+import Domain.User.DataBase.Postgres.PostgresUserRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Model.User.Statistics.Stats;
@@ -26,6 +27,9 @@ import java.io.Reader;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +52,17 @@ public class TestHTTPMethods_User {
 
     static ObjectMapper mapper = new ObjectMapper();
 
-    static IUserRepository userRepo = new InMemoryUserRepository();
+    static Connection connection;
+
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    static IUserRepository userRepo = new PostgresUserRepository(connection);
 
 
     @BeforeAll
@@ -81,9 +95,102 @@ public class TestHTTPMethods_User {
 
 
     }
-
     @AfterAll
     static void cleanUp() {
+
+        try {
+            connection
+                    .createStatement()
+                    .execute("truncate table battledecks,battles,cardpacks,cards,cardsinpack,decks,effects,normaltrades,races,rounds,stacks,users,vendors cascade ");
+
+            //region Reset Sequences
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE battledecks_id_seq RESTART;");
+
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE battles_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE cardpacks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE cardsinpack_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE decks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE races_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE rounds_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE stacks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE users_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE vendors_id_seq RESTART;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE battledecks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE battles SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cardpacks SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cards SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cardsinpack SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE decks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE effects SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE normaltrades SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE races SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE rounds SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE stacks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE users SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE vendors SET id = DEFAULT;");
+            //endregion
+
+            connection.close();
+            connection= null;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         workerThread.stop();
 

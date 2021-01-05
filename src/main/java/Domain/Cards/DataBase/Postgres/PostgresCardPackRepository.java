@@ -32,9 +32,6 @@ public class PostgresCardPackRepository implements ICardPackRepository {
         this._connection = connection;
     }
 
-    public PostgresCardPackRepository() {
-    }
-
     @Override
     public synchronized Long persistEntity(ICardPack entity) {
 

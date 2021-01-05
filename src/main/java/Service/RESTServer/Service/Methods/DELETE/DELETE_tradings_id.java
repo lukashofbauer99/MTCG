@@ -40,7 +40,7 @@ public class DELETE_tradings_id implements IHTTPMethod {
 
             ITrade trade = tradeRepository.findEntity(tradeId);
             if (trade != null) {
-                if (trade.getUserOffer() == user) {
+                if (trade.getUserOffer().getId() == user.getId()) {
                     tradeRepository.deleteEntity(tradeId);
                     responseContext.setHttpStatusCode("HTTP/1.1 204");
                     responseContext.setPayload("Deleted");

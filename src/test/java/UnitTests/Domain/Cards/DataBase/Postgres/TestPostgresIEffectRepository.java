@@ -44,7 +44,7 @@ public class TestPostgresIEffectRepository {
 
     @BeforeEach()
     void SetupConnection(){
-        effectRepository = new PostgresIEffectRepository(connection);
+        effectRepository = new PostgresIEffectRepository(connection,false);
     }
 
     @AfterEach()

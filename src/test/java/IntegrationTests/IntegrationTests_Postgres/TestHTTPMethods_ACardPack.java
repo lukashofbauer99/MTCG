@@ -1,7 +1,9 @@
 package IntegrationTests.IntegrationTests_Postgres;
 
+import Domain.Cards.DataBase.Postgres.*;
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
+import Domain.User.DataBase.Postgres.PostgresUserRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.IUserRepository;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
@@ -17,6 +19,9 @@ import java.io.Reader;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,16 +40,26 @@ public class TestHTTPMethods_ACardPack {
     static Thread workerThread;
     static volatile boolean ready= false;
 
-    static IUserRepository userRepo=new InMemoryUserRepository();
+    static Connection connection;
+
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    static IUserRepository userRepo=new PostgresUserRepository(connection);
 
 
     @BeforeAll
     static void setUp() {
-        ICardPackRepository cardPackRepo=new InMemoryCardPackRepository();
-        IACardRepository cardRepo=new InMemoryACardRepository();
-        IEffectRepository effectRepository= new InMemoryIEffectRepository();
-        IRaceRepository raceRepository= new InMemoryIRaceRepository();
-        IVendorRepository vendorRepository= new InMemoryIVendorRepository();
+        ICardPackRepository cardPackRepo=new PostgresCardPackRepository(connection);
+        IACardRepository cardRepo=new PostgresACardRepository(connection);
+        IEffectRepository effectRepository= new PostgresIEffectRepository(connection,true);
+        IRaceRepository raceRepository= new PostgresIRaceRepository(connection,true);
+        IVendorRepository vendorRepository= new PostgresIVendorRepository(connection,false);
 
         methods.add(new POST_NormalPackages(cardPackRepo,cardRepo,effectRepository,raceRepository,vendorRepository));
 
@@ -73,6 +88,100 @@ public class TestHTTPMethods_ACardPack {
 
     @AfterAll
     static void cleanUp() {
+
+        try {
+            connection
+                    .createStatement()
+                    .execute("truncate table battledecks,battles,cardpacks,cards,cardsinpack,decks,effects,normaltrades,races,rounds,stacks,users,vendors cascade ");
+
+            //region Reset Sequences
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE battledecks_id_seq RESTART;");
+
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE battles_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE cardpacks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE cardsinpack_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE decks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE races_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE rounds_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE stacks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE users_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE vendors_id_seq RESTART;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE battledecks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE battles SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cardpacks SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cards SET id = DEFAULT;");
+            connection
+                    .createStatement()
+                    .execute("UPDATE cardsinpack SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE decks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE effects SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE normaltrades SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE races SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE rounds SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE stacks SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE users SET id = DEFAULT;");
+
+            connection
+                    .createStatement()
+                    .execute("UPDATE vendors SET id = DEFAULT;");
+            //endregion
+
+                connection.close();
+                connection= null;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
 
         workerThread.stop();
 

@@ -39,7 +39,7 @@ public class TestPostgresIRaceRepository {
 
     @BeforeEach()
     void SetupConnection(){
-        raceRepository = new PostgresIRaceRepository(connection);
+        raceRepository = new PostgresIRaceRepository(connection,false);
     }
 
     @AfterEach()

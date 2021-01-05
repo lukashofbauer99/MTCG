@@ -55,9 +55,9 @@ public class TestPostgresVendorRepository {
     @BeforeEach()
     void SetupConnection(){
         cardRepository = new PostgresACardRepository(connection);
-        effectRepository = new PostgresIEffectRepository(connection);
+        effectRepository = new PostgresIEffectRepository(connection,false);
         cardPackRepository = new PostgresCardPackRepository(connection);
-        vendorRepository = new PostgresIVendorRepository(connection);
+        vendorRepository = new PostgresIVendorRepository(connection,false);
     }
 
     @AfterEach()

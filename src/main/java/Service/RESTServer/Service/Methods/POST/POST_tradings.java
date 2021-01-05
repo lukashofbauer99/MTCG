@@ -57,7 +57,8 @@ public class POST_tradings implements IHTTPMethod {
                                         Class.forName("Model.Cards."+(tradeCurlAdapter.getType().substring(0,1).toUpperCase() + tradeCurlAdapter.getType().substring(1).toLowerCase())+"Card")
                                         ,null,null);
 
-                ITrade trade= user.createTrade(tradeCurlAdapter.getId(), cardRepository.findEntity(tradeCurlAdapter.getCardToTrade()),tradeCardRequirements);
+                ITrade trade= user.createTrade(tradeCurlAdapter.getId(),
+                        cardRepository.findEntity(tradeCurlAdapter.getCardToTrade()),tradeCardRequirements);
 
                 tradeRepository.persistEntityGenNoId(trade);
                 responseContext.setHttpStatusCode("HTTP/1.1 200");

@@ -58,8 +58,8 @@ public class TestPostgresUserRepository {
 
         userRepository = new PostgresUserRepository(connection);
         cardRepository = new PostgresACardRepository(connection);
-        effectRepository = new PostgresIEffectRepository(connection);
-        iRaceRepository = new PostgresIRaceRepository(connection);
+        effectRepository = new PostgresIEffectRepository(connection,false);
+        iRaceRepository = new PostgresIRaceRepository(connection,false);
     }
 
     @AfterEach()

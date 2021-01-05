@@ -53,6 +53,8 @@ public class POST_tradings_id implements IHTTPMethod {
             ACard card =cardRepository.findEntity(data.getPayload().replace("\"",""));
             if(card!=null) {
                 if(user.accectTradeOffer(trade, card)) {
+                    userRepository.updateEntity(user);
+                    userRepository.updateEntity(trade.getUserOffer());
                     tradeRepository.deleteEntity(trade.getId());
                     responseContext.setHttpStatusCode("HTTP/1.1 200");
                 }

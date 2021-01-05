@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.util.stream.Collectors.toList;
+
 
 @Getter
 public class User {
@@ -84,12 +86,12 @@ public class User {
         if (cards.size() == 4) {
             AtomicBoolean cardsOwned = new AtomicBoolean(true);
             cards.forEach(x -> {
-                if (!stack.cards.contains(x))
+                if (!stack.cards.stream().map(y->y.getId()).collect(toList()).contains(x.getId()))
                     cardsOwned.set(false);
             });
             if (cardsOwned.get()) {
                 deck.cards = cards;
-                stack.cards.removeAll(cards);
+                stack.cards.removeIf(x->cards.stream().map(y->y.getId()).collect(toList()).contains(x.getId()));
                 return true;
             }
         }
@@ -99,7 +101,7 @@ public class User {
     //@Transaction
 
     public ITrade createTrade(String id, ACard cardToTrade, ITradeCardRequirements requirements) {
-        if (stack.getCards().contains(cardToTrade)) {
+        if (stack.getCards().stream().map(x->x.getId()).collect(toList()).contains(cardToTrade.getId())) {
             return new Trade1To1(id,this, cardToTrade, requirements);
         } else return null;
     }
@@ -113,7 +115,7 @@ public class User {
     }
 
     public boolean accectTradeOffer(ITrade trade, ACard card) {
-        if (stack.getCards().contains(card)) {
+        if (stack.getCards().stream().map(x->x.getId()).collect(toList()).contains(card.getId())) {
             return trade.trade(this, card);
         }
         else

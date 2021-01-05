@@ -24,8 +24,6 @@ public class PostgresACardRepository implements IACardRepository {
         this._connection = connection;
     }
 
-    public PostgresACardRepository() {
-    }
 
     @Override
     public synchronized String persistEntity(ACard entity) { //TODO Change everything to fit ACard, persist should already work
@@ -117,7 +115,7 @@ public class PostgresACardRepository implements IACardRepository {
                         returning id
                         """);
 
-                statement.setString(1, currentID.toString());
+                statement.setString(1, card.getId());
                 statement.setString(2, card.getClass().getTypeName());
                 statement.setDouble(3, card.getDamage());
                 statement.setString(4, card.getName());

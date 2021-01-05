@@ -51,7 +51,7 @@ public class TestPostgresCardPackRepository {
     @BeforeEach()
     void SetupConnection(){
         cardRepository = new PostgresACardRepository(connection);
-        effectRepository = new PostgresIEffectRepository(connection);
+        effectRepository = new PostgresIEffectRepository(connection,false);
         cardPackRepository = new PostgresCardPackRepository(connection);
     }
 
