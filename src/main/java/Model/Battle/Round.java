@@ -1,9 +1,13 @@
 package Model.Battle;
 
 import Model.Cards.ACard;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Round {
 
     Long id;

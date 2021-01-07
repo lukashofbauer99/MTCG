@@ -1,8 +1,13 @@
 package Service.RESTServer.Service;
 
+import Domain.Battle.DataBase.Postgres.PostgresBattleRepository;
+import Domain.Battle.Interfaces.IBattleRepository;
+import Domain.Cards.DataBase.Postgres.*;
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
 import Domain.PlayerHub;
+import Domain.User.DataBase.Postgres.PostgresITradeRepository;
+import Domain.User.DataBase.Postgres.PostgresUserRepository;
 import Domain.User.InMemory.InMemoryITradeRepository;
 import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
@@ -21,6 +26,9 @@ import Service.RESTServer.Service.Socket.MySocket;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,22 +36,35 @@ public class MainServer implements Runnable {
 
     private static ServerSocket _listener = null;
 
+    static Connection connection;
 
+    static {
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    //TODO Test curlscript
     public static void main(String[] args) {
         System.out.println("start server");
 
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
-        PlayerHub playerHub= new PlayerHub();
 
         //repositories
-        IUserRepository userRepository = new InMemoryUserRepository();
-        ICardPackRepository cardPackRepository = new InMemoryCardPackRepository();
-        IACardRepository cardRepository = new InMemoryACardRepository();
-        IEffectRepository effectRepository = new InMemoryIEffectRepository();
-        IRaceRepository raceRepository = new InMemoryIRaceRepository();
-        IVendorRepository vendorRepository = new InMemoryIVendorRepository();
-        ITradeRepository tradeRepository = new InMemoryITradeRepository();
+        IBattleRepository battleRepository = new PostgresBattleRepository(connection);
+        IUserRepository userRepository = new PostgresUserRepository(connection);
+        ICardPackRepository cardPackRepository = new PostgresCardPackRepository(connection);
+        IACardRepository cardRepository = new PostgresACardRepository(connection);
+        IEffectRepository effectRepository = new PostgresIEffectRepository(connection,true);
+        IRaceRepository raceRepository = new PostgresIRaceRepository(connection,true);
+        IVendorRepository vendorRepository = new PostgresIVendorRepository(connection,true);
+        ITradeRepository tradeRepository = new PostgresITradeRepository(connection);
+
+        PlayerHub playerHub= new PlayerHub(battleRepository);
+
 
         //register Methods
         registeredMethods.add(new GET_messages());

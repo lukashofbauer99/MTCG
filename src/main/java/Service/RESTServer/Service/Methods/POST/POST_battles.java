@@ -40,6 +40,7 @@ public class POST_battles implements IHTTPMethod {
             responseContext.setPayload(mapper.writerFor(new TypeReference<Battle>() {})
                     .with(new DefaultPrettyPrinter())
                     .writeValueAsString(user.searchBattle(playerHub)));
+            userRepository.updateEntity(user);
             responseContext.setHttpStatusCode("HTTP/1.1 200");
         } else {
             responseContext.setHttpStatusCode("HTTP/1.1 401");

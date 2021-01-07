@@ -86,12 +86,12 @@ public class User {
         if (cards.size() == 4) {
             AtomicBoolean cardsOwned = new AtomicBoolean(true);
             cards.forEach(x -> {
-                if (!stack.cards.stream().map(y->y.getId()).collect(toList()).contains(x.getId()))
+                if (!stack.cards.stream().map(ACard::getId).collect(toList()).contains(x.getId()))
                     cardsOwned.set(false);
             });
             if (cardsOwned.get()) {
                 deck.cards = cards;
-                stack.cards.removeIf(x->cards.stream().map(y->y.getId()).collect(toList()).contains(x.getId()));
+                stack.cards.removeIf(x->cards.stream().map(ACard::getId).collect(toList()).contains(x.getId()));
                 return true;
             }
         }
@@ -101,7 +101,7 @@ public class User {
     //@Transaction
 
     public ITrade createTrade(String id, ACard cardToTrade, ITradeCardRequirements requirements) {
-        if (stack.getCards().stream().map(x->x.getId()).collect(toList()).contains(cardToTrade.getId())) {
+        if (stack.getCards().stream().map(ACard::getId).collect(toList()).contains(cardToTrade.getId())) {
             return new Trade1To1(id,this, cardToTrade, requirements);
         } else return null;
     }
@@ -115,7 +115,7 @@ public class User {
     }
 
     public boolean accectTradeOffer(ITrade trade, ACard card) {
-        if (stack.getCards().stream().map(x->x.getId()).collect(toList()).contains(card.getId())) {
+        if (stack.getCards().stream().map(ACard::getId).collect(toList()).contains(card.getId())) {
             return trade.trade(this, card);
         }
         else
@@ -128,8 +128,8 @@ public class User {
 
     public Stats showStats() {
         double battleCount = battleHistory.size();
-        double battlesWon = (int) battleHistory.stream().filter(x -> x.getWinner().equals(this)).count();
-        double winrate = battlesWon / battleCount;
+        double battlesWon = (int) battleHistory.stream().filter(x -> x.getWinner().getId().equals(id)).count();
+        double winrate = (battlesWon / battleCount)*100;
         return new Stats(this.credentials.username, mmr, (int) battleCount, winrate);
     }
 }

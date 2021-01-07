@@ -1,5 +1,6 @@
 package UnitTests.Model.User;
 
+import Domain.Battle.InMemory.InMemoryBattleRepository;
 import Model.Cards.CardPacks.AutoGenCardPack;
 import Model.Cards.CardPacks.PackType;
 import Model.Cards.Vendor.IVendor;
@@ -15,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class TestBuyCardPack {
-    PlayerHub playerHub = new PlayerHub();
+    PlayerHub playerHub = new PlayerHub(new InMemoryBattleRepository());
 
     IVendor vendor = new NormalVendor();
 

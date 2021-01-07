@@ -35,7 +35,7 @@ public class TestPostgresCardPackRepository {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg_testing","postgres", "postgres");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -79,6 +79,9 @@ public class TestPostgresCardPackRepository {
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE decks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE effects_id_seq RESTART;");
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE races_id_seq RESTART;");

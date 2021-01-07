@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/src/main/java/Domain/Battle/DataBase/Postgres/PostgresBattleRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/Cards/DataBase/Postgres/PostgresACardRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/Cards/DataBase/Postgres/PostgresCardPackRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/Cards/DataBase/Postgres/PostgresIEffectRepository.java" dialect="PostgreSQL" />
@@ -8,11 +9,16 @@
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/Cards/DataBase/Postgres/PostgresIVendorRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/User/DataBase/Postgres/PostgresITradeRepository.java" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/Domain/User/DataBase/Postgres/PostgresUserRepository.java" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/java/IntegrationTests/IntegrationTests_Postgres/TestHTTPMethods_ACardPack.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/java/IntegrationTests/IntegrationTests_Postgres/TestHTTPMethods_User.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/java/IntegrationTests/IntegrationTests_Postgres/TestHTTPMethods_User_Cards_Interaction.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Battles/Postgres/TestPostgresBattleRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Cards/DataBase/Postgres/TestPostgresACardRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Cards/DataBase/Postgres/TestPostgresCardPackRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Cards/DataBase/Postgres/TestPostgresIEffectRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Cards/DataBase/Postgres/TestPostgresIRaceRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/Cards/DataBase/Postgres/TestPostgresVendorRepository.java" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/User/DataBase/Postgres/TestPostgresITradeRepository.java" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/src/test/java/UnitTests/Domain/User/DataBase/Postgres/TestPostgresUserRepository.java" dialect="GenericSQL" />
   </component>
 </project>

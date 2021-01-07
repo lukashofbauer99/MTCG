@@ -1,5 +1,7 @@
-package UnitTests.Domain.User.DataBase.Postgres;
+package UnitTests.Domain.Battles.Postgres;
 
+import Domain.Battle.DataBase.Postgres.PostgresBattleRepository;
+import Domain.Battle.Interfaces.IBattleRepository;
 import Domain.Cards.DataBase.Postgres.PostgresACardRepository;
 import Domain.Cards.DataBase.Postgres.PostgresIEffectRepository;
 import Domain.Cards.DataBase.Postgres.PostgresIRaceRepository;
@@ -10,6 +12,7 @@ import Domain.User.DataBase.Postgres.PostgresITradeRepository;
 import Domain.User.DataBase.Postgres.PostgresUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
+import Model.Battle.Battle;
 import Model.Cards.ACard;
 import Model.Cards.Effects_Races.Effects.BaseEffect;
 import Model.Cards.Effects_Races.Effects.FireEffect;
@@ -19,7 +22,6 @@ import Model.Cards.Effects_Races.Races.IRace;
 import Model.Cards.MonsterCard;
 import Model.User.Credentials;
 import Model.User.Trade.ITrade;
-import Model.User.Trade.ITradeCardRequirements;
 import Model.User.Trade.NormalTradeCardRequirements;
 import Model.User.Trade.Trade1To1;
 import Model.User.User;
@@ -34,9 +36,11 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TestPostgresITradeRepository {
+public class TestPostgresBattleRepository {
 
     User userA = new User(new Credentials("user", "pw"));
+    User userB = new User(new Credentials("user2", "pw"));
+
 
     static Connection connection;
 
@@ -48,13 +52,14 @@ public class TestPostgresITradeRepository {
         }
     }
 
+    static IBattleRepository battleRepository;
     static IUserRepository userRepository ;
     static IACardRepository cardRepository;
     static IEffectRepository effectRepository;
     static IRaceRepository iRaceRepository;
     static ITradeRepository iTradeRepository;
 
-    public TestPostgresITradeRepository() {
+    public TestPostgresBattleRepository() {
     }
 
     @BeforeEach()
@@ -65,6 +70,7 @@ public class TestPostgresITradeRepository {
         effectRepository = new PostgresIEffectRepository(connection,false);
         iRaceRepository = new PostgresIRaceRepository(connection,false);
         iTradeRepository = new PostgresITradeRepository(connection);
+        battleRepository = new PostgresBattleRepository(connection);
 
     }
 
@@ -179,148 +185,189 @@ public class TestPostgresITradeRepository {
     }
 
     @Test
-    @DisplayName("Create ITrade")
-    void testCreateITrade() {
+    @DisplayName("Create Battle")
+    void testCreateBattle() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
         IEffect fireEffect= new FireEffect(baseEf);
         fireEffect.setId(effectRepository.persistEntity(fireEffect));
-
         IRace baseRace = new BaseRace();
         baseRace.setId(iRaceRepository.persistEntity(baseRace));
+
         ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
         card.setId(cardRepository.persistEntity(card));
-
-        userA.getStack().getCards().add(card);
+        userA.getDeck().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
+
+        ACard card2 = new MonsterCard("Fireelf2", 20, fireEffect,baseRace);
+        card2.setId(cardRepository.persistEntity(card2));
+        userB.getDeck().getCards().add(card2);
+        userB.setId(userRepository.persistEntity(userB));
+
+        Battle battle = new Battle();
+        battle.setUser1(userA);
+        battle.setUser2(userB);
+        battle.start();
         // act
 
-        String id = iTradeRepository.persistEntityGenNoId(trade);
+        Long id = battleRepository.persistEntity(battle);
         // assert
-        assertEquals("id", id);
+        assertEquals(1, id);
     }
 
     @Test
-    @DisplayName("Find ITrade")
-    void testFindITrade() {
+    @DisplayName("Find Battle")
+    void testFindBattle() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
         IEffect fireEffect= new FireEffect(baseEf);
         fireEffect.setId(effectRepository.persistEntity(fireEffect));
-
         IRace baseRace = new BaseRace();
         baseRace.setId(iRaceRepository.persistEntity(baseRace));
+
         ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
         card.setId(cardRepository.persistEntity(card));
-
-        userA.getStack().getCards().add(card);
+        userA.getDeck().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
 
-        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
+        ACard card2 = new MonsterCard("Fireelf2", 20, fireEffect,baseRace);
+        card2.setId(cardRepository.persistEntity(card2));
+        userB.getDeck().getCards().add(card2);
+        userB.setId(userRepository.persistEntity(userB));
+
+        Battle battle = new Battle();
+        battle.setUser1(userA);
+        battle.setUser2(userB);
+        battle.start();
+        battle.setId(battleRepository.persistEntity(battle));
+
         // act
-        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
+        Battle foundBattle = battleRepository.findEntity(battle.getId());
 
         // assert
-        assertEquals(foundTrade.getCardTradedFor().getId(), card.getId());
+        assertEquals(foundBattle.getUser1().getId(), userA.getId());
     }
 
     @Test
-    @DisplayName("Update ITrade")
-    void testUpdateITrade() {
+    @DisplayName("Update Battle")
+    void testUpdateBattle() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
         IEffect fireEffect= new FireEffect(baseEf);
         fireEffect.setId(effectRepository.persistEntity(fireEffect));
-
         IRace baseRace = new BaseRace();
         baseRace.setId(iRaceRepository.persistEntity(baseRace));
+
         ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
         card.setId(cardRepository.persistEntity(card));
-
-        userA.getStack().getCards().add(card);
+        userA.getDeck().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
-        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
-        trade.getRequirements().setMinimumDamage(5d);
-        // act
-        boolean works = iTradeRepository.updateEntity(trade);
-        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
+
+        ACard card2 = new MonsterCard("Fireelf2", 20, fireEffect,baseRace);
+        card2.setId(cardRepository.persistEntity(card2));
+        userB.getDeck().getCards().add(card2);
+        userB.setId(userRepository.persistEntity(userB));
+
+        Battle battle = new Battle();
+        battle.setUser1(userA);
+        battle.setUser2(userB);
+        battle.start();
+        battle.setId(battleRepository.persistEntity(battle));
+        battle.setWinner(userA);
+        //act
+
+        boolean works = battleRepository.updateEntity(battle);
+        Battle foundBattle = battleRepository.findEntity(battle.getId());
 
         // assert
         assertTrue(works);
-        assertEquals(trade.getRequirements().getMinimumDamage(), foundTrade.getRequirements().getMinimumDamage());
+        assertNotNull(foundBattle.getWinner());
 
     }
 
     @Test
-    @DisplayName("Update ITrade Wrong ID")
-    void testUpdateITradeWrongId() {
+    @DisplayName("Update Battle Wrong ID")
+    void testUpdateBattleWrongId() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
         IEffect fireEffect= new FireEffect(baseEf);
         fireEffect.setId(effectRepository.persistEntity(fireEffect));
-
         IRace baseRace = new BaseRace();
         baseRace.setId(iRaceRepository.persistEntity(baseRace));
+
         ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
         card.setId(cardRepository.persistEntity(card));
-
-        userA.getStack().getCards().add(card);
+        userA.getDeck().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
-        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
-        trade.getRequirements().setMinimumDamage(5d);
-        trade.setId("wrongid");
-        // act
-        boolean works = iTradeRepository.updateEntity(trade);
+
+        ACard card2 = new MonsterCard("Fireelf2", 20, fireEffect,baseRace);
+        card2.setId(cardRepository.persistEntity(card2));
+        userB.getDeck().getCards().add(card2);
+        userB.setId(userRepository.persistEntity(userB));
+
+        Battle battle = new Battle();
+        battle.setUser1(userA);
+        battle.setUser2(userB);
+        battle.start();
+        battle.setId(battleRepository.persistEntity(battle));
+        battle.setWinner(userA);
+        battle.setId(5000L);
+        //act
+
+        boolean works = battleRepository.updateEntity(battle);
 
         // assert
         assertFalse(works);
     }
 
     @Test
-    @DisplayName("Delete ITrade")
-    void testDeleteITrade() {
+    @DisplayName("Delete Battle")
+    void testDeleteBattle() {
         // arrange
         IEffect baseEf= new BaseEffect();
         baseEf.setId(effectRepository.persistEntity(baseEf));
         IEffect fireEffect= new FireEffect(baseEf);
         fireEffect.setId(effectRepository.persistEntity(fireEffect));
-
         IRace baseRace = new BaseRace();
         baseRace.setId(iRaceRepository.persistEntity(baseRace));
+
         ACard card = new MonsterCard("Fireelf", 20, fireEffect,baseRace);
         card.setId(cardRepository.persistEntity(card));
-
-        userA.getStack().getCards().add(card);
+        userA.getDeck().getCards().add(card);
         userA.setId(userRepository.persistEntity(userA));
-        ITrade trade = new Trade1To1("id",userA,card,new NormalTradeCardRequirements(10d,MonsterCard.class,baseEf,baseRace));
 
-        trade.setId(iTradeRepository.persistEntityGenNoId(trade));
+        ACard card2 = new MonsterCard("Fireelf2", 20, fireEffect,baseRace);
+        card2.setId(cardRepository.persistEntity(card2));
+        userB.getDeck().getCards().add(card2);
+        userB.setId(userRepository.persistEntity(userB));
+
+        Battle battle = new Battle();
+        battle.setUser1(userA);
+        battle.setUser2(userB);
+        battle.start();
+        battle.setId(battleRepository.persistEntity(battle));
+        battle.setWinner(userA);
 
         // act
-        boolean works = iTradeRepository.deleteEntity(trade.getId());
-        ITrade foundTrade = iTradeRepository.findEntity(trade.getId());
-
+        boolean works = battleRepository.deleteEntity(battle.getId());
+        Battle foundBattle = battleRepository.findEntity(battle.getId());
 
         // assert
         assertTrue(works);
-        assertNull(foundTrade);
+        assertNull(foundBattle);
     }
 
     @Test
-    @DisplayName("Delete ITrade Wrong ID")
-    void testDeleteITradeWrongId() {
+    @DisplayName("Delete Battle Wrong ID")
+    void testDeleteBattleWrongId() {
         // arrange
 
         // act
-        boolean works = iTradeRepository.deleteEntity("ids");
+        boolean works = battleRepository.deleteEntity(5000L);
 
         // assert
         assertFalse(works);

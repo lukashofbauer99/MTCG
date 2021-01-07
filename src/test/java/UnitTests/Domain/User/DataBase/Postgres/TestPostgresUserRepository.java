@@ -39,7 +39,7 @@ public class TestPostgresUserRepository {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg_testing","postgres", "postgres");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -67,7 +67,7 @@ public class TestPostgresUserRepository {
         try {
             connection
                     .createStatement()
-                    .execute("truncate table battledecks,battles,cardpacks,cards,cardsinpack,decks,effects,normaltrades,races,rounds,stacks,users,vendors cascade ");
+                    .execute("truncate table battles,cardpacks,cards,cardsinpack,decks,effects,normaltrades,races,rounds,stacks,users,vendors cascade ");
 
             //region Reset Sequences
             connection
@@ -86,6 +86,9 @@ public class TestPostgresUserRepository {
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE decks_id_seq RESTART;");
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE effects_id_seq RESTART;");
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE races_id_seq RESTART;");

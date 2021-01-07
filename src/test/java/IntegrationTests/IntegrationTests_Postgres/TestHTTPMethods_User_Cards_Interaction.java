@@ -1,5 +1,6 @@
 package IntegrationTests.IntegrationTests_Postgres;
 
+import Domain.Battle.DataBase.Postgres.PostgresBattleRepository;
 import Domain.Cards.DataBase.Postgres.*;
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
@@ -72,13 +73,13 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
     static {
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg","postgres", "postgres");
+            connection = DriverManager.getConnection("jdbc:postgresql://172.17.0.2:5432/mtcg_testing","postgres", "postgres");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    static PlayerHub playerHub = new PlayerHub();
+    static PlayerHub playerHub = new PlayerHub(new PostgresBattleRepository(connection));
 
     static ICardPackRepository cardPackRepo=new PostgresCardPackRepository(connection);
     static IACardRepository cardRepo=new PostgresACardRepository(connection);
@@ -155,6 +156,11 @@ public class TestHTTPMethods_User_Cards_Interaction {
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE races_id_seq RESTART;");
+
+            connection
+                    .createStatement()
+                    .execute("ALTER SEQUENCE effects_id_seq RESTART;");
+
             connection
                     .createStatement()
                     .execute("ALTER SEQUENCE rounds_id_seq RESTART;");
@@ -618,7 +624,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
 
         assertTrue(user.getStack().getCards()
-                .stream().map(x->x.getId()).collect(toList())
+                .stream().map(ACard::getId).collect(toList())
                 .contains("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334"));
     }
 
@@ -659,7 +665,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
 
 
         assertTrue(user.getStack().getCards()
-                .stream().map(x->x.getId()).collect(toList())
+                .stream().map(ACard::getId).collect(toList())
                 .contains("1cb6ab86-bdb2-47e5-b6e4-68c5ab389334"));
     }
 

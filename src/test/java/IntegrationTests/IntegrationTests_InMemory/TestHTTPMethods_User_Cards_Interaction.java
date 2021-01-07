@@ -1,5 +1,6 @@
 package IntegrationTests.IntegrationTests_InMemory;
 
+import Domain.Battle.InMemory.InMemoryBattleRepository;
 import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
 import Domain.PlayerHub;
@@ -60,7 +61,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
     static Thread workerThread;
     static volatile boolean ready= false;
 
-    static PlayerHub playerHub = new PlayerHub();
+    static PlayerHub playerHub = new PlayerHub(new InMemoryBattleRepository());
 
     static ICardPackRepository cardPackRepo=new InMemoryCardPackRepository();
     static IACardRepository cardRepo=new InMemoryACardRepository();

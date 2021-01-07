@@ -1,22 +1,24 @@
 package Domain;
 
+import Domain.Battle.Interfaces.IBattleRepository;
 import Model.Battle.Battle;
 import Model.User.User;
 import lombok.Getter;
-import org.javatuples.Pair;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
 
 import static java.lang.StrictMath.abs;
 
 //@Component
 @Getter
 public class PlayerHub {
+
+    IBattleRepository battleRepository;
+
+    public PlayerHub(IBattleRepository battleRepository) {
+        this.battleRepository = battleRepository;
+    }
 
     private List<User> battleSearchingUsers = new ArrayList<>();
     private List<Battle> currentBattles = new ArrayList<>();
@@ -36,7 +38,8 @@ public class PlayerHub {
         else
         {
             currentBattle.setUser2(user);
-            currentBattle.Start();
+            currentBattle.start();
+            currentBattle.setId(battleRepository.persistEntity(currentBattle));
         }
         return currentBattle;
 

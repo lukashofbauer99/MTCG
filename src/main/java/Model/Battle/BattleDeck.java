@@ -11,6 +11,7 @@ import java.util.Random;
 @Data
 public class BattleDeck {
 
+    Long id;
     List<ACard> cards = new ArrayList<>();
     @JsonIgnore
     Random rand = new Random();

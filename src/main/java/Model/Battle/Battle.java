@@ -19,6 +19,14 @@ public class Battle {
     Long id;
 
     User user1;
+
+    public Battle(Long id, User user1, User user2, User winner) {
+        this.id = id;
+        this.user1 = user1;
+        this.user2 = user2;
+        this.winner = winner;
+    }
+
     User user2;
 
     User winner;
@@ -37,9 +45,10 @@ public class Battle {
         battleDeckUser2.cards.addAll(user2.getDeck().getCards());
     }
 
-    Boolean toggleAttacker = true;
 
-    public void Start() {
+
+    public void start() {
+        boolean toggleAttacker = true;
         battleDeckUser1 = new BattleDeck();
         battleDeckUser2 = new BattleDeck();
         battleDeckUser1.cards.addAll(user1.getDeck().getCards());

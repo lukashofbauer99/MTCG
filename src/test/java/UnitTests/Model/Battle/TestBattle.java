@@ -63,7 +63,7 @@ public class TestBattle {
         battle = new Battle(userA, userB);
         // act
 
-        battle.Start();
+        battle.start();
 
         // assert
 
@@ -97,7 +97,7 @@ public class TestBattle {
         battle = new Battle(userB, userA);
         // act
 
-        battle.Start();
+        battle.start();
 
         // assert
 
