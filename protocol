@@ -1,0 +1,21 @@
+﻿Designs:
+I followed the SOLID, Priciples as good as possible, and implemented Patterns like the Decorator-Patter for the Effects
+created IRepositories and split them up so that the Interface would not get to big
+used a clear class and folder structure to keep things organized
+
+Failures:
+Getting the curl scripts working in Spring as automated Tests didnt work so well, executing curls scripts via java, leads to weird behaviour, therefore i spent more time then i would have thought for them, 
+
+Selected solutions:
+I selected and developed the solutions that i have now, because it was what i could produce in a bit over the time that this course should take us, there sure is room for improvement, but for me and my skills that would have taken longer( or a Framework like Spring ;) )
+
+Tests:
+The tests cover the whole Project quite well, 
+because i tried Testdriven-Design i tested quite thoroughly
+I tested each component and its functionality with a bit over 200 unit tests  and integration tests
+
+Time Spent:
+about 80 hours
+
+Git:
+https://github.com/lukashofbauer99/MTCG
