@@ -11,7 +11,7 @@ public class NormalEffect extends AEffect {
 
     public NormalEffect(IEffect effect) {
         super.base = effect;
-        super.name = "normal";
+        super.name = "regular";
     }
 
     @Override

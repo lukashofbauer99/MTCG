@@ -48,19 +48,20 @@ public class MainServer implements Runnable {
 
     //TODO Test curlscript
     public static void main(String[] args) {
-        System.out.println("start server");
+        System.out.println("started server");
 
         List<IHTTPMethod> registeredMethods = new ArrayList<>();
 
+        boolean initVals= true;
 
         //repositories
         IBattleRepository battleRepository = new PostgresBattleRepository(connection);
         IUserRepository userRepository = new PostgresUserRepository(connection);
         ICardPackRepository cardPackRepository = new PostgresCardPackRepository(connection);
         IACardRepository cardRepository = new PostgresACardRepository(connection);
-        IEffectRepository effectRepository = new PostgresIEffectRepository(connection,true);
-        IRaceRepository raceRepository = new PostgresIRaceRepository(connection,true);
-        IVendorRepository vendorRepository = new PostgresIVendorRepository(connection,true);
+        IEffectRepository effectRepository = new PostgresIEffectRepository(connection,initVals);
+        IRaceRepository raceRepository = new PostgresIRaceRepository(connection,initVals);
+        IVendorRepository vendorRepository = new PostgresIVendorRepository(connection,initVals);
         ITradeRepository tradeRepository = new PostgresITradeRepository(connection);
 
         PlayerHub playerHub= new PlayerHub(battleRepository);

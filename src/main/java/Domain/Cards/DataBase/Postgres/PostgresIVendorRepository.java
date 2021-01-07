@@ -25,7 +25,7 @@ public class PostgresIVendorRepository implements IVendorRepository {
         public Long cardPackId;
     }
 
-    private Connection _connection = null;
+    private Connection _connection;
 
     public PostgresIVendorRepository(Connection connection,Boolean initVals) {
         this._connection = connection;
@@ -110,7 +110,7 @@ public class PostgresIVendorRepository implements IVendorRepository {
 
             List<entry> packEntriesDB = new ArrayList<>();
             while (resultSetPack.next()) {
-                packEntriesDB.add(new entry(resultSetPack.getLong(1), resultSetPack.getLong(2)));
+                packEntriesDB.add(new entry(resultSetPack.getLong(2), resultSetPack.getLong(1)));
             }
 
             List<entry> stackEntriesMemory = entity.getAvailibleCardPacks().stream().map(x -> new entry(entity.getId(), x.getId())).collect(Collectors.toList());

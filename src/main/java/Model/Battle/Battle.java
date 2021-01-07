@@ -2,6 +2,7 @@ package Model.Battle;
 
 import Model.Cards.ACard;
 import Model.User.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +32,9 @@ public class Battle {
 
     User winner;
 
+    @JsonIgnore
     BattleDeck battleDeckUser1;
+    @JsonIgnore
     BattleDeck battleDeckUser2;
 
     List<Round> rounds = new ArrayList<>();

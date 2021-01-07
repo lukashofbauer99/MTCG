@@ -6,9 +6,9 @@ import Model.User.User;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-
-import static java.lang.StrictMath.abs;
+import java.util.concurrent.atomic.AtomicInteger;
 
 //@Component
 @Getter
@@ -20,28 +20,33 @@ public class PlayerHub {
         this.battleRepository = battleRepository;
     }
 
-    private List<User> battleSearchingUsers = new ArrayList<>();
-    private List<Battle> currentBattles = new ArrayList<>();
-    private Battle currentBattle= new Battle();
+    private List<Battle> currentBattles = Collections.synchronizedList(new ArrayList());
+    private Battle finishedBattle = new Battle();
+
+    AtomicInteger playerCounter = new AtomicInteger(2);
 
     public Battle matchPlayers(User user) {
-        if(currentBattle.getUser1()==null) {
+        if (playerCounter.get() == 2) {
+            currentBattles.add(new Battle());
+            playerCounter.set(0);
+        }
+        Battle currentBattle = currentBattles.get(currentBattles.size() - 1);
+        if (currentBattle.getUser1() == null) {
+            playerCounter.incrementAndGet();
             currentBattle.setUser1(user);
-            while(currentBattle.getWinner()==null) {
+            while (currentBattle.getId() == null) {
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-        }
-        else
-        {
+        } else {
+            playerCounter.incrementAndGet();
             currentBattle.setUser2(user);
             currentBattle.start();
             currentBattle.setId(battleRepository.persistEntity(currentBattle));
         }
         return currentBattle;
-
     }
 }

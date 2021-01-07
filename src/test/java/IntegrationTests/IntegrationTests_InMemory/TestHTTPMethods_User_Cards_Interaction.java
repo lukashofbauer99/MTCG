@@ -740,7 +740,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
                             effect =\s
                               @type = Normal,
                               id = 4,
-                              name = normal,
+                              name = regular,
                               base =\s
                                 @type = Base,
                                 id = 1,
@@ -783,7 +783,7 @@ public class TestHTTPMethods_User_Cards_Interaction {
                             effect =\s
                               @type = Normal,
                               id = 4,
-                              name = normal,
+                              name = regular,
                               base =\s
                                 @type = Base,
                                 id = 1,

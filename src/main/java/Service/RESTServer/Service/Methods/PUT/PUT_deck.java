@@ -55,6 +55,7 @@ public class PUT_deck implements IHTTPMethod {
                     responseContext.setHttpStatusCode("HTTP/1.1 400");
                     responseContext.setPayload(mapper.writerFor(new TypeReference<Deck>() {
                     })
+                            .with(new DefaultPrettyPrinter())
                             .writeValueAsString(userRepository.getDeckOfUserWithToken(data.getHeaders().get("Authorization"))));
                 }
             } else {

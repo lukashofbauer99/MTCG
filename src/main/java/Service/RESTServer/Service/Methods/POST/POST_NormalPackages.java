@@ -82,7 +82,7 @@ public class POST_NormalPackages implements IHTTPMethod {
                 .stream()
                 .filter(x -> card.getName().toLowerCase().contains(x.getName()))
                 .findFirst()
-                .orElse(effectRepository.getIEffectWithName("normal")));
+                .orElse(effectRepository.getIEffectWithName("regular")));
 
         if (card.getClass() == MonsterCard.class) {
             ((MonsterCard) card).setRace(raceRepository.getAllEntities().stream().filter(x -> card.getName().toLowerCase().contains(x.getName())).findFirst().orElse(raceRepository.getIRaceWithName("base")));
