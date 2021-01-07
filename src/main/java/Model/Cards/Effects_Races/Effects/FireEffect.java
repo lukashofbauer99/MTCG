@@ -26,6 +26,8 @@ public class FireEffect extends AEffect {
             return super.base.affect(thisCard, opponentCard) * 2;
         if (opponentCard.getEffect().getClass() == WaterEffect.class)
             return super.base.affect(thisCard, opponentCard) / 2;
+        if (opponentCard.getEffect().getClass() == IceEffect.class)
+            return super.base.affect(thisCard, opponentCard) *4;
 
         return thisCard.getDamage();
     }

@@ -7,11 +7,11 @@ import Model.Cards.SpellCard;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class WaterEffect extends AEffect {
+public class IceEffect extends AEffect {
 
-    public WaterEffect(IEffect effect) {
+    public IceEffect(IEffect effect) {
         super.base = effect;
-        super.name = "water";
+        super.name = "ice";
     }
 
     @Override
@@ -22,11 +22,9 @@ public class WaterEffect extends AEffect {
             }
         }
         if (opponentCard.getEffect().getClass() == FireEffect.class)
-            return super.base.affect(thisCard, opponentCard) * 2;
-        if (opponentCard.getEffect().getClass() == NormalEffect.class)
-            return super.base.affect(thisCard, opponentCard) / 2;
-        if (opponentCard.getEffect().getClass() == IceEffect.class)
             return super.base.affect(thisCard, opponentCard) / 4;
+        if (opponentCard.getEffect().getClass() == WaterEffect.class)
+            return super.base.affect(thisCard, opponentCard) * 4;
 
         return thisCard.getDamage();
     }

@@ -2,10 +2,7 @@ package UnitTests.Model.Cards;
 
 import Model.Battle.State;
 import Model.Cards.ACard;
-import Model.Cards.Effects_Races.Effects.BaseEffect;
-import Model.Cards.Effects_Races.Effects.FireEffect;
-import Model.Cards.Effects_Races.Effects.NormalEffect;
-import Model.Cards.Effects_Races.Effects.WaterEffect;
+import Model.Cards.Effects_Races.Effects.*;
 import Model.Cards.Effects_Races.Races.*;
 import Model.Cards.MonsterCard;
 import Model.Cards.SpellCard;
@@ -44,7 +41,7 @@ public class TestCalcDamage {
     void test_NormalMonsterCard_Defend_CalcDamage() {
         // arrange
         cardA = new SpellCard("Spear Throw", 10, baseEffect);
-        cardB = new MonsterCard("Human Warrior", 7, baseEffect, baseRace);
+        cardB = new MonsterCard("Human Centipede", 7, baseEffect, baseRace);
         double damageCalculated;
         // act
         damageCalculated = cardB.calcDamage(State.DEFEND, cardA);
@@ -53,11 +50,11 @@ public class TestCalcDamage {
     }
 
     @Test
-    @DisplayName("Fire Monster vs Water Monster")
+    @DisplayName("Fire Unicorn vs Water Popcorn")
     void test_FireMVsWaterM_Attack_CalcDamage() {
         // arrange
-        cardA = new MonsterCard("Fire Monster", 10, new FireEffect(baseEffect), baseRace);
-        cardB = new MonsterCard("Water Monster", 7, new WaterEffect(baseEffect), baseRace);
+        cardA = new MonsterCard("Fire Popcorn", 10, new FireEffect(baseEffect), baseRace);
+        cardB = new MonsterCard("Water Unicorn", 7, new WaterEffect(baseEffect), baseRace);
         double damageCalculated;
         // act
         damageCalculated = cardB.calcDamage(State.ATTACK, cardA);
@@ -66,11 +63,11 @@ public class TestCalcDamage {
     }
 
     @Test
-    @DisplayName("Fire Spell vs Water Monster")
+    @DisplayName("Fire Fart vs Water Worm")
     void test_FireSVsWaterM_Attack_CalcDamage() {
         // arrange
-        cardA = new SpellCard("Fire Spell", 10, new FireEffect(baseEffect));
-        cardB = new MonsterCard("Water Monster", 7, new WaterEffect(baseEffect), baseRace);
+        cardA = new SpellCard("Fire Fart", 10, new FireEffect(baseEffect));
+        cardB = new MonsterCard("Water Worm", 7, new WaterEffect(baseEffect), baseRace);
         double damageCalculated;
         // act
         damageCalculated = cardB.calcDamage(State.ATTACK, cardA);
@@ -93,11 +90,11 @@ public class TestCalcDamage {
     }
 
     @Test
-    @DisplayName("Fire Dragon vs Water Goblin Defend")
+    @DisplayName("Fire Flythingy vs Water Avatar Defend")
     void test_FireDrVsWaterG_Defend_CalcDamage() {
         // arrange
-        cardA = new MonsterCard("Dragon", 10, new FireEffect(baseEffect), new DragonRace(baseRace));
-        cardB = new MonsterCard("Water Goblin", 100, new WaterEffect(baseEffect), new GoblinRace(baseRace));
+        cardA = new MonsterCard("Fire Flythingy", 10, new FireEffect(baseEffect), new DragonRace(baseRace));
+        cardB = new MonsterCard("Water Avatar", 100, new WaterEffect(baseEffect), new GoblinRace(baseRace));
         double damageCalculated;
         // act
         damageCalculated = cardB.calcDamage(State.DEFEND, cardA);
@@ -209,6 +206,19 @@ public class TestCalcDamage {
         damageCalculated = cardB.calcDamage(State.DEFEND, cardA);
         // assert
         assertEquals(25, damageCalculated);
+    }
+
+    @Test
+    @DisplayName("Ice Wizard vs Fire Spell")
+    void test_IceWizardVsFireSpell_Defend_CalcDamage() {
+        // arrange
+        cardA = new MonsterCard("Ice Wizard", 200, new IceEffect(baseEffect), new WizardRace(baseRace));
+        cardB = new SpellCard("Fire Ball", 25, new FireEffect(baseEffect));
+        double damageCalculated;
+        // act
+        damageCalculated = cardB.calcDamage(State.DEFEND, cardA);
+        // assert
+        assertEquals(100, damageCalculated);
     }
 
 
