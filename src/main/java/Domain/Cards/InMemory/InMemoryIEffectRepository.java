@@ -19,6 +19,7 @@ public class InMemoryIEffectRepository implements IEffectRepository {
         persistEntity(new FireEffect(base));
         persistEntity(new WaterEffect(base));
         persistEntity(new NormalEffect(base));
+        persistEntity(new IceEffect(base));
     }
 
     @Override

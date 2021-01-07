@@ -3,23 +3,18 @@ package Service.RESTServer.Service;
 import Domain.Battle.DataBase.Postgres.PostgresBattleRepository;
 import Domain.Battle.Interfaces.IBattleRepository;
 import Domain.Cards.DataBase.Postgres.*;
-import Domain.Cards.InMemory.*;
 import Domain.Cards.Interfaces.*;
 import Domain.PlayerHub;
 import Domain.User.DataBase.Postgres.PostgresITradeRepository;
 import Domain.User.DataBase.Postgres.PostgresUserRepository;
-import Domain.User.InMemory.InMemoryITradeRepository;
-import Domain.User.InMemory.InMemoryUserRepository;
 import Domain.User.Interfaces.ITradeRepository;
 import Domain.User.Interfaces.IUserRepository;
-import Service.RESTServer.Service.Methods.DELETE.DELETE_messages_Id;
 import Service.RESTServer.Service.Methods.DELETE.DELETE_tradings_id;
 import Service.RESTServer.Service.Methods.Error.NotFound;
 import Service.RESTServer.Service.Methods.GET.*;
 import Service.RESTServer.Service.Methods.IHTTPMethod;
 import Service.RESTServer.Service.Methods.POST.*;
 import Service.RESTServer.Service.Methods.PUT.PUT_deck;
-import Service.RESTServer.Service.Methods.PUT.PUT_messages_Id;
 import Service.RESTServer.Service.Methods.PUT.PUT_users_name;
 import Service.RESTServer.Service.Socket.IMySocket;
 import Service.RESTServer.Service.Socket.MySocket;
@@ -68,14 +63,6 @@ public class MainServer implements Runnable {
 
 
         //register Methods
-        registeredMethods.add(new GET_messages());
-        registeredMethods.add(new DELETE_messages_Id());
-        registeredMethods.add(new PUT_messages_Id());
-        registeredMethods.add(new GET_messages_Id());
-        registeredMethods.add(new POST_messages());
-
-
-
         registeredMethods.add(new POST_battles(userRepository,playerHub));
         registeredMethods.add(new DELETE_tradings_id(userRepository,tradeRepository));
         registeredMethods.add(new POST_tradings_id(userRepository,cardRepository,tradeRepository));
